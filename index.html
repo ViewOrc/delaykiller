@@ -29,6 +29,7 @@ html,body{height:100%;margin:0}
 body{font-family:var(--font);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
 button{font-family:inherit;cursor:pointer;border:0;background:transparent;color:inherit;font-size:inherit}
 input,select{font-family:inherit;font-size:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
 
 .upload-view{position:fixed;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);overflow-y:auto}
 .upload-view[hidden]{display:none!important}
@@ -60,9 +61,22 @@ input,select{font-family:inherit;font-size:inherit;color:inherit}
 .upload-status{text-align:center;font-size:13px;color:var(--muted);font-weight:600;min-height:20px}
 .upload-status.ok{color:var(--ok)}
 .upload-status.err{color:var(--danger)}
-.upload-actions{display:flex;gap:8px;justify-content:center;margin-top:10px}
-.upload-actions button{padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);transition:.14s}
-.upload-actions button:hover{border-color:var(--accent);color:var(--accent)}
+.upload-actions{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.upload-actions button, .upload-actions a{padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);transition:.14s;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.upload-actions button:hover, .upload-actions a:hover{border-color:var(--accent);color:var(--accent)}
+
+.siof-shortcut{margin-top:18px;padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,#eef2ff 0%,#f0f9ff 100%);border:1px solid rgba(79,70,229,.18);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.siof-shortcut-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.24)}
+.siof-shortcut-text{flex:1;min-width:200px;line-height:1.35}
+.siof-shortcut-text strong{display:block;font-size:13px;font-weight:800;color:var(--ink);letter-spacing:-.1px;margin-bottom:2px}
+.siof-shortcut-text span{font-size:11.5px;color:var(--ink-2);font-weight:500}
+.siof-shortcut-btn{padding:8px 14px;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:800;letter-spacing:.2px;white-space:nowrap;transition:.14s;box-shadow:0 4px 12px rgba(79,70,229,.28)}
+.siof-shortcut-btn:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.32)}
+
+.upload-footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:center;align-items:center;gap:10px;font-size:11.5px;color:var(--muted);font-weight:600;flex-wrap:wrap}
+.upload-footer a{color:var(--accent);font-weight:700;display:inline-flex;align-items:center;gap:4px;transition:.14s}
+.upload-footer a:hover{color:var(--accent-2);text-decoration:underline}
+.upload-footer .uf-sep{color:var(--border-2)}
 
 .loader{position:fixed;inset:0;z-index:1000;background:rgba(244,246,251,.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;animation:fade .18s}
 .loader[hidden]{display:none!important}
@@ -91,10 +105,14 @@ input,select{font-family:inherit;font-size:inherit;color:inherit}
 .search-box .clr{position:absolute;right:8px;width:24px;height:24px;border-radius:6px;color:var(--muted);font-size:13px;display:none;align-items:center;justify-content:center}
 .search-box.has-value .clr{display:flex}
 .search-box .clr:hover{background:var(--accent-bg);color:var(--accent)}
-.tb-btn{height:38px;padding:0 13px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:.14s;white-space:nowrap;color:var(--ink-2)}
+.tb-btn{height:38px;padding:0 13px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:.14s;white-space:nowrap;color:var(--ink-2);cursor:pointer}
 .tb-btn:hover{border-color:var(--border-2);background:var(--surface-2);color:var(--ink)}
 .tb-btn.ghost{background:transparent}
+.tb-btn.siof{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(79,70,229,.24)}
+.tb-btn.siof:hover{color:#fff;transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.3)}
 @media (max-width:1000px){.tb-btn .lbl{display:none}}
+.tb-version{display:inline-flex;align-items:center;padding:4px 9px;border-radius:20px;background:var(--slate-bg);color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.4px;font-family:var(--mono);flex-shrink:0}
+@media (max-width:1100px){.tb-version{display:none}}
 
 .stats{display:flex;gap:10px;padding:14px 20px 0;overflow-x:auto;flex-shrink:0}
 .stats::-webkit-scrollbar{height:0}
@@ -265,6 +283,11 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .cmp-row.dnp-row.negativo .v.dnp-val,
 .cmp-row.dnp-row.negativo .d{color:var(--danger)}
 
+.cmp-row.src-head{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 14px}
+.cmp-row.src-head .src-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.cmp-row.src-head .src-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cmp-block.src-block{margin-bottom:10px;border-left:3px solid var(--src-color,var(--border))}
+
 .dnp-acao-box{background:var(--warn-bg);border:1px solid rgba(217,119,6,.25);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .dnp-acao-box label{font-size:11.5px;font-weight:800;color:var(--warn);letter-spacing:.2px}
 .dnp-acao-box input{width:170px;height:30px;padding:0 10px;border:1px solid rgba(217,119,6,.35);border-radius:6px;font-size:12px;font-family:var(--mono);text-align:right;background:var(--surface);outline:none}
@@ -278,13 +301,13 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .dc-dnp input:focus{border-color:var(--warn);box-shadow:0 0 0 2px rgba(217,119,6,.12)}
 
 .fonte-breakdown {margin-top: 8px;border: 1px solid var(--border);border-radius: 10px;overflow: hidden;background: var(--surface-2);}
-.fonte-breakdown summary {padding: 10px 12px;cursor: pointer;background: var(--surface);font-weight: 700;font-size: 12px;display: flex;align-items: center;justify-content: space-between;list-style: none;border-bottom: 1px solid transparent;}
+.fonte-breakdown summary {padding: 10px 12px;cursor: pointer;background: var(--surface);font-weight: 700;font-size: 12px;display: flex;align-items: center;justify-content: space-between;list-style: none;border-bottom: 1px solid transparent;gap:6px}
 .fonte-breakdown[open] summary {border-bottom-color: var(--border);}
 .fonte-breakdown summary::-webkit-details-marker { display: none; }
-.fonte-breakdown summary::before {content: '▶';font-size: 8px;margin-right: 6px;color: var(--muted);transition: transform .2s;}
+.fonte-breakdown summary::before {content: '▶';font-size: 8px;margin-right: 6px;color: var(--muted);transition: transform .2s;flex-shrink:0}
 .fonte-breakdown[open] summary::before {transform: rotate(90deg);}
-.fonte-summary-main {flex: 1;display: flex;align-items: center;gap: 6px;min-width: 0;overflow: hidden;}
-.fonte-summary-main .ff-name {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;font-weight: 600; color: var(--ink-2);}
+.fonte-summary-main {flex: 1;display: flex;align-items: center;gap: 6px;min-width: 0;overflow: hidden;flex-wrap:wrap}
+.fonte-summary-main .ff-name {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;font-weight: 600; color: var(--ink-2);max-width:100%}
 .fonte-summary-delta {font-variant-numeric: tabular-nums;font-weight: 800;font-size: 11.5px;white-space: nowrap;margin-left: 8px;}
 .fonte-summary-delta.pos { color: var(--ok); }
 .fonte-summary-delta.neg { color: var(--danger); }
@@ -305,13 +328,16 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .dot-card .dc-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
 .dot-card .dc-id{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--ink)}
 
-.dc-fonte{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:10px;font-size:11.5px;line-height:1.4}
+.dc-fonte{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:10px;font-size:11.5px;line-height:1.4}
 .dc-fonte .ff-code{font-family:var(--mono);font-size:11px;font-weight:800;padding:2px 7px;border-radius:5px;background:var(--f-bg,var(--slate-bg));color:var(--f-color,var(--slate))}
-.dc-fonte .ff-name{color:var(--ink-2);font-weight:600;flex:1;min-width:180px}
+.dc-fonte .ff-name{color:var(--ink-2);font-weight:600;flex:1;min-width:150px}
 .dc-fonte .ff-grupo{font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);padding:2px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--border)}
+.dc-fonte .ff-macro{font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--m-color,var(--slate));padding:2px 6px;border-radius:4px;background:var(--m-bg,var(--surface));border:1px solid currentColor;opacity:.85}
 .dc-fonte .ff-desc{width:100%;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:2px;font-style:italic}
+.dc-fonte .ff-sub{width:100%;font-size:10px;color:var(--ink-2);font-weight:500;margin-top:1px;font-family:var(--mono)}
 
-.dc-meta{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.dc-meta{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dc-meta .regiao-tag{display:inline-flex;align-items:center;gap:4px;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:800;background:var(--accent-bg);color:var(--accent);letter-spacing:.3px;text-transform:uppercase}
 .dc-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:11px}
 .dc-metric{display:flex;flex-direction:column;gap:3px;min-width:0}
 .dc-metric .dcl{font-size:9.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
@@ -344,6 +370,7 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .help-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
 .help-list li{padding:10px 13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)}
 .help-list li .lbl{font-weight:800;color:var(--ink);display:block;margin-bottom:2px}
+.help-list li .step{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:800;margin-right:6px;flex-shrink:0;vertical-align:middle}
 .modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;background:var(--surface-2)}
 .modal-foot button{height:36px;padding:0 16px;border-radius:10px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);transition:.14s}
 .modal-foot button:hover{border-color:var(--accent);color:var(--accent)}
@@ -370,6 +397,153 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 
 .tt{position:fixed;z-index:9999;pointer-events:none;background:#0f172a;color:#fff;font-size:11.5px;font-weight:500;padding:8px 11px;border-radius:8px;max-width:360px;line-height:1.5;box-shadow:0 4px 16px rgba(15,23,42,.24);opacity:0;transition:opacity .12s;transform:translateY(-2px)}
 .tt.show{opacity:1}
+
+/* ════════════════════════════════════════════════════════════════
+   PRINT / PDF EXPORT
+   ════════════════════════════════════════════════════════════════ */
+#printDoc.print-doc{display:none;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:11px;line-height:1.4;color:#0f172a;background:#fff}
+#printDoc .p-header{background:linear-gradient(135deg,#4f46e5 0%,#6366f1 100%);color:#fff;padding:14px 18px;border-radius:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+#printDoc .p-header h1{margin:0 0 2px;font-size:15px;font-weight:800;letter-spacing:-.2px;color:#fff}
+#printDoc .p-sub{font-size:10.5px;opacity:.92;font-weight:500}
+#printDoc .p-meta{text-align:right;font-size:9.5px;opacity:.9;line-height:1.4;white-space:nowrap}
+#printDoc .p-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-badge-dot{width:6px;height:6px;border-radius:50%;background:#fff;flex-shrink:0}
+#printDoc .p-section-title{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#4f46e5;margin:14px 0 6px;padding-bottom:4px;border-bottom:1.5px solid #e2e8f0}
+#printDoc .p-action-head{margin-bottom:12px}
+#printDoc .p-action-name{font-size:15px;font-weight:800;line-height:1.2;margin:4px 0;color:#0f172a}
+#printDoc .p-action-meta{font-size:10px;color:#64748b;font-weight:600;font-family:monospace}
+#printDoc .p-action-meta.p-inline{font-family:inherit;font-weight:600;color:#334155;margin-top:2px}
+#printDoc .p-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
+#printDoc .p-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-card-l{font-size:8.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#64748b;margin-bottom:3px}
+#printDoc .p-card-v{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+#printDoc .p-card-v.pos{color:#16a34a}
+#printDoc .p-card-v.neg{color:#dc2626}
+#printDoc .p-card-v.zero{color:#94a3b8}
+#printDoc .p-card-s{font-size:8.5px;color:#64748b;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+#printDoc .p-table{width:100%;border-collapse:collapse;font-size:10px;margin:6px 0 12px}
+#printDoc .p-table th{padding:6px 8px;text-align:right;font-size:8.5px;font-weight:800;text-transform:uppercase;color:#64748b;background:#f1f5f9;border-bottom:1.5px solid #cbd5e1;letter-spacing:.4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-table th.l{text-align:left}
+#printDoc .p-table td{padding:5px 8px;border-bottom:1px solid #e2e8f0;text-align:right;font-variant-numeric:tabular-nums;color:#0f172a}
+#printDoc .p-table td.l{text-align:left;font-weight:600;color:#334155}
+#printDoc .p-table td.pos{color:#16a34a;font-weight:800}
+#printDoc .p-table td.neg{color:#dc2626;font-weight:800}
+#printDoc .p-table td.zero{color:#94a3b8;font-weight:600}
+#printDoc .p-dots{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+#printDoc .p-dot{border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;background:#f8fafc;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-dot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px}
+#printDoc .p-dot-id{font-family:monospace;font-size:11px;font-weight:800;color:#0f172a}
+#printDoc .p-dot-fonte{font-size:9.5px;line-height:1.3;margin-bottom:4px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+#printDoc .p-dot-code{font-family:monospace;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-dot-name{font-weight:700;color:#334155}
+#printDoc .p-dot-macro{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
+#printDoc .p-dot-meta{font-size:9px;color:#64748b;font-weight:600;margin-bottom:6px}
+#printDoc .p-dot-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:9px}
+#printDoc .p-dot-metric-l{font-size:8px;font-weight:800;text-transform:uppercase;color:#94a3b8;margin-bottom:1px;letter-spacing:.3px}
+#printDoc .p-dot-metric-r{display:flex;gap:3px;align-items:baseline;font-variant-numeric:tabular-nums}
+#printDoc .p-dot-metric-tag{font-size:7.5px;font-weight:800;padding:0 3px;border-radius:2px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-dot-metric-tag.q{background:rgba(100,116,139,.15);color:#64748b}
+#printDoc .p-dot-metric-tag.s{background:rgba(79,70,229,.15);color:#4f46e5}
+#printDoc .p-dot-metric-v{font-weight:700;color:#0f172a}
+#printDoc .p-dot-delta{font-size:9.5px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+#printDoc .p-dot-delta.pos{color:#16a34a}
+#printDoc .p-dot-delta.neg{color:#dc2626}
+#printDoc .p-dot-delta.zero{color:#94a3b8}
+#printDoc .p-footer{margin-top:16px;padding-top:8px;border-top:1.5px solid #e2e8f0;font-size:8.5px;color:#64748b;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#printDoc .p-footer a{color:#4f46e5;text-decoration:none;font-weight:700}
+#printDoc .p-legend{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0;font-size:8.5px}
+#printDoc .p-legend-item{display:inline-flex;align-items:center;gap:3px;font-weight:600;color:#334155}
+#printDoc .p-legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+#printDoc .p-filter-bar{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:9.5px;color:#334155;display:flex;flex-wrap:wrap;gap:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-filter-bar strong{font-weight:800;color:#0f172a}
+#printDoc .p-full-table{width:100%;border-collapse:collapse;font-size:9.5px}
+#printDoc .p-full-table th{padding:5px 6px;text-align:right;font-size:8px;font-weight:800;text-transform:uppercase;color:#64748b;background:#f1f5f9;border-bottom:1.5px solid #cbd5e1;letter-spacing:.3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .p-full-table th.l{text-align:left}
+#printDoc .p-full-table td{padding:4px 6px;border-bottom:1px solid #e2e8f0;text-align:right;font-variant-numeric:tabular-nums;color:#0f172a}
+#printDoc .p-full-table td.l{text-align:left}
+#printDoc .p-full-table td.pos{color:#16a34a;font-weight:700}
+#printDoc .p-full-table td.neg{color:#dc2626;font-weight:700}
+#printDoc .p-full-table td.zero{color:#94a3b8}
+#printDoc .p-full-table tr{page-break-inside:avoid}
+#printDoc .p-cls-mini{display:inline-block;padding:1px 6px;border-radius:8px;font-size:7.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* Bloco por fonte no PDF de ação */
+#printDoc .p-src-block{margin-bottom:8px;page-break-inside:avoid}
+#printDoc .p-src-head{display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;padding:4px 0;border-bottom:1px solid #cbd5e1}
+#printDoc .p-src-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ════════════════════════════════════════════════════════════════
+   RLTS — Relatório Simples (full-width, sem bordas, minimalista)
+   ════════════════════════════════════════════════════════════════ */
+#printDoc .rlts{width:100%;padding:0;margin:0;font-size:11px;line-height:1.45}
+
+/* Cabeçalho */
+#printDoc .rlts-head{text-align:center;padding-bottom:16px;margin-bottom:18px;border-bottom:2px solid #4f46e5}
+#printDoc .rlts-head h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.6px;color:#0f172a}
+#printDoc .rlts-sub{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#4f46e5;font-weight:800;margin-top:4px}
+#printDoc .rlts-meta{font-size:9.5px;color:#94a3b8;font-weight:600;margin-top:6px}
+
+/* Bloco de identificação da ação */
+#printDoc .rlts-action{margin-bottom:20px;text-align:center}
+#printDoc .rlts-badges{display:flex;justify-content:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+#printDoc .rlts-action-name{font-size:16px;font-weight:800;color:#0f172a;line-height:1.3;margin-bottom:5px}
+#printDoc .rlts-action-info{font-size:10px;color:#64748b;font-weight:600;line-height:1.5;font-family:monospace}
+#printDoc .rlts-action-info.p-inline{font-family:inherit;color:#475569;margin-top:2px}
+
+/* Hero: Delay total em destaque */
+#printDoc .rlts-hero{text-align:center;padding:20px 16px;margin:8px 0 22px;background:#f8fafc;border-radius:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .rlts-hero-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#4f46e5;margin-bottom:6px}
+#printDoc .rlts-hero-value{font-size:38px;font-weight:800;letter-spacing:-1.5px;line-height:1;font-variant-numeric:tabular-nums}
+#printDoc .rlts-hero-value.pos{color:#16a34a}
+#printDoc .rlts-hero-value.neg{color:#dc2626}
+#printDoc .rlts-hero-value.zero{color:#94a3b8}
+#printDoc .rlts-hero-sub{font-size:10px;color:#64748b;font-weight:600;margin-top:8px;font-variant-numeric:tabular-nums}
+#printDoc .rlts-hero-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* Título de seção */
+#printDoc .rlts-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#4f46e5;margin:22px 0 10px;padding-bottom:6px;border-bottom:1.5px solid #e2e8f0}
+
+/* Tabela clean, sem bordas */
+#printDoc .rlts-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:6px}
+#printDoc .rlts-table thead th{padding:8px 10px;text-align:right;font-size:9px;font-weight:800;text-transform:uppercase;color:#64748b;letter-spacing:.6px;background:transparent;border-bottom:1.5px solid #e2e8f0}
+#printDoc .rlts-table thead th.l{text-align:left}
+#printDoc .rlts-table tbody td{padding:10px;text-align:right;font-variant-numeric:tabular-nums;color:#0f172a;font-weight:600;border-bottom:1px solid #f1f5f9}
+#printDoc .rlts-table tbody td.l{text-align:left;font-weight:700;color:#334155}
+#printDoc .rlts-table tbody td.pos{color:#16a34a;font-weight:800}
+#printDoc .rlts-table tbody td.neg{color:#dc2626;font-weight:800}
+#printDoc .rlts-table tbody td.zero{color:#94a3b8;font-weight:600}
+#printDoc .rlts-table tbody tr:last-child td{border-bottom:0}
+
+/* Linha de cabeçalho de fonte dentro da tabela */
+#printDoc .rlts-table tr.src-head td{background:#f8fafc;padding:10px;font-weight:800;font-size:11.5px;border-bottom:1.5px solid #e2e8f0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .rlts-src-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+
+/* Tabela de totais: destaque sutil */
+#printDoc .rlts-table.totals{background:#f8fafc;border-radius:8px;padding:4px;margin-top:2px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printDoc .rlts-table.totals tbody td{padding:11px 10px;font-weight:800}
+#printDoc .rlts-table.totals tbody td.l{font-weight:800;color:#0f172a}
+
+/* Rodapé */
+#printDoc .rlts-foot{margin-top:28px;padding-top:12px;border-top:1.5px solid #e2e8f0;text-align:center;font-size:9px;color:#94a3b8;font-weight:600;line-height:1.7}
+#printDoc .rlts-foot a{color:#4f46e5;text-decoration:none;font-weight:700}
+
+@media print{
+  @page{size:A4 portrait;margin:12mm 10mm}
+  body.print-mode > *:not(#printDoc){display:none!important}
+  body.print-mode #printDoc.print-doc{display:block!important}
+  body.print-mode #printDoc *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-mode #printDoc .p-dot,
+  body.print-mode #printDoc .p-card,
+  body.print-mode #printDoc .p-table tr,
+  body.print-mode #printDoc .p-full-table tr,
+  body.print-mode #printDoc .p-src-block,
+  body.print-mode #printDoc .rlts-hero,
+  body.print-mode #printDoc .rlts-table tr{page-break-inside:avoid}
+  body.print-mode #printDoc .p-section-title,
+  body.print-mode #printDoc .rlts-section-title{page-break-after:avoid}
+  body.print-mode #printDoc h1,
+  body.print-mode #printDoc h2{page-break-after:avoid}
+}
 </style>
 </head>
 <body>
@@ -377,14 +551,10 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 <div id="uploadView" class="upload-view">
   <div class="upload-inner">
     <div class="upload-brand">
-      <div class="icon">💰</div>
-      <h1>Comparador QDD × Lei + Créditos</h1>
-      <p>
-        Envie o <strong>QDD</strong> (Excel) e a <strong>Listagem</strong> (Lei + Créditos em CSV).
-        O app concilia cada linha pela coluna <em>Dotação</em> e apresenta o <strong>delay</strong>
-        entre as duas fontes. Nenhum arquivo é enviado a servidor.
-      </p>
-      <span class="hint">Conciliação por dotacao_id ↔ Dotação · Escopo automático (UO + prefixo comum) · DNP com backup JSON</span>
+      <h1>QDD × Lei + Créditos</h1>
+      <p>Envie o <strong>QDD</strong> (Excel) e a <strong>Listagem</strong> (Lei + Créditos em CSV) para caucular o <strong>delay</strong>
+        entre as duas fontes. Se necessario consulte <strong>?</strong> a baixo.</p>
+      <span class="hint">Comparativo QDD ↔ Dotação · Escopo automático · Fonte/Subfonte/Região</span>
     </div>
 
     <div class="dropzones">
@@ -413,6 +583,27 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     <div class="upload-actions">
       <button id="uploadHelp" type="button">? Documentação</button>
     </div>
+
+    <div class="siof-shortcut">
+      <div class="siof-shortcut-icon">🏛</div>
+      <div class="siof-shortcut-text">
+        <strong>Precisa extrair o QDD?</strong>
+        <span>Acesse o SIOF, aplique os filtros e gere o relatório em XLS manualmente.</span>
+      </div>
+      <a href="https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx"
+         target="_blank" rel="noopener noreferrer" class="siof-shortcut-btn">Abrir SIOF →</a>
+    </div>
+
+    <footer class="upload-footer">
+      <span>v1.3.1</span>
+      <span class="uf-sep">·</span>
+      <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener noreferrer">
+        Código-fonte no GitHub
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7M7 7h10v10"/>
+        </svg>
+      </a>
+    </footer>
   </div>
 </div>
 
@@ -435,13 +626,24 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     </div>
     <div class="search-box" id="searchBox">
       <span class="sico">⌕</span>
-      <input id="searchInput" type="search" placeholder="Pesquisar por ação, dotação, UO, natureza, fonte…" autocomplete="off">
+      <input id="searchInput" type="search" placeholder="Pesquisar por ação, dotação, UO, natureza, fonte, região…" autocomplete="off">
       <button class="clr" id="searchClear" title="Limpar pesquisa" aria-label="Limpar">✕</button>
     </div>
+    <a href="https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx"
+       target="_blank" rel="noopener noreferrer" class="tb-btn siof" title="Abrir SIOF em nova aba">
+      <span>🏛</span><span class="lbl">SIOF</span>
+    </a>
+    <button class="tb-btn" id="btnPrint" title="Exportar PDF da visualização atual (respeita filtros)">
+      <span>🖨</span><span class="lbl">PDF</span>
+    </button>
     <button class="tb-btn" id="btnBackup" title="Backup das Despesas Não Programadas"><span>💾</span><span class="lbl">DNP</span></button>
     <button class="tb-btn" id="btnHelp" title="Documentação"><span>?</span><span class="lbl">Doc</span></button>
     <button class="tb-btn" id="btnExport" title="Exportar CSV"><span>⬇</span><span class="lbl">Exportar</span></button>
     <button class="tb-btn ghost" id="btnReset" title="Novo carregamento"><span>↺</span><span class="lbl">Novo</span></button>
+    <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener noreferrer" class="tb-btn ghost" title="Código-fonte no GitHub">
+      <span>&lt;/&gt;</span><span class="lbl">🐈‍⬛</span>
+    </a>
+    <span class="tb-version" title="beta">v1.3.1</span>
   </header>
 
   <div class="stats" id="stats"></div>
@@ -553,6 +755,8 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     <div class="drawer-tools">
       <button id="dCopy"><span>📋</span> Copiar registros</button>
       <button id="dCsv"><span>⬇</span> Exportar esta ação</button>
+      <button id="dRlts" title="Relatório Simples (RLTS) — versão minimalista"><span>📄</span> RLTS</button>
+      <button id="dPdf" title="Exportar PDF desta ação"><span>🖨</span> PDF desta ação</button>
     </div>
   </div>
   <div class="drawer-body" id="dBody"></div>
@@ -568,31 +772,49 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
       <button class="drawer-close" id="helpClose" aria-label="Fechar">✕</button>
     </div>
     <div class="modal-body">
-      <h3>Fontes de dados</h3>
+      <h3>Como extrair o QDD (manual)</h3>
+      <p>O QDD é gerado pelo <strong>SIOF, </strong> por hora, estamos trabalhando para automatizar (<code>integração comparador/SIOF</code>) portanto, neste momento você deve fazer a extração <strong>manual</strong>:</p>
+      <ul class="help-list">
+        <li><span class="step">1</span><a href="https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">Abra o SIOF</a> e siga as etapas abaixo:</li>
+        <li><span class="step">2</span>Filtre por Ano, Mês, Secretaria, Órgão e Unidade Orçamentária desejados.</li>
+        <li><span class="step">3</span>Em <em>Relatório</em>, escolha a opção que expõe <strong>dotação</strong> e <strong>natureza da despesa</strong> por linha.</li>
+        <li><span class="step">4</span>Em <em>Tipo de Exibição</em>, selecione <strong>Planilha Formatada</strong> (Xls).</li>
+        <li><span class="step">5</span>Clique em <strong>Visualizar</strong> e baixe o arquivo XLS.</li>
+        <li><span class="step">6</span>Volte a esta página e envie o XLS na zona QDD.</li>
+      </ul>
+      <p style="margin-top:10px;font-size:12px;color:var(--muted)">Observação: o QDD pode ser enviado filtrado por <strong>uma UO</strong>. O app detecta o escopo automaticamente e restringe a Listagem às dotações daquela UO.</p>
+
+      <h3>Fontes</h3>
       <ul class="help-list">
         <li><span class="lbl">QDD — Quadro de Detalhamento da Despesa (via SIOF)</span>Documento oficial que detalha a despesa autorizada por unidade orçamentária, ação, localidade, natureza e fonte de recurso. Envie em Excel (.xls/.xlsx).</li>
-        <li><span class="lbl">Lei + Créditos (via SPG)</span>Valor da autorização inicial somado aos créditos adicionais, conforme extração em tempo real (Listagem), em CSV.</li>
+        <li><span class="lbl">Dotações Lei + Créditos (Extração via SPG)</span>Valor inicial somado aos créditos adicionais, conforme extração em tempo real (Listagem), em CSV.</li>
+        <li><strong>(OBS).</strong> Considerando que a extração de dotações/listagem ocorre em ambiente autenticado, o usuário é responsável pela utilização do arquivo, esta ferramenta atua exclusivamente como facilitadora pós extração e organização das informações, cabendo ao usuário assegurar que sua utilização observe as normas aplicáveis.</li>
       </ul>
+
       <h3>Escopo automático</h3>
-      <p>Se o QDD enviado tiver <strong>uma única Unidade Orçamentária</strong>, o app detecta e <strong>filtra a Listagem</strong> para considerar apenas dotações daquela UO. A detecção utiliza três estratégias em cascata:</p>
+      <p>Se o QDD tiver <strong>uma única Unidade Orçamentária</strong>, o app filtra a Listagem para considerar apenas dotações daquela UO. Detecção em cascata:</p>
       <ul class="help-list">
-        <li><span class="lbl">1. Prefixo = código da UO</span>Se todas as dotações do QDD iniciam com o código da UO (comparação após remover pontos e traços), utiliza esse prefixo.</li>
-        <li><span class="lbl">2. Maior prefixo comum</span>Se a estratégia anterior não se aplica, calcula o maior prefixo comum entre as dotações do QDD.</li>
-        <li><span class="lbl">3. Entrada manual</span>Se nenhuma estratégia automática se aplica, exibe campo para informar o prefixo. Ex.: <code>24200904</code>.</li>
+        <li><span class="lbl">1. Prefixo = código da UO</span>Se todas as dotações iniciam com o código da UO (após normalização), usa esse prefixo.</li>
+        <li><span class="lbl">2. Maior prefixo comum</span>Se a anterior não se aplica, calcula o maior prefixo comum entre as dotações.</li>
+        <li><span class="lbl">3. Entrada manual</span>Se nenhuma se aplica, exibe campo para informar o prefixo.</li>
       </ul>
-      <p>Dotações fora do escopo são excluídas (o banner informa a quantidade e oferece botão para desfazer). Se o QDD for completo (várias UOs), a varredura é integral por padrão — com opção de restringir manualmente.</p>
+
       <h3>Rótulos QDD e SPG nas células</h3>
       <p>Cada célula apresenta dois valores empilhados:</p>
       <ul class="help-list">
         <li><span class="lbl">QDD</span>Valor registrado no Quadro de Detalhamento da Despesa.</li>
         <li><span class="lbl">SPG</span>Valor registrado na Listagem (Lei + Créditos).</li>
       </ul>
+
       <h3>Métrica Delay</h3>
-      <p>O <strong>Delay</strong> é a diferença entre o saldo da Listagem e o saldo do QDD. Calculado como <code>(Lei + Créditos − Parcelas) − (Autorizada − Empenhado)</code>.</p>
-      <p>Valor diferente de zero indica que as duas fontes não estão sincronizadas. Pode decorrer de diferenças conceituais (empenhado ≠ parcelas) ou de atraso real na atualização.</p>
+      <p>O <strong>Delay</strong> é a diferença entre o saldo da Listagem e o saldo do QDD. Calculado como <code>(Lei + Créditos − Parcelas) − (Autorizada − Empenhado)</code>. Valor diferente de zero indica que as duas fontes não estão sincronizadas.</p>
+
+      <h3>Comparativo por fonte</h3>
+      <p>No drawer de cada ação, os grupos macro de fonte (Tesouro, Saúde Vinculada, Educação Vinculada, Transferências, RPPS, Extraorçamentários, Outros) são apresentados individualmente <strong>antes</strong> do total agregado. Isso permite ao auditor verificar, por exemplo, se o delay está concentrado nos recursos do Tesouro ou em fontes vinculadas.</p>
+
       <h3>Despesa Não Programada (DNP)</h3>
-      <p>Despesa ausente no QDD e na Lei + Créditos que precisa ser rastreada. Pode ser registrada por dotação ou por ação. O valor admite <strong>sinal positivo</strong> (interpretado como <strong>valor suplementado</strong>) ou <strong>negativo</strong> (interpretado como <strong>déficit orçamentário</strong>). O total líquido é destacado no comparativo agregado do drawer — verde quando positivo, vermelho quando negativo.</p>
-      <p>Os valores são persistidos no navegador e podem ser exportados/importados via JSON (botão 💾 no topo).</p>
+      <p>Despesa ausente no QDD e na Lei + Créditos que precisa ser rastreada. Pode ser registrada por dotação ou por ação. O valor admite <strong>sinal positivo</strong> (valor suplementado) ou <strong>negativo</strong> (déficit orçamentário). Persistido no navegador; exportável/importável via JSON.</p>
+
       <h3>Classificação do atraso</h3>
       <ul class="help-list">
         <li><span class="lbl" style="color:#16a34a">Sincronizado</span>QDD e Lei + Créditos coincidem em todas as métricas.</li>
@@ -602,16 +824,31 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
         <li><span class="lbl" style="color:#9333ea">Apenas na Listagem</span>Registro presente na Listagem, ausente no QDD.</li>
         <li><span class="lbl" style="color:#64748b">Apenas no QDD</span>Registro presente no QDD, ausente na Listagem.</li>
       </ul>
-      <h3>Fonte / Destinação de Recursos</h3>
-      <p>O código da fonte segue o padrão <code>&lt;grupo&gt;.&lt;fonte&gt;.&lt;…&gt;</code>:</p>
+
+      <h3>Fonte / Subfonte / Região</h3>
+      <p>O código da fonte é interpretado em até 3 níveis:</p>
       <ul class="help-list">
-        <li><span class="lbl">1 — Recursos do Exercício Corrente</span>Aplicação no mesmo exercício da arrecadação.</li>
-        <li><span class="lbl">2 — Recursos de Exercícios Anteriores</span>Saldo de exercícios anteriores.</li>
-        <li><span class="lbl">9 — Recursos Condicionados</span>Vinculação ainda sob condição.</li>
+        <li><span class="lbl">Fonte (3 dígitos)</span>Ex.: <code>500</code> = Recursos não Vinculados de Impostos.</li>
+        <li><span class="lbl">Subfonte (10 dígitos)</span>Ex.: <code>500.9100100</code> = Recursos não Vinculados de Impostos — Contrapartida de Convênios. Baseada no catálogo oficial do SIOF (2026).</li>
+        <li><span class="lbl">Grupo macro</span>Tesouro, Educação Vinculada, Saúde Vinculada, Transferências, RPPS, etc.</li>
+        <li><span class="lbl">Região</span>Cariri, Centro Sul, Grande Fortaleza, Litoral Leste, … (15 regiões do CE).</li>
       </ul>
-      <p>O segundo bloco (500–899) indica a <strong>destinação</strong>: livres, educação, saúde, assistência social, transferências, vinculações legais, previdência, extraorçamentários.</p>
+
+      <h3>Exportação PDF, RLTS e CSV</h3>
+      <p>Três modos de exportação de relatório:</p>
+      <ul class="help-list">
+        <li><span class="lbl">PDF (topbar)</span>Consolidado das ações visíveis, respeitando os filtros ativos (classificação, pesquisa, escopo). A4 retrato, colorido, com legenda.</li>
+        <li><span class="lbl">PDF desta ação (drawer)</span>Detalhamento completo de uma ação — comparativo por fonte, total, dotações individuais.</li>
+        <li><span class="lbl">RLTS — Relatório Simples (drawer)</span>Versão minimalista que ocupa toda a folha: hero com Delay Total, comparativo por fonte agregado e total agregado. Ideal para apresentar ao gestor.</li>
+      </ul>
+
       <h3>Privacidade e dependências</h3>
-      <p>Todo o processamento é local. Nenhum arquivo é enviado a servidor. A única dependência externa é a biblioteca SheetJS (CDN), utilizada exclusivamente para leitura de Excel.</p>
+      <p>Processamento local. Nenhum arquivo é compartilhado com esta aplicação.</p>
+      <p>Dependência externa SheetJS (CDN), utilizada exclusivamente para leitura do QDD.</p>
+      <p>Esta aplicação é um projeto independente, desenvolvido com o objetivo de facilitar a leitura, a interpretação e a análise de informações orçamentárias. Não se trata de um sistema oficial, nem de uma aplicação desenvolvida, mantida, endossada ou homologada por qualquer órgão ou entidade governamental.</p>
+      <p>A aplicação é fornecida "no estado em que se encontra" (as is), sem garantias expressas ou implícitas, na máxima extensão permitida pela legislação aplicável. O autor não se responsabiliza por modificações, cópias, redistribuições ou utilizações realizadas por terceiros, nem por eventuais consequências decorrentes dessas intervenções.</p>
+      <h3>Código-fonte</h3>
+      <p>Disponível em <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">github.com/wendellmoura</a>.</p>
     </div>
     <div class="modal-foot"><button class="primary" id="helpCloseFoot">Fechar</button></div>
   </div>
@@ -655,22 +892,24 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 </div>
 
 <div id="toasts" aria-live="polite"></div>
+<div id="printDoc" class="print-doc"></div>
 
 <script>
 "use strict";
 /**
- * Comparador QDD × Lei + Créditos — v1.0.0 (produção)
- *
- * Processamento 100% client-side. Dependência externa: SheetJS (CDN), usada apenas para .xls/.xlsx.
+ * Comparador QDD × Lei + Créditos — v1.3.1
  *
  * Changelog:
- *  - v1.0.0: versão de produção. Escopo automático (UO/LCP/manual), DNP com sinal (suplementado/déficit),
- *            backup JSON versionado, conciliação por dotacao_id ↔ Dotação.
- *  - v0.x:   iterativo (CSV QDD, DNP sem sinal, sem escopo).
- *
- * Chave de conciliação: QDD.dotacao_id ↔ Listagem.Dotação (string exata, trim).
+ *  - v1.3.1: "RS" renomeado para RLTS (Relatório Simples). Layout full-width,
+ *            sem bordas, comparativo por fonte + total agregado.
+ *  - v1.3.0: Comparativo agregado por fonte antes do total; refino visual da linha DNP.
+ *  - v1.2.0: Exportação PDF (ação + consolidado), link GitHub, versão visível, timestamp.
+ *  - v1.1.0: SUBFONTES (catálogo SIOF), parseFonte em cascata, decodificação de região (CE).
+ *  - v1.0.0: versão de produção. Escopo automático, DNP com sinal, backup JSON versionado.
  */
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.3.1';
+const SIOF_URL = 'https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx';
+const REPO_URL = 'https://github.com/wendellmoura?tab=repositories';
 
 const CLASSIF = {
   sincronizado: { label:'Sincronizado',         short:'OK',   color:'#16a34a', bg:'#f0fdf4', desc:'QDD e Lei + Créditos coincidem em todas as métricas.' },
@@ -800,27 +1039,307 @@ const FONTES = {
   '899': { nome: 'Outros Recursos Vinculados',                                                cat: 'outras' }
 };
 
+const SUBFONTES = {
+  '5009100000': 'Recursos não Vinculados de Impostos',
+  '5009100100': 'Recursos não Vinculados de Impostos — Contrapartida de Convênios',
+  '5009100200': 'Recursos não Vinculados de Impostos — Contrapartida Propag',
+  '5009100300': 'Recursos não Vinculados de Impostos — Contrapartida de Transferências Legais',
+  '5009100400': 'Recursos não Vinculados de Impostos — Aplicações Específicas',
+  '5009100500': 'Recursos não Vinculados de Impostos — Contrapartida de Empréstimos',
+  '5009100600': 'Recursos não Vinculados de Impostos — Antecipação de Recursos / Bloqueios Judiciais',
+  '5011100000': 'Recursos Ordinários',
+  '5011100001': 'Recursos Ordinários — Gestão Margem Consignável / Gestão Pública',
+  '5011100002': 'Recursos Ordinários — Gestão Margem Consignável / Combate à Fome',
+  '5011100003': 'Recursos Ordinários — CIPP',
+  '5011100004': 'Recursos Ordinários — Gestão Margem Consignável / Formação de Pessoas',
+  '5011100005': 'Recursos Ordinários — Sistema Estadual de Recursos Hídricos',
+  '5011100006': 'Dividendos — CAGECE',
+  '5011100009': 'Recursos Ordinários — Direitos de Nomeação',
+  '5011100012': 'Recursos Ordinários — Rendimentos de Empréstimos',
+  '5011100051': 'Superávit Financeiro — Recursos Convertidos — Fonte Tesouro',
+  '5011100100': 'Recursos Ordinários — Contrapartida de Convênios',
+  '5011100106': 'Dividendos CAGECE — Contrapartida de Convênios',
+  '5011100400': 'Recursos Ordinários — Aplicações Específicas',
+  '5011100600': 'Recursos Ordinários — Antecipação de Recursos / Bloqueios Judiciais',
+  '5011200070': 'Recursos Diretamente Arrecadados',
+  '5011200170': 'Recursos Diretamente Arrecadados — Contrapartida de Convênios',
+  '5029100000': 'Recursos Não Vinculados da Compensação de Impostos',
+  '5409200000': 'FUNDEB — Impostos e Transferências de Impostos',
+  '5419200000': 'FUNDEB — Complementação União VAAF',
+  '5429200000': 'FUNDEB — Complementação União VAAT',
+  '5439200000': 'FUNDEB — Complementação União VAAR',
+  '5449200000': 'Recursos de Precatórios do FUNDEF',
+  '5469200000': 'FUNDEB — Complementação União ETI',
+  '5509200000': 'Transferência do Salário-Educação',
+  '5509200100': 'Transferência do Salário-Educação — Contrapartida de Convênios',
+  '5519200000': 'FNDE — PDDE',
+  '5529200000': 'FNDE — PNAE',
+  '5539200000': 'FNDE — PNATE',
+  '5699200000': 'Outras Transferências de Recursos do FNDE',
+  '5702200082': 'Convênios com Órgãos Federais — Educação',
+  '5702231182': 'Convênios Estaduais — Educação — Emenda Individual',
+  '5702231282': 'Convênios Estaduais — Educação — Emenda de Bancada',
+  '5702231382': 'Convênios Estaduais — Educação — Emenda de Bancada / Calamidade',
+  '5702231482': 'Convênios Estaduais — Educação — Emenda de Comissão',
+  '5702231582': 'Convênios Estaduais — Educação — Emenda de Relator',
+  '5722200086': 'Convênios com Órgãos Municipais — Educação',
+  '5743220067': 'Operações de Crédito Externas — Tesouro/MLW — Educação',
+  '5752200080': 'Convênios com Órgãos Internacionais — Educação',
+  '5752200088': 'Convênios com Órgãos Privados — Educação',
+  '5999200000': 'Outros Recursos Vinculados à Educação',
+  '5999200100': 'Outros Recursos Vinculados à Educação — Contrapartida de Convênios',
+  '6009200000': 'SUS Federal — Bloco de Manutenção',
+  '6009231100': 'SUS Federal — Manutenção — Emenda Individual',
+  '6009231200': 'SUS Federal — Manutenção — Emenda de Bancada',
+  '6009231300': 'SUS Federal — Manutenção — Emenda de Bancada / Calamidade',
+  '6009231400': 'SUS Federal — Manutenção — Emenda de Comissão',
+  '6009231500': 'SUS Federal — Manutenção — Emenda de Relator',
+  '6019200000': 'SUS Federal — Bloco de Estruturação',
+  '6019231100': 'SUS Federal — Estruturação — Emenda Individual',
+  '6019231200': 'SUS Federal — Estruturação — Emenda de Bancada',
+  '6019231300': 'SUS Federal — Estruturação — Emenda de Bancada / Calamidade',
+  '6019231400': 'SUS Federal — Estruturação — Emenda de Comissão',
+  '6019231500': 'SUS Federal — Estruturação — Emenda de Relator',
+  '6029200000': 'SUS Federal — Manutenção COVID-19',
+  '6039200000': 'SUS Federal — Estruturação COVID-19',
+  '6049200000': 'Transferências ACS e ACE',
+  '6059200000': 'Assistência Financeira Piso Salarial Enfermagem',
+  '6229200000': 'SUS — Transferências Governos Municipais',
+  '6312200082': 'Convênios com Órgãos Federais — Saúde',
+  '6312231182': 'Convênios Federais — Saúde — Emenda Individual',
+  '6312231282': 'Convênios Federais — Saúde — Emenda de Bancada',
+  '6312231382': 'Convênios Federais — Saúde — Emenda de Bancada / Calamidade',
+  '6312231482': 'Convênios Federais — Saúde — Emenda de Comissão',
+  '6312231582': 'Convênios Federais — Saúde — Emenda de Relator',
+  '6332200086': 'Convênios com Órgãos Municipais — Saúde',
+  '6343220059': 'Operações de Crédito Externas — Tesouro/BID — Saúde',
+  '6362200080': 'Convênios com Órgãos Internacionais — Saúde',
+  '6362200088': 'Convênios com Órgãos Privados — Saúde',
+  '6599200000': 'Outros Recursos Vinculados à Saúde',
+  '6609200000': 'Transferência de Recursos do FNAS',
+  '6609231100': 'FNAS — Emenda Individual',
+  '6609231200': 'FNAS — Emenda de Bancada',
+  '6609231300': 'FNAS — Emenda de Bancada / Calamidade',
+  '6609231400': 'FNAS — Emenda de Comissão',
+  '6609231500': 'FNAS — Emenda de Relator',
+  '6652200082': 'Convênios com Órgãos Federais — Assistência Social',
+  '6652200086': 'Convênios com Órgãos Municipais — Assistência Social',
+  '6652231182': 'Convênios Assist. Social — Emenda Individual',
+  '6652231282': 'Convênios Assist. Social — Emenda de Bancada',
+  '6652231382': 'Convênios Assist. Social — Emenda de Bancada / Calamidade',
+  '6652231482': 'Convênios Assist. Social — Emenda de Comissão',
+  '6652231582': 'Convênios Assist. Social — Emenda de Relator',
+  '6699200000': 'Outros Recursos Vinculados à Assistência Social',
+  '7002200082': 'Convênios com Órgãos Federais',
+  '7002231182': 'Convênios União — Emenda Individual',
+  '7002231282': 'Convênios União — Emenda de Bancada',
+  '7002231382': 'Convênios União — Emenda de Bancada / Calamidade',
+  '7002231482': 'Convênios União — Emenda de Comissão',
+  '7002231582': 'Convênios União — Emenda de Relator',
+  '7022200086': 'Convênios com Órgãos Municipais',
+  '7032200080': 'Convênios com Órgãos Internacionais',
+  '7032200088': 'Convênios com Órgãos Privados',
+  '7041100001': 'Compensações Financeiras — Royalties Petróleo e Gás',
+  '7041100004': 'Compensações Financeiras — Cessão Onerosa Pré-Sal',
+  '7069100000': 'Transferência Especial da União',
+  '7089100000': 'Compensação Financeira de Recursos Minerais',
+  '7111100000': 'Recursos Ordinários — Transferências Obrigatórias',
+  '7129200000': 'Fundo Penitenciário — FUNPEN',
+  '7139200000': 'Fundo de Segurança Pública — FSP',
+  '7139231100': 'FSP — Emenda Individual',
+  '7139231200': 'FSP — Emenda de Bancada',
+  '7139231300': 'FSP — Emenda de Bancada / Calamidade',
+  '7139231400': 'FSP — Emenda de Comissão',
+  '7139231500': 'FSP — Emenda de Relator',
+  '7149200000': 'Fundo de Amparo ao Trabalhador — FAT',
+  '7159200000': 'Setor Cultural — LC 195/2022 — Art. 5º (Audiovisual)',
+  '7169200000': 'Setor Cultural — LC 195/2022 — Art. 8º (Demais setores)',
+  '7179200000': 'Assistência Financeira Transporte Coletivo (EC 123/2022)',
+  '7189100000': 'Auxílio Financeiro — Crédito ICMS (EC 123/2022)',
+  '7199200000': 'Política Nacional Aldir Blanc (Lei 14.399/2022)',
+  '7201100001': 'Transferências União — FEP (Lei 9.478/1997)',
+  '7229100000': 'Fundo de Equalização Federativa (FEF)',
+  '7491200002': 'Recurso não Reembolsável / Doação — BNDES',
+  '7491200004': 'Repasse Fundo a Fundo — Aldir Blanc',
+  '7491200005': 'Outras Premiações',
+  '7509200000': 'CIDE — Combustíveis',
+  '7529200000': 'Recursos Vinculados ao Trânsito',
+  '7531100000': 'Recursos Ordinários — Taxas',
+  '7531100005': 'Recursos Ordinários — Sistema Estadual Recursos Hídricos',
+  '7531200070': 'Recursos Diretamente Arrecadados — Taxas',
+  '7531200170': 'Recursos Diretamente Arrecadados — Contrapartida de Convênios',
+  '7543210036': 'Operações de Crédito Internas — CPAC VLT / CEF',
+  '7543210037': 'Operações de Crédito Internas — CPAC MCMV',
+  '7543210038': 'Operações de Crédito Internas — CPAC Maranguapinho',
+  '7543210042': 'Operações de Crédito Internas — PPA 2024-2027 / BB',
+  '7543210045': 'Operações de Crédito Internas — Tesouro/BNDES',
+  '7543210046': 'Operações de Crédito Internas — BNDES/FIIS',
+  '7543210047': 'Operações de Crédito Internas — BNDES/Estados',
+  '7543210049': 'Operações de Crédito Internas — Linha Leste/BNDES',
+  '7543210054': 'Operações de Crédito Internas — Tesouro/BB',
+  '7543210056': 'Operações de Crédito Internas — Tesouro/CEF',
+  '7543210071': 'Operações de Crédito Internas — Outras Fontes',
+  '7543220040': 'Operações de Crédito Não Condicionada',
+  '7543220049': 'Operações de Crédito Externas — IPF/BIRD',
+  '7543220057': 'Operações de Crédito Externas — Tesouro/KFW',
+  '7543220058': 'Operações de Crédito Externas — Tesouro/BIRD',
+  '7543220059': 'Operações de Crédito Externas — Tesouro/BID',
+  '7543220061': 'Operações de Crédito Externas — Tesouro/AFD',
+  '7543220064': 'Operações de Crédito Externas — Tesouro/FIDA',
+  '7543220065': 'Operações de Crédito Externas — Tesouro/CAF',
+  '7543220067': 'Operações de Crédito Externas — Tesouro/MLW',
+  '7543220068': 'Operações de Crédito Externas — Tesouro/ICO',
+  '7543220069': 'Operações de Crédito Externas — PFORR',
+  '7543220072': 'Operações de Crédito Externas — Outras Fontes',
+  '7551100012': 'Alienação de Bens — Administração Direta',
+  '7561200012': 'Alienação de Bens — Administração Indireta',
+  '7579200000': 'Depósitos Judiciais — Lides do Ente',
+  '7591200001': 'Recursos do Mecenato',
+  '7591200016': 'Compensação Ambiental',
+  '7591200029': 'Venda de Selos de Autenticidade',
+  '7591200070': 'Recursos Diretamente Arrecadados — Fundos',
+  '7591200079': 'Transferências ao Fundo de Defesa Civil',
+  '7619100000': 'Fundo de Combate e Erradicação da Pobreza',
+  '7619100100': 'Fundo de Combate à Pobreza — Contrapartida de Convênios',
+  '7621100001': 'Alienação — Títulos / Aplicações',
+  '7991100000': 'Recursos Ordinários — Outras Vinculações',
+  '7991100099': 'Outras Vinculações Legais',
+  '7991200001': 'Tarifa de Segurança Hídrica',
+  '7991200002': 'Doações Ceará Sem Fome',
+  '7991200003': 'Doações Ceará Sem Fome — TJ/CE',
+  '7991200004': 'Doações Ceará Sem Fome — TRF 5',
+  '7991200016': 'Compensação Ambiental',
+  '7991200076': 'Recursos do FIT',
+  '7991200176': 'Recursos do FIT — Contrapartida',
+  '8001200003': 'RPPS Capitalização — Contribuição Social',
+  '8001200004': 'RPPS Capitalização — Contribuição Patronal',
+  '8001200005': 'RPPS Capitalização — Contribuição Parlamentar',
+  '8001200006': 'RPPS Capitalização — Contribuição Patronal Parlamentar',
+  '8001200070': 'RPPS Capitalização — Diretamente Arrecadados',
+  '8011200003': 'RPPS Repartição — Contribuição Social',
+  '8011200004': 'RPPS Repartição — Contribuição Patronal',
+  '8029200000': 'RPPS — Taxa de Administração',
+  '8031200003': 'SPSM — Contribuição Social',
+  '8031200004': 'SPSM — Contribuição Patronal',
+  '8041200005': 'Demais Previdenciários — Contribuição Parlamentar',
+  '8041200006': 'Demais Previdenciários — Contribuição Patronal Parlamentar'
+};
+
+const GRUPO_FONTE_MACRO = {
+  tesouro:                         { label: 'Tesouro',                    color: '#475569', bg: '#f1f5f9' },
+  educacao_vinculada:              { label: 'Educação Vinculada',          color: '#2563eb', bg: '#eff6ff' },
+  saude_vinculada:                 { label: 'Saúde Vinculada',             color: '#16a34a', bg: '#f0fdf4' },
+  assistencia_vinculada:           { label: 'Assistência Vinculada',       color: '#9333ea', bg: '#faf5ff' },
+  transferencias:                  { label: 'Transferências',              color: '#d97706', bg: '#fffbeb' },
+  operacoes_credito_e_vinculacoes: { label: 'Op. Crédito / Vinculações',   color: '#db2777', bg: '#fdf2f8' },
+  outras_vinculacoes:              { label: 'Outras Vinculações',          color: '#6b7280', bg: '#f9fafb' },
+  rpps:                            { label: 'RPPS',                        color: '#0891b2', bg: '#ecfeff' },
+  extraorcamentarios:              { label: 'Extraorçamentários',          color: '#475569', bg: '#f8fafc' },
+  outros:                          { label: 'Outros',                      color: '#94a3b8', bg: '#f8fafc' }
+};
+
+const REGIOES = {
+  '01': 'Cariri', '02': 'Centro Sul', '03': 'Grande Fortaleza',
+  '04': 'Litoral Leste', '05': 'Litoral Norte', '06': 'Litoral Oeste / Vale do Curu',
+  '07': 'Maciço do Baturité', '08': 'Serra da Ibiapaba', '09': 'Sertão Central',
+  '10': 'Sertão de Canindé', '11': 'Sertão de Sobral', '12': 'Sertão dos Crateús',
+  '13': 'Sertão dos Inhamuns', '14': 'Vale do Jaguaribe', '15': 'Estado do Ceará'
+};
+
+function normalizeDotacao(s) {
+  return String(s || '').replace(/[^0-9A-Za-z]/g, '');
+}
+
 function parseFonte(raw) {
   if (!raw) return null;
   const s = String(raw).trim();
   if (!s) return null;
   const parts = s.split('.');
-  if (parts.length < 2) return null;
-  const grupo = parts[0];
-  const fonte = parts[1];
+  let grupo = null, fonteRaw = null, detalhe = null;
+
+  if (parts.length >= 3) {
+    grupo = parts[0]; fonteRaw = parts[1]; detalhe = parts.slice(2).join('');
+  } else if (parts.length === 2) {
+    const seg0 = parts[0], seg1 = parts[1];
+    if (seg0.length <= 1) {
+      grupo = seg0;
+      const combined = normalizeDotacao(seg1);
+      if (combined.length === 10) { fonteRaw = combined.slice(0,3); detalhe = combined.slice(3); }
+      else if (combined.length === 3) { fonteRaw = combined; }
+      else { fonteRaw = combined.slice(0,3); detalhe = combined.slice(3) || null; }
+    } else { fonteRaw = seg0; detalhe = seg1; }
+  } else {
+    const n = normalizeDotacao(parts[0]);
+    if (n.length === 10) { fonteRaw = n.slice(0,3); detalhe = n.slice(3); }
+    else { fonteRaw = n.slice(0,3); }
+  }
+
+  if (!fonteRaw) return null;
+  const fonte = fonteRaw.padStart(3, '0').slice(0, 3);
   const grupoInfo = FONTE_GRUPOS[grupo] || null;
   const fonteInfo = FONTES[fonte] || null;
   const cat = fonteInfo ? FONTE_CATEGORIAS[fonteInfo.cat] : null;
+  const subKey = detalhe ? (fonte + normalizeDotacao(detalhe)) : null;
+  const subDesc = subKey ? (SUBFONTES[subKey] || null) : null;
+
   return {
     raw: s, grupo, fonte,
-    grupoLabel: grupoInfo ? grupoInfo.label : 'Grupo ' + grupo + ' (desconhecido)',
+    grupoLabel: grupoInfo ? grupoInfo.label : (grupo ? 'Grupo ' + grupo + ' (desconhecido)' : '—'),
     grupoShort: grupoInfo ? grupoInfo.short : '—',
     fonteNome: fonteInfo ? fonteInfo.nome : 'Fonte ' + fonte + ' (não catalogada)',
     fonteCat: fonteInfo ? fonteInfo.cat : null,
     catLabel: cat ? cat.label : '—',
     catColor: cat ? cat.color : '#64748b',
-    catBg: cat ? cat.bg : '#f1f5f9'
+    catBg: cat ? cat.bg : '#f1f5f9',
+    detalhe: detalhe || null,
+    subDesc: subDesc || null
   };
+}
+
+function grupoFonteMacro(fonte3) {
+  const n = parseInt(fonte3, 10);
+  if (!isFinite(n)) return 'outros';
+  if (n >= 500 && n <= 503) return 'tesouro';
+  if (n >= 540 && n <= 599) return 'educacao_vinculada';
+  if (n >= 600 && n <= 659) return 'saude_vinculada';
+  if (n >= 660 && n <= 669) return 'assistencia_vinculada';
+  if (n >= 700 && n <= 749) return 'transferencias';
+  if (n >= 750 && n <= 762) return 'operacoes_credito_e_vinculacoes';
+  if (n >= 763 && n <= 799) return 'outras_vinculacoes';
+  if (n >= 800 && n <= 804) return 'rpps';
+  if (n >= 860 && n <= 869) return 'extraorcamentarios';
+  return 'outros';
+}
+
+function decodeLocalidade(cod, nome) {
+  const c = String(cod || '').trim();
+  const n = String(nome || '').trim();
+  const regiao = REGIOES[c] || null;
+  const label = n || regiao || c || '—';
+  return { cod: c, nome: label, regiao: n && regiao && n !== regiao ? regiao : null };
+}
+
+function groupFontesByMacro(ac) {
+  if (!ac || !ac.fontesArr) return [];
+  const byMacro = new Map();
+  for (const f of ac.fontesArr) {
+    if (!f.fonte) continue;
+    const macro = f.grupoMacro || 'outros';
+    if (!byMacro.has(macro)) {
+      const meta = GRUPO_FONTE_MACRO[macro] || GRUPO_FONTE_MACRO.outros;
+      byMacro.set(macro, {
+        macro, label: meta.label, color: meta.color, bg: meta.bg,
+        fontes: [],
+        tot: { qAut:0, lAut:0, dAut:0, qEmp:0, lEmp:0, dEmp:0, qSal:0, lSal:0, dSal:0 }
+      });
+    }
+    const g = byMacro.get(macro);
+    g.fontes.push(f);
+    g.tot.qAut += f.tot.qAut; g.tot.lAut += f.tot.lAut; g.tot.dAut += f.tot.dAut;
+    g.tot.qEmp += f.tot.qEmp; g.tot.lEmp += f.tot.lEmp; g.tot.dEmp += f.tot.dEmp;
+    g.tot.qSal += f.tot.qSal; g.tot.lSal += f.tot.lSal; g.tot.dSal += f.tot.dSal;
+  }
+  return [...byMacro.values()].sort((a, b) => b.tot.lAut - a.tot.lAut);
 }
 
 const $ = (s, r=document) => r.querySelector(s);
@@ -850,18 +1369,11 @@ function toast(msg, type='', ms=3400) {
 function deltaClass(v) { if (Math.abs(v) < 0.005) return 'zero'; return v > 0 ? 'pos' : 'neg'; }
 function deltaText(v) { if (Math.abs(v) < 0.005) return '—'; return (v > 0 ? '+' : '') + fmtBRL(v); }
 
-/* Formata DNP com sinal explícito. Positivo = suplementado · negativo = déficit · zero = neutro. */
 function fmtDnpSigned(v) {
   if (Math.abs(v) < 0.005) return { value: '—', label: '—', cls: '' };
   return { value: (v > 0 ? '+' : '') + fmtBRL(v), label: v > 0 ? 'Suplementado' : 'Déficit', cls: v > 0 ? 'positivo' : 'negativo' };
 }
 
-/* Normaliza dotação removendo separadores (. - / espaço) para comparação prefix-based. */
-function normalizeDotacao(s) {
-  return String(s || '').replace(/[^0-9A-Za-z]/g, '');
-}
-
-/* Maior prefixo comum (LCP) entre dotações normalizadas. Utilizado como fallback de detecção de escopo. */
 function computeLCP(strings) {
   if (!strings.length) return '';
   const norm = strings.map(normalizeDotacao).filter(Boolean);
@@ -877,7 +1389,6 @@ function computeLCP(strings) {
   return prefix;
 }
 
-/* Cascata de detecção de escopo: (1) código da UO; (2) LCP das dotações. Retorna null se nenhuma se aplica. */
 function detectPrefix(qddRows, uoInfo) {
   const dotacoes = qddRows.map(r => String(r.dotacao_id || '').trim()).filter(Boolean);
   if (!dotacoes.length) return null;
@@ -894,7 +1405,6 @@ function detectPrefix(qddRows, uoInfo) {
   if (lcp.length >= 3) {
     return { prefix: lcp, method: 'lcp', source: lcp, confidence: lcp.length >= 6 ? 'high' : 'medium' };
   }
-
   return null;
 }
 
@@ -924,9 +1434,6 @@ document.addEventListener('mouseout', e => {
 });
 window.addEventListener('scroll', () => tip.classList.remove('show'), true);
 
-/* ------------------------------------------------------------------ */
-/* Parser CSV                                                          */
-/* ------------------------------------------------------------------ */
 function detectSep(line) {
   const s = (line.match(/;/g)||[]).length;
   const c = (line.match(/,/g)||[]).length;
@@ -972,9 +1479,6 @@ function toNum(v) {
   const n = parseFloat(s); return isFinite(n) ? n : 0;
 }
 
-/* ------------------------------------------------------------------ */
-/* Parser QDD (Excel — layout posicional)                              */
-/* ------------------------------------------------------------------ */
 function classifyQddRow(val) {
   if (val == null || val === '') return null;
   const s = String(val).trim();
@@ -986,9 +1490,6 @@ function classifyQddRow(val) {
   return null;
 }
 
-/* Parser posicional do QDD (colunas fixas do relatório SIOF):
-   col 0=código · 4=descrição · 7=fonte · 8=dotacao_id · 9=autorizada · 12=empenhado · 14=saldo.
-   Se o layout do relatório SIOF mudar, ajustar aqui. */
 function parseRawQddAoa(aoa) {
   const current = { uo_codigo:null, uo_nome:null, funcao_subfuncao_programa:null, funcao_subfuncao_programa_nome:null, acao_codigo:null, acao_nome:null, localidade_codigo:null, localidade_nome:null };
   const records = [];
@@ -1040,7 +1541,6 @@ function parseRawQddAoa(aoa) {
   return { records, totalNat, missingDot, duplicateDotCount };
 }
 
-/* Lê apenas a primeira aba do arquivo Excel. Multi-abas: emite warning e usa a primeira. */
 async function readRawQddFile(file) {
   if (typeof XLSX === 'undefined') throw new Error('Biblioteca de Excel (SheetJS) não carregou. Verifique a conexão e recarregue.');
   const buf = await file.arrayBuffer();
@@ -1058,13 +1558,7 @@ async function readRawQddFile(file) {
   return { rows: parsed.records, rowsCount: parsed.totalNat, sheetName: firstSheetName, warnings, missingDot: parsed.missingDot, duplicateDotCount: parsed.duplicateDotCount };
 }
 
-/* ------------------------------------------------------------------ */
-/* DNP — Despesa Não Programada                                        */
-/* ------------------------------------------------------------------ */
-/* Persistência local: { dots: {dotId: valor}, acoes: {uoId|acaoId: valor} }.
-   Incrementar DNP_STORAGE_KEY (v2, v3…) se o schema mudar. */
 const DNP_STORAGE_KEY = 'qdd_dnp_v1';
-
 function getDotDnp(id) { return Number(state.dnp.dots[id]) || 0; }
 function getAcaoDnpKey(uo, cod) { return uo + '|' + cod; }
 function getAcaoDnp(uo, cod) { return Number(state.dnp.acoes[getAcaoDnpKey(uo, cod)]) || 0; }
@@ -1104,11 +1598,6 @@ function saveDnpDebounced() {
   }, 400);
 }
 
-/* ------------------------------------------------------------------ */
-/* Classificação e agregação                                           */
-/* ------------------------------------------------------------------ */
-/* Limiares de divergência: <1% leve · <5% moderado · ≥5% crítico.
-   Base = max(autorizada QDD, autorizada Listagem, 1) para evitar divisão por zero. */
 function classificarDelta(dAut, dEmp, dSal, base) {
   const total = Math.abs(dAut) + Math.abs(dEmp) + Math.abs(dSal);
   if (total < 0.01) return 'sincronizado';
@@ -1118,9 +1607,6 @@ function classificarDelta(dAut, dEmp, dSal, base) {
   return 'critico';
 }
 
-/* Agrega UO → Ação → Dotação.
-   Chave de conciliação: qdd.dotacao_id ↔ list.Dotação (string exata, trim).
-   Dotação presente em apenas uma fonte gera classif sem_par_qdd / sem_par_list. */
 function buildModel(qddRows, listRows) {
   const qddByDot = new Map();
   qddRows.forEach(r => {
@@ -1152,12 +1638,12 @@ function buildModel(qddRows, listRows) {
     const progNome = String(ref['funcao_subfuncao_programa_nome'] || progCod).trim();
     const acaoCod = String(ref['acao_codigo'] || '—').trim();
     const acaoNome = String(ref['acao_nome'] || acaoCod).trim();
-    const locCod = String(ref['localidade_codigo'] || '').trim();
-    const locNome = String(ref['localidade_nome'] || locCod || '—').trim();
+    const loc = decodeLocalidade(ref['localidade_codigo'], ref['localidade_nome']);
     const natCod = String(ref['natureza_codigo'] || '').trim();
     const natNome = String(ref['natureza_nome'] || natCod || '—').trim();
     const fonteRaw = String(ref['fonte_recursos'] || '').trim();
     const fonte = parseFonte(fonteRaw);
+    const grupoMacro = fonte ? grupoFonteMacro(fonte.fonte) : null;
 
     const qAut = toNum(q && q['dotacao_autorizada']);
     const qEmp = toNum(q && q['empenhado']);
@@ -1212,7 +1698,8 @@ function buildModel(qddRows, listRows) {
     ac.tot.dots++;
     ac.dots.push({
       dotId, uoCod, uoNome, progCod, progNome, acaoCod, acaoNome,
-      locCod, locNome, natCod, natNome, fonteRaw, fonte,
+      locCod: loc.cod, locNome: loc.nome, locRegiao: loc.regiao,
+      natCod, natNome, fonteRaw, fonte, grupoMacro,
       qAut, qEmp, qSal, qExec, lAut, lEmp, lPar, lSal, lGestor, lExerc, lFunc,
       dAut, dEmp, dSal, classif
     });
@@ -1220,7 +1707,7 @@ function buildModel(qddRows, listRows) {
     const fk = fonte ? fonte.raw : '(sem fonte)';
     if (!ac.fontes.has(fk)) {
       ac.fontes.set(fk, {
-        fonte, dots: [],
+        fonte, grupoMacro, dots: [],
         tot: { qAut:0, lAut:0, dAut:0, qEmp:0, lEmp:0, dEmp:0, qSal:0, lSal:0, dSal:0 }
       });
     }
@@ -1250,9 +1737,6 @@ function buildModel(qddRows, listRows) {
   return { uos, acoes, stats };
 }
 
-/* ------------------------------------------------------------------ */
-/* Estado global (SPA sem framework). rawQdd/rawList preservados para recomputar escopo. */
-/* ------------------------------------------------------------------ */
 const state = {
   model: null, filter: 'all', query: '',
   sortKey: 'dSal', sortDir: 'desc', shown: 150,
@@ -1373,9 +1857,6 @@ async function processFiles() {
   }
 }
 
-/* Recomputa o modelo aplicando (ou não) o escopo.
-   Precedência: manualPrefix > detectPrefix(auto) > sem filtro.
-   forceScope: null (auto), true (forçar ativo), false (forçar inativo). */
 function rebuild() {
   if (!state.rawQdd || !state.rawList) return;
   const qddRows = state.rawQdd;
@@ -1433,11 +1914,12 @@ function rebuild() {
   state.sortKey = 'dSal'; state.sortDir = 'desc'; state.focusedRow = -1;
 
   const s = model.stats;
+  const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   let metaTxt = s.totalDots.toLocaleString('pt-BR') + ' dotações · ' + s.matched.toLocaleString('pt-BR') + ' conciliadas';
   if (state.scope.unicaUo) metaTxt += ' · 1 UO';
   else if (state.scope.uos.length > 0) metaTxt += ' · ' + state.scope.uos.length + ' UOs';
   if (state.scope.applied) metaTxt += ' · escopo ' + prefix;
-  $('#brainMeta').textContent = metaTxt;
+  $('#brainMeta').textContent = metaTxt + ' · ' + hora;
 
   renderAll();
   updateScopeBanner();
@@ -1518,9 +2000,6 @@ function updateScopeBanner() {
   el.hidden = true;
 }
 
-/* ------------------------------------------------------------------ */
-/* Renderização                                                        */
-/* ------------------------------------------------------------------ */
 function renderAll() { renderStats(); renderChips(); renderTable(); }
 
 function renderStats() {
@@ -1586,7 +2065,7 @@ function getFilteredSorted() {
     rows = rows.filter(r => {
       const text = [
         r.nome, r.cod, r.progNome, r.progCod, r.uo.nome, r.uo.cod,
-        ...r.dots.map(d => d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + d.fonteRaw)
+        ...r.dots.map(d => d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + (d.locRegiao || '') + ' ' + d.fonteRaw + ' ' + (d.fonte && d.fonte.subDesc ? d.fonte.subDesc : ''))
       ].join(' ').toLowerCase();
       return text.includes(q);
     });
@@ -1729,12 +2208,43 @@ function closeDrawer() {
   if (wasOpen && state.model) { renderStats(); renderTable(); }
 }
 
+function renderCmpBlock(tot, opts = {}) {
+  const dnpInfo = opts.dnpFmt || null;
+  const dnpCls = opts.dnpCls || '';
+  return `
+    <div class="cmp-block">
+      <div class="cmp-row head">
+        <div>Métrica</div>
+        <div class="v">QDD (SIOF)</div>
+        <div class="v">SPG/Dotações</div>
+        <div class="d">Δ</div>
+      </div>
+      <div class="cmp-row"><div class="k">Lei + Créditos</div>
+        <div class="v">${esc(fmtBRL(tot.qAut))}</div><div class="v">${esc(fmtBRL(tot.lAut))}</div>
+        <div class="d ${deltaClass(tot.dAut)}">${esc(deltaText(tot.dAut))}</div></div>
+      <div class="cmp-row"><div class="k">Empenhado</div>
+        <div class="v">${esc(fmtBRL(tot.qEmp))}</div><div class="v">${esc(fmtBRL(tot.lEmp))}</div>
+        <div class="d ${deltaClass(tot.dEmp)}">${esc(deltaText(tot.dEmp))}</div></div>
+      <div class="cmp-row"><div class="k">Saldo</div>
+        <div class="v">${esc(fmtBRL(tot.qSal))}</div><div class="v">${esc(fmtBRL(tot.lSal))}</div>
+        <div class="d ${deltaClass(tot.dSal)}">${esc(deltaText(tot.dSal))}</div></div>
+      ${dnpInfo ? `<div class="cmp-row dnp-row ${dnpCls}" id="dnpCmpRow">
+        <div class="k">Despesa Não Programada</div>
+        <div class="v">—</div>
+        <div class="v dnp-val" id="dnpCmpValue">${esc(dnpInfo.value)}</div>
+        <div class="d" id="dnpCmpLabel">${esc(dnpInfo.label)}</div>
+      </div>` : ''}
+    </div>
+  `;
+}
+
 function renderDrawer(ac, uo) {
   const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
   const t = ac.tot;
   const dnpAcao = getAcaoDnp(ac.uo.cod, ac.cod);
   const dnpTotal = getTotalDnpForAcao(ac);
   const dnpFmt = fmtDnpSigned(dnpTotal);
+  const macroGroups = groupFontesByMacro(ac);
 
   $('#dBadges').innerHTML = `
     <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}"><span class="bdot"></span>${esc(c.label)}</span>
@@ -1770,31 +2280,36 @@ function renderDrawer(ac, uo) {
       <div class="dnp-total" id="dnpTotalDrawer">Total DNP nesta ação: <strong>${esc(dnpFmt.value)}</strong></div>
     </div>
 
-    <div class="section-title"><span>Comparativo agregado</span></div>
+    ${macroGroups.length > 1 ? `
+      <div class="section-title"><span>Comparativo por fonte</span></div>
+      ${macroGroups.map(g => `
+        <div class="cmp-block src-block" style="--src-color:${g.color}">
+          <div class="cmp-row src-head">
+            <div class="src-label" style="color:${g.color}">
+              <span class="src-dot" style="background:${g.color}"></span>
+              ${esc(g.label)}
+              <span style="font-weight:600;font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px">${g.fontes.length} fonte${g.fontes.length === 1 ? '' : 's'}</span>
+            </div>
+            <div class="v">QDD</div>
+            <div class="v">SPG</div>
+            <div class="d">Δ</div>
+          </div>
+          <div class="cmp-row"><div class="k">Lei + Créditos</div>
+            <div class="v">${esc(fmtBRL(g.tot.qAut))}</div><div class="v">${esc(fmtBRL(g.tot.lAut))}</div>
+            <div class="d ${deltaClass(g.tot.dAut)}">${esc(deltaText(g.tot.dAut))}</div></div>
+          <div class="cmp-row"><div class="k">Empenhado</div>
+            <div class="v">${esc(fmtBRL(g.tot.qEmp))}</div><div class="v">${esc(fmtBRL(g.tot.lEmp))}</div>
+            <div class="d ${deltaClass(g.tot.dEmp)}">${esc(deltaText(g.tot.dEmp))}</div></div>
+          <div class="cmp-row"><div class="k">Saldo</div>
+            <div class="v">${esc(fmtBRL(g.tot.qSal))}</div><div class="v">${esc(fmtBRL(g.tot.lSal))}</div>
+            <div class="d ${deltaClass(g.tot.dSal)}">${esc(deltaText(g.tot.dSal))}</div></div>
+        </div>
+      `).join('')}
+    ` : ''}
 
-    <div class="cmp-block">
-      <div class="cmp-row head">
-        <div>Métrica</div>
-        <div class="v">QDD (SIOF)</div>
-        <div class="v">SPG/Dotações</div>
-        <div class="d">Δ</div>
-      </div>
-      <div class="cmp-row"><div class="k">Lei + Créditos</div>
-        <div class="v">${esc(fmtBRL(t.qAut))}</div><div class="v">${esc(fmtBRL(t.lAut))}</div>
-        <div class="d ${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</div></div>
-      <div class="cmp-row"><div class="k">Empenhado</div>
-        <div class="v">${esc(fmtBRL(t.qEmp))}</div><div class="v">${esc(fmtBRL(t.lEmp))}</div>
-        <div class="d ${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</div></div>
-      <div class="cmp-row"><div class="k">Saldo</div>
-        <div class="v">${esc(fmtBRL(t.qSal))}</div><div class="v">${esc(fmtBRL(t.lSal))}</div>
-        <div class="d ${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</div></div>
-      <div class="cmp-row dnp-row ${dnpFmt.cls}" id="dnpCmpRow">
-        <div class="k">Despesa Não Programada</div>
-        <div class="v">—</div>
-        <div class="v dnp-val" id="dnpCmpValue">${esc(dnpFmt.value)}</div>
-        <div class="d" id="dnpCmpLabel">${esc(dnpFmt.label)}</div>
-      </div>
-    </div>
+    <div class="section-title"><span>${macroGroups.length > 1 ? 'Comparativo agregado (total)' : 'Comparativo agregado'}</span></div>
+
+    ${renderCmpBlock(t, { dnpFmt, dnpCls: dnpFmt.cls })}
 
     <div style="margin-top:12px;font-size:11.5px;color:var(--muted);line-height:1.6;background:var(--surface-2);padding:10px;border-radius:8px;border:1px solid var(--border)">
       <strong style="color:${c.color}">${esc(c.label)}</strong> — ${esc(c.desc)}<br>
@@ -1803,19 +2318,22 @@ function renderDrawer(ac, uo) {
     </div>
 
     ${ac.fontesArr && ac.fontesArr.length ? `
-      <div class="section-title" style="margin-top:26px"><span>Por Fonte / Destinação</span></div>
+      <div class="section-title" style="margin-top:26px"><span>Detalhamento por fonte</span></div>
       <div style="display:flex;flex-direction:column;gap:6px">
         ${ac.fontesArr.map(f => {
           const ft = f.tot;
           const dcls = deltaClass(ft.dSal);
           if (!f.fonte) return '';
+          const nomeExibir = f.fonte.subDesc || f.fonte.fonteNome;
+          const macro = f.grupoMacro ? GRUPO_FONTE_MACRO[f.grupoMacro] : null;
           return `
           <details class="fonte-breakdown">
             <summary>
               <span class="fonte-summary-main">
                 <span class="ff-code" style="--f-bg:${f.fonte.catBg};--f-color:${f.fonte.catColor}">${esc(f.fonte.fonte)}</span>
-                <span class="ff-name">${esc(f.fonte.fonteNome)}</span>
+                <span class="ff-name" title="${esc(f.fonte.raw)}">${esc(nomeExibir)}</span>
                 <span class="ff-grupo">${esc(f.fonte.grupoShort)}</span>
+                ${macro ? `<span class="ff-macro" style="--m-color:${macro.color};--m-bg:${macro.bg}">${esc(macro.label)}</span>` : ''}
               </span>
               <span class="fonte-summary-delta ${dcls}">${esc(deltaText(ft.dSal))}</span>
             </summary>
@@ -1860,7 +2378,7 @@ function renderDrawer(ac, uo) {
       <span style="font-weight:700;color:var(--muted);font-size:11px;text-transform:none;letter-spacing:0">|Delay| total ${esc(fmtBRL(totalDeltaAbs))}</span>
     </div>
 
-    ${ac.dots.length > 6 ? `<input class="dot-search" id="dotSearch" type="search" placeholder="Filtrar por dotação, natureza, localidade, fonte…">` : ''}
+    ${ac.dots.length > 6 ? `<input class="dot-search" id="dotSearch" type="search" placeholder="Filtrar por dotação, natureza, região, fonte…">` : ''}
     <div class="dot-cards" id="dotCards">${ac.dots.map(renderDotCard).join('')}</div>
   `;
 
@@ -1869,7 +2387,7 @@ function renderDrawer(ac, uo) {
     ds.addEventListener('input', () => {
       const q = ds.value.toLowerCase().trim();
       const filtered = q
-        ? ac.dots.filter(d => (d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + d.fonteRaw).toLowerCase().includes(q))
+        ? ac.dots.filter(d => (d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + (d.locRegiao || '') + ' ' + d.fonteRaw + ' ' + (d.fonte && d.fonte.subDesc ? d.fonte.subDesc : '')).toLowerCase().includes(q))
         : ac.dots;
       $('#dotCards').innerHTML = filtered.length
         ? filtered.map(renderDotCard).join('')
@@ -1881,13 +2399,24 @@ function renderDrawer(ac, uo) {
 function renderDotCard(d) {
   const c = CLASSIF[d.classif] || CLASSIF.sincronizado;
   const dnp = getDotDnp(d.dotId);
+
+  const nomeFonte = d.fonte ? (d.fonte.subDesc || d.fonte.fonteNome) : null;
+  const macro = d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro] : null;
+  const subCodigo = d.fonte && d.fonte.detalhe ? (d.fonte.fonte + '.' + d.fonte.detalhe) : (d.fonte ? d.fonte.raw : '');
+
   const fonteHtml = d.fonte ? `
     <div class="dc-fonte">
       <span class="ff-code" style="--f-bg:${d.fonte.catBg};--f-color:${d.fonte.catColor}">${esc(d.fonte.fonte)}</span>
-      <span class="ff-name">${esc(d.fonte.fonteNome)}</span>
+      <span class="ff-name" title="${esc(d.fonte.raw)}">${esc(nomeFonte)}</span>
       <span class="ff-grupo">${esc(d.fonte.grupoShort)}</span>
-      <div class="ff-desc">${esc(d.fonte.catLabel)} · código completo: ${esc(d.fonteRaw)}</div>
+      ${macro ? `<span class="ff-macro" style="--m-color:${macro.color};--m-bg:${macro.bg}">${esc(macro.label)}</span>` : ''}
+      ${d.fonte.subDesc && d.fonte.detalhe ? `<div class="ff-sub">Subfonte: ${esc(subCodigo)}</div>` : ''}
+      <div class="ff-desc">${esc(d.fonte.catLabel)} · fonte: ${esc(d.fonteRaw)}</div>
     </div>` : '';
+
+  const regiaoTag = d.locRegiao
+    ? `<span class="regiao-tag" title="Região">📍 ${esc(d.locRegiao)}</span>`
+    : (REGIOES[d.locCod] ? `<span class="regiao-tag" title="Região">📍 ${esc(REGIOES[d.locCod])}</span>` : '');
 
   return `<div class="dot-card">
     <div class="dc-head">
@@ -1895,7 +2424,7 @@ function renderDotCard(d) {
       <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}" title="${esc(c.label)}"><span class="bdot"></span>${esc(c.short)}</span>
     </div>
     ${fonteHtml}
-    <div class="dc-meta">${esc(d.natNome)} · ${esc(d.locNome)}</div>
+    <div class="dc-meta">${esc(d.natNome)} · ${esc(d.locNome)} ${regiaoTag}</div>
     <div class="dc-metrics">
       <div class="dc-metric"><div class="dcl">Lei + Créditos</div>
         <div class="dline qdd"><span class="t">QDD</span><span class="v">${esc(fmtBRL(d.qAut))}</span></div>
@@ -1978,9 +2507,6 @@ function refreshDnpUI() {
   }, 80);
 }
 
-/* ------------------------------------------------------------------ */
-/* Handlers de UI                                                      */
-/* ------------------------------------------------------------------ */
 $('#dBody').addEventListener('input', e => {
   const dotInp = e.target.closest('[data-dnp-dot]');
   if (dotInp) {
@@ -2009,11 +2535,13 @@ $('#dCopy').onclick = () => {
   lines.push('Ação;' + ac.cod + ';' + ac.nome);
   lines.push('UO;' + ac.uo.nome);
   lines.push('');
-  lines.push('Dotação;Localidade;Natureza;Fonte;Destinação;Grupo;QDD_LC;SPG_LC;Delta_LC;QDD_Emp;SPG_Emp;Delta_Emp;QDD_Sal;SPG_Sal;Delay;DNP;Classificação');
+  lines.push('Dotação;Localidade;Região;Natureza;Fonte;Subfonte;Destinação;Grupo;GrupoMacro;QDD_LC;SPG_LC;Delta_LC;QDD_Emp;SPG_Emp;Delta_Emp;QDD_Sal;SPG_Sal;Delay;DNP;Classificação');
   for (const d of ac.dots) {
     lines.push([
-      d.dotId, d.locNome, d.natNome, d.fonte ? d.fonte.fonte : '', d.fonte ? d.fonte.fonteNome : '',
-      d.fonte ? d.fonte.grupoShort : '',
+      d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
+      d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
+      d.fonte ? d.fonte.fonteNome : '', d.fonte ? d.fonte.grupoShort : '',
+      d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro].label : '',
       d.qAut.toFixed(2), d.lAut.toFixed(2), d.dAut.toFixed(2),
       d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.dEmp.toFixed(2),
       d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
@@ -2028,11 +2556,13 @@ $('#dCopy').onclick = () => {
 
 $('#dCsv').onclick = () => {
   const ac = currentDrawerAcao(); if (!ac) return;
-  const lines = [['Dotacao','Localidade','Natureza','Fonte','Destinacao','Grupo','QDD_LC','SPG_LC','Delta_LC','QDD_Emp','SPG_Emp','Delta_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Classificacao'].join(';')];
+  const lines = [['Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','Destinacao','Grupo','GrupoMacro','QDD_LC','SPG_LC','Delta_LC','QDD_Emp','SPG_Emp','Delta_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Classificacao'].join(';')];
   for (const d of ac.dots) {
     lines.push([
-      d.dotId, d.locNome, d.natNome, d.fonte ? d.fonte.fonte : '', d.fonte ? d.fonte.fonteNome : '',
-      d.fonte ? d.fonte.grupoShort : '',
+      d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
+      d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
+      d.fonte ? d.fonte.fonteNome : '', d.fonte ? d.fonte.grupoShort : '',
+      d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro].label : '',
       d.qAut.toFixed(2), d.lAut.toFixed(2), d.dAut.toFixed(2),
       d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.dEmp.toFixed(2),
       d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
@@ -2081,9 +2611,6 @@ $('#helpClose').onclick = () => { $('#helpBack').hidden = true; };
 $('#helpCloseFoot').onclick = () => { $('#helpBack').hidden = true; };
 $('#helpBack').addEventListener('click', e => { if (e.target === $('#helpBack')) $('#helpBack').hidden = true; });
 
-/* ------------------------------------------------------------------ */
-/* Backup DNP                                                          */
-/* ------------------------------------------------------------------ */
 function dnpSnapshotText() {
   return JSON.stringify({
     app: 'qdd-x-lei-creditos',
@@ -2174,19 +2701,18 @@ $('#backupExport').onclick = () => {
   toast('Backup JSON exportado.', 'ok');
 };
 
-/* ------------------------------------------------------------------ */
-/* Export CSV consolidado                                              */
-/* ------------------------------------------------------------------ */
 $('#btnExport').onclick = () => {
   const rows = getFilteredSorted();
   if (!rows.length) { toast('Nenhum registro para exportar.', 'warn'); return; }
-  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Natureza','Fonte','Destinacao','Grupo','QDD_LC','SPG_LC','Delta_LC','QDD_Emp','SPG_Emp','Delta_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Classificacao'].join(';')];
+  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','Destinacao','Grupo','GrupoMacro','QDD_LC','SPG_LC','Delta_LC','QDD_Emp','SPG_Emp','Delta_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Classificacao'].join(';')];
   for (const ac of rows) {
     for (const d of ac.dots) {
       lines.push([
         ac.uo.cod, ac.uo.nome, ac.cod, ac.nome, ac.progCod, ac.progNome,
-        d.dotId, d.locNome, d.natNome, d.fonte ? d.fonte.fonte : '', d.fonte ? d.fonte.fonteNome : '',
-        d.fonte ? d.fonte.grupoShort : '',
+        d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
+        d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
+        d.fonte ? d.fonte.fonteNome : '', d.fonte ? d.fonte.grupoShort : '',
+        d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro].label : '',
         d.qAut.toFixed(2), d.lAut.toFixed(2), d.dAut.toFixed(2),
         d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.dEmp.toFixed(2),
         d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
@@ -2202,6 +2728,428 @@ $('#btnExport').onclick = () => {
   setTimeout(() => URL.revokeObjectURL(url), 500);
   toast('CSV exportado (' + (lines.length - 1) + ' linhas).', 'ok');
 };
+
+/* ════════════════════════════════════════════════════════════════
+   EXPORTAÇÃO PDF / RLTS
+   ════════════════════════════════════════════════════════════════ */
+
+function renderActionPrint(ac, uo) {
+  const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
+  const t = ac.tot;
+  const dnpTotal = getTotalDnpForAcao(ac);
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const now = new Date().toLocaleString('pt-BR');
+  const macroGroups = groupFontesByMacro(ac);
+
+  const cards = [
+    { l: 'Delay (Saldo)',    v: deltaText(t.dSal), cls: deltaClass(t.dSal), s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
+    { l: 'Δ Empenhado',      v: deltaText(t.dEmp), cls: deltaClass(t.dEmp), s: `QDD ${fmtBRLShort(t.qEmp)} · SPG ${fmtBRLShort(t.lEmp)}` },
+    { l: 'Δ Lei + Créditos', v: deltaText(t.dAut), cls: deltaClass(t.dAut), s: `QDD ${fmtBRLShort(t.qAut)} · SPG ${fmtBRLShort(t.lAut)}` }
+  ];
+
+  const dotsHtml = ac.dots.map(d => {
+    const dc = CLASSIF[d.classif] || CLASSIF.sincronizado;
+    const nomeFonte = d.fonte ? (d.fonte.subDesc || d.fonte.fonteNome) : '—';
+    const macro = d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro] : null;
+    const regiao = d.locRegiao || REGIOES[d.locCod] || '';
+    const metaPartes = [d.natNome];
+    if (regiao) metaPartes.push('📍 ' + regiao);
+    if (d.locNome && d.locNome !== regiao && d.locNome !== '—') metaPartes.push(d.locNome);
+    return `
+      <div class="p-dot">
+        <div class="p-dot-head">
+          <span class="p-dot-id">${esc(d.dotId)}</span>
+          <span class="p-badge" style="background:${dc.color}"><span class="p-badge-dot"></span>${esc(dc.label)}</span>
+        </div>
+        <div class="p-dot-fonte">
+          <span class="p-dot-code" style="background:${d.fonte ? d.fonte.catBg : '#f1f5f9'};color:${d.fonte ? d.fonte.catColor : '#64748b'}">${esc(d.fonte ? d.fonte.fonte : '—')}</span>
+          <span class="p-dot-name">${esc(nomeFonte)}</span>
+          ${macro ? `<span class="p-dot-macro" style="color:${macro.color}">· ${esc(macro.label)}</span>` : ''}
+        </div>
+        <div class="p-dot-meta">${metaPartes.map(esc).join(' · ')}</div>
+        <div class="p-dot-metrics">
+          <div>
+            <div class="p-dot-metric-l">Lei + Créditos</div>
+            <div class="p-dot-metric-r"><span class="p-dot-metric-tag q">QDD</span><span class="p-dot-metric-v">${esc(fmtBRL(d.qAut))}</span></div>
+            <div class="p-dot-metric-r"><span class="p-dot-metric-tag s">SPG</span><span class="p-dot-metric-v">${esc(fmtBRL(d.lAut))}</span></div>
+            <div class="p-dot-delta ${deltaClass(d.dAut)}">${esc(deltaText(d.dAut))}</div>
+          </div>
+          <div>
+            <div class="p-dot-metric-l">Empenhado</div>
+            <div class="p-dot-metric-r"><span class="p-dot-metric-tag q">QDD</span><span class="p-dot-metric-v">${esc(fmtBRL(d.qEmp))}</span></div>
+            <div class="p-dot-metric-r"><span class="p-dot-metric-tag s">SPG</span><span class="p-dot-metric-v">${esc(fmtBRL(d.lEmp))}</span></div>
+            <div class="p-dot-delta ${deltaClass(d.dEmp)}">${esc(deltaText(d.dEmp))}</div>
+          </div>
+          <div>
+            <div class="p-dot-metric-l">Saldo</div>
+            <div class="p-dot-metric-r"><span class="p-dot-metric-tag q">QDD</span><span class="p-dot-metric-v">${esc(fmtBRL(d.qSal))}</span></div>
+            <div class="p-dot-metric-r"><span class="p-dot-metric-tag s">SPG</span><span class="p-dot-metric-v">${esc(fmtBRL(d.lSal))}</span></div>
+            <div class="p-dot-delta ${deltaClass(d.dSal)}">${esc(deltaText(d.dSal))}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const legendHtml = Object.values(CLASSIF).map(v =>
+    `<span class="p-legend-item"><span class="p-legend-dot" style="background:${v.color}"></span>${esc(v.label)}</span>`
+  ).join('');
+
+  const dnpCls = dnpTotal > 0 ? 'pos' : dnpTotal < 0 ? 'neg' : 'zero';
+
+  const srcHtml = macroGroups.length > 1 ? `
+    <div class="p-section-title">Comparativo por Fonte</div>
+    ${macroGroups.map(g => `
+      <div class="p-src-block">
+        <div class="p-src-head" style="color:${g.color}">
+          <span class="p-src-dot" style="background:${g.color}"></span>
+          ${esc(g.label)}
+        </div>
+        <table class="p-table">
+          <thead>
+            <tr><th class="l">Métrica</th><th>QDD (SIOF)</th><th>SPG</th><th>Δ</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">Lei + Créditos</td><td>${esc(fmtBRL(g.tot.qAut))}</td><td>${esc(fmtBRL(g.tot.lAut))}</td><td class="${deltaClass(g.tot.dAut)}">${esc(deltaText(g.tot.dAut))}</td></tr>
+            <tr><td class="l">Empenhado</td><td>${esc(fmtBRL(g.tot.qEmp))}</td><td>${esc(fmtBRL(g.tot.lEmp))}</td><td class="${deltaClass(g.tot.dEmp)}">${esc(deltaText(g.tot.dEmp))}</td></tr>
+            <tr><td class="l">Saldo</td><td>${esc(fmtBRL(g.tot.qSal))}</td><td>${esc(fmtBRL(g.tot.lSal))}</td><td class="${deltaClass(g.tot.dSal)}">${esc(deltaText(g.tot.dSal))}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `).join('')}
+  ` : '';
+
+  return `
+    <div class="p-header">
+      <div>
+        <h1>💰 QDD × Lei + Créditos</h1>
+        <div class="p-sub">Relatório de Ação — Detalhamento por dotação</div>
+      </div>
+      <div class="p-meta">${esc(now)}<br>v${esc(APP_VERSION)}</div>
+    </div>
+
+    <div class="p-action-head">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+        <span class="p-badge" style="background:${c.color}"><span class="p-badge-dot"></span>${esc(c.label)}</span>
+        <span class="p-badge" style="background:#64748b">${esc(uo.nome)}</span>
+      </div>
+      <div class="p-action-name">${esc(ac.nome)}</div>
+      <div class="p-action-meta">Ação ${esc(ac.cod)} · UO ${esc(uo.cod)} · Programa ${esc(ac.progCod)}</div>
+      <div class="p-action-meta p-inline">${esc(ac.progNome)}</div>
+    </div>
+
+    <div class="p-cards">
+      ${cards.map(k => `
+        <div class="p-card">
+          <div class="p-card-l">${esc(k.l)}</div>
+          <div class="p-card-v ${k.cls}">${esc(k.v)}</div>
+          <div class="p-card-s">${esc(k.s)}</div>
+        </div>`).join('')}
+    </div>
+
+    ${srcHtml}
+
+    <div class="p-section-title">${macroGroups.length > 1 ? 'Comparativo Agregado (Total)' : 'Comparativo Agregado'}</div>
+    <table class="p-table">
+      <thead>
+        <tr><th class="l">Métrica</th><th>QDD (SIOF)</th><th>SPG</th><th>Δ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="l">Lei + Créditos</td><td>${esc(fmtBRL(t.qAut))}</td><td>${esc(fmtBRL(t.lAut))}</td><td class="${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</td></tr>
+        <tr><td class="l">Empenhado</td><td>${esc(fmtBRL(t.qEmp))}</td><td>${esc(fmtBRL(t.lEmp))}</td><td class="${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</td></tr>
+        <tr><td class="l">Saldo</td><td>${esc(fmtBRL(t.qSal))}</td><td>${esc(fmtBRL(t.lSal))}</td><td class="${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</td></tr>
+        <tr><td class="l">Despesa Não Programada</td><td>—</td><td><strong>${esc(dnpFmt.value)}</strong></td><td class="${dnpCls}" style="text-transform:uppercase;font-size:8.5px;font-weight:800">${esc(dnpFmt.label)}</td></tr>
+      </tbody>
+    </table>
+
+    <div class="p-section-title">Dotações desta ação (${ac.dots.length})</div>
+    <div class="p-dots">${dotsHtml}</div>
+
+    <div class="p-section-title">Legenda</div>
+    <div class="p-legend">${legendHtml}</div>
+
+    <div class="p-footer">
+      <div>
+        <strong>Fontes:</strong> QDD (SIOF) · Lei + Créditos (SPG)<br>
+        Nota: QDD calcula Saldo = LC − Empenhado; SPG calcula Saldo = LC − Parcelas.<br>
+        Gerado em ${esc(now)} · Comparador v${esc(APP_VERSION)}
+      </div>
+      <div style="text-align:right">
+        <strong>Código-fonte:</strong><br>
+        <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/wendellmoura</a>
+      </div>
+    </div>
+  `;
+}
+
+/* RLTS — Relatório Simples.
+   Full-width A4, sem bordas. Contém comparativo por fonte + total agregado. */
+function renderRltsPrint(ac, uo) {
+  const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
+  const t = ac.tot;
+  const dnpTotal = getTotalDnpForAcao(ac);
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const now = new Date().toLocaleString('pt-BR');
+  const macroGroups = groupFontesByMacro(ac);
+
+  const dSal = t.dSal;
+  const dSalCls = deltaClass(dSal);
+  const dSalText = deltaText(dSal);
+  const dSalPct = (t.lAut && t.lAut !== 0) ? Math.abs(dSal) / t.lAut * 100 : 0;
+
+  const srcRowsHtml = macroGroups.map(g => `
+    <tr class="src-head">
+      <td class="l" colspan="4" style="color:${g.color}">
+        <span class="rlts-src-dot" style="background:${g.color}"></span>
+        ${esc(g.label)}
+        <span style="font-weight:600;font-size:10px;color:#94a3b8;text-transform:none;letter-spacing:0;margin-left:6px">${g.fontes.length} fonte${g.fontes.length === 1 ? '' : 's'}</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="l">Lei + Créditos</td>
+      <td>${esc(fmtBRL(g.tot.qAut))}</td>
+      <td>${esc(fmtBRL(g.tot.lAut))}</td>
+      <td class="${deltaClass(g.tot.dAut)}">${esc(deltaText(g.tot.dAut))}</td>
+    </tr>
+    <tr>
+      <td class="l">Empenhado</td>
+      <td>${esc(fmtBRL(g.tot.qEmp))}</td>
+      <td>${esc(fmtBRL(g.tot.lEmp))}</td>
+      <td class="${deltaClass(g.tot.dEmp)}">${esc(deltaText(g.tot.dEmp))}</td>
+    </tr>
+    <tr>
+      <td class="l">Saldo</td>
+      <td>${esc(fmtBRL(g.tot.qSal))}</td>
+      <td>${esc(fmtBRL(g.tot.lSal))}</td>
+      <td class="${deltaClass(g.tot.dSal)}">${esc(deltaText(g.tot.dSal))}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="rlts">
+      <header class="rlts-head">
+        <h1>QDD × Lei + Créditos</h1>
+        <div class="rlts-sub">Relatório Simples · RLTS</div>
+        <div class="rlts-meta">Gerado em ${esc(now)} · Comparador v${esc(APP_VERSION)}</div>
+      </header>
+
+      <div class="rlts-action">
+        <div class="rlts-badges">
+          <span class="p-badge" style="background:${c.color}"><span class="p-badge-dot"></span>${esc(c.label)}</span>
+          <span class="p-badge" style="background:#64748b">${esc(uo.nome)}</span>
+        </div>
+        <div class="rlts-action-name">${esc(ac.nome)}</div>
+        <div class="rlts-action-info">Ação ${esc(ac.cod)} · UO ${esc(uo.cod)} · Programa ${esc(ac.progCod)}</div>
+        <div class="rlts-action-info p-inline">${esc(ac.progNome)}</div>
+      </div>
+
+      <div class="rlts-hero">
+        <div class="rlts-hero-label">Delay Total</div>
+        <div class="rlts-hero-value ${dSalCls}">${esc(dSalText)}</div>
+        <div class="rlts-hero-sub">${dSalPct > 0 ? dSalPct.toFixed(2).replace('.', ',') + '% não sincronizado' : 'saldos coincidem'}</div>
+        <div class="rlts-hero-badge" style="background:${c.bg};color:${c.color}">${esc(c.label)}</div>
+      </div>
+
+      ${macroGroups.length > 0 ? `
+        <div class="rlts-section-title">Comparativo por fonte (${macroGroups.length} grupo${macroGroups.length === 1 ? '' : 's'})</div>
+        <table class="rlts-table">
+          <thead>
+            <tr>
+              <th class="l">Fonte / Métrica</th>
+              <th>QDD (SIOF)</th>
+              <th>SPG</th>
+              <th>Δ</th>
+            </tr>
+          </thead>
+          <tbody>${srcRowsHtml}</tbody>
+        </table>
+      ` : ''}
+
+      <div class="rlts-section-title">Total agregado</div>
+      <table class="rlts-table totals">
+        <thead>
+          <tr>
+            <th class="l">Métrica</th>
+            <th>QDD (SIOF)</th>
+            <th>SPG</th>
+            <th>Δ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="l">Lei + Créditos</td>
+            <td>${esc(fmtBRL(t.qAut))}</td>
+            <td>${esc(fmtBRL(t.lAut))}</td>
+            <td class="${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</td>
+          </tr>
+          <tr>
+            <td class="l">Empenhado</td>
+            <td>${esc(fmtBRL(t.qEmp))}</td>
+            <td>${esc(fmtBRL(t.lEmp))}</td>
+            <td class="${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</td>
+          </tr>
+          <tr>
+            <td class="l">Saldo</td>
+            <td>${esc(fmtBRL(t.qSal))}</td>
+            <td>${esc(fmtBRL(t.lSal))}</td>
+            <td class="${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</td>
+          </tr>
+          <tr>
+            <td class="l">Despesa Não Programada</td>
+            <td>—</td>
+            <td>${esc(dnpFmt.value)}</td>
+            <td style="font-size:9.5px;font-weight:800;text-transform:uppercase">${esc(dnpFmt.label)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <footer class="rlts-foot">
+        <strong>QDD (SIOF)</strong> · <strong>Lei + Créditos (SPG)</strong><br>
+        Delay = (SPG Saldo) − (QDD Saldo) · DNP não integra o delay<br>
+        <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/wendellmoura</a>
+      </footer>
+    </div>
+  `;
+}
+
+function renderFullPrint() {
+  const rows = getFilteredSorted();
+  const s = state.model.stats;
+  const sc = state.scope;
+  const now = new Date().toLocaleString('pt-BR');
+
+  const dSal = s.totLSal - s.totQSal;
+  const totalDelayAbs = Math.abs(dSal) + Math.abs(s.totLEmp - s.totQEmp);
+  const divergentes = s.totalDots - s.byClassif.sincronizado;
+  const dnpTotal = getTotalDnp();
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const dnpCls = dnpTotal > 0 ? 'pos' : dnpTotal < 0 ? 'neg' : 'zero';
+
+  const filtros = [];
+  filtros.push(`Classificação: <strong>${esc(state.filter === 'all' ? 'Todos' : ((CLASSIF[state.filter] || {}).label || state.filter))}</strong>`);
+  if (state.query) filtros.push(`Pesquisa: <strong>"${esc(state.query)}"</strong>`);
+  if (sc.applied) filtros.push(`Escopo: <strong>${esc(sc.unicaUo ? '1 UO' : sc.uos.length + ' UOs')}</strong> (prefixo <code>${esc(sc.prefix)}</code>)`);
+  else if (!sc.unicaUo) filtros.push(`Escopo: <strong>varredura completa</strong>`);
+
+  const cards = [
+    { l: 'QDD (Autorizada)',      v: fmtBRLShort(s.totQAut),  s: fmtBRL(s.totQAut),  cls: '' },
+    { l: 'Lei + Créditos',        v: fmtBRLShort(s.totLAut),  s: fmtBRL(s.totLAut),  cls: '' },
+    { l: 'Delay (Saldo)',         v: (dSal>=0?'+':'') + fmtBRLShort(dSal), s: fmtBRL(dSal), cls: Math.abs(dSal) < 0.01 ? 'zero' : (dSal > 0 ? 'pos' : 'neg') },
+    { l: 'Atraso total |Δ|',      v: fmtBRLShort(totalDelayAbs), s: '|saldo| + |empenhado|', cls: '' },
+    { l: 'Despesa Não Programada', v: dnpFmt.value, s: countDnpEntries() + ' registro(s)', cls: dnpCls },
+    { l: 'Divergentes',           v: divergentes + ' / ' + s.totalDots, s: s.byClassif.critico + ' críticas', cls: divergentes > 0 ? 'neg' : 'pos' }
+  ];
+
+  const rowsHtml = rows.map((ac, i) => {
+    const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
+    return `
+      <tr>
+        <td class="l" style="font-family:monospace;font-size:8px;color:#94a3b8">${i+1}</td>
+        <td class="l" style="max-width:220px">
+          <div style="font-weight:700;font-size:9.5px;color:#0f172a;line-height:1.25">${esc(ac.nome)}</div>
+          <div style="font-family:monospace;font-size:8.5px;color:#94a3b8;margin-top:1px">${esc(ac.cod)}</div>
+        </td>
+        <td class="l" style="font-size:8.5px;color:#64748b">${esc(ac.uo.nome.slice(0, 24))}${ac.uo.nome.length > 24 ? '…' : ''}</td>
+        <td><span class="p-cls-mini" style="background:${c.bg};color:${c.color}">${esc(c.short)}</span></td>
+        <td>${ac.tot.dots}</td>
+        <td>${esc(fmtBRLShort(ac.tot.qSal))}</td>
+        <td>${esc(fmtBRLShort(ac.tot.lSal))}</td>
+        <td class="${deltaClass(ac.tot.dSal)}">${esc(deltaText(ac.tot.dSal))}</td>
+        <td class="${deltaClass(ac.tot.dEmp)}">${esc(deltaText(ac.tot.dEmp))}</td>
+      </tr>`;
+  }).join('');
+
+  const legendHtml = Object.values(CLASSIF).map(v =>
+    `<span class="p-legend-item"><span class="p-legend-dot" style="background:${v.color}"></span>${esc(v.label)}</span>`
+  ).join('');
+
+  return `
+    <div class="p-header">
+      <div>
+        <h1>💰 QDD × Lei + Créditos</h1>
+        <div class="p-sub">Relatório Consolidado — ${rows.length} ação(ões) exibida(s)</div>
+      </div>
+      <div class="p-meta">${esc(now)}<br>v${esc(APP_VERSION)}</div>
+    </div>
+
+    <div class="p-filter-bar">${filtros.join(' &nbsp;·&nbsp; ')}</div>
+
+    <div class="p-cards">
+      ${cards.map(k => `
+        <div class="p-card">
+          <div class="p-card-l">${esc(k.l)}</div>
+          <div class="p-card-v ${k.cls || ''}">${esc(k.v)}</div>
+          <div class="p-card-s">${esc(k.s)}</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="p-section-title">Ações (${rows.length})</div>
+    <table class="p-full-table">
+      <thead>
+        <tr>
+          <th class="l" style="width:18px">#</th>
+          <th class="l" style="width:38%">Ação</th>
+          <th class="l" style="width:15%">UO</th>
+          <th style="width:42px">Class.</th>
+          <th style="width:28px">Dots</th>
+          <th>Saldo QDD</th>
+          <th>Saldo SPG</th>
+          <th>Delay</th>
+          <th>Δ Emp.</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+
+    <div class="p-section-title">Legenda de classificação</div>
+    <div class="p-legend">${legendHtml}</div>
+
+    <div class="p-footer">
+      <div>
+        <strong>Fontes:</strong> QDD (SIOF) · Lei + Créditos (SPG)<br>
+        Conciliação por dotação · Delay = (SPG Saldo) − (QDD Saldo).<br>
+        Gerado em ${esc(now)} · Comparador v${esc(APP_VERSION)}
+      </div>
+      <div style="text-align:right">
+        <strong>Código-fonte:</strong><br>
+        <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/wendellmoura</a>
+      </div>
+    </div>
+  `;
+}
+
+function openPrintPreview(kind) {
+  const pd = $('#printDoc');
+  if (!pd) return;
+  if (!state.model) { toast('Nenhum dado carregado.', 'warn'); return; }
+
+  if (kind === 'action') {
+    const ac = currentDrawerAcao();
+    if (!ac) { toast('Abra uma ação antes de gerar o PDF.', 'warn'); return; }
+    pd.innerHTML = renderActionPrint(ac, ac.uo);
+  } else if (kind === 'rlts') {
+    const ac = currentDrawerAcao();
+    if (!ac) { toast('Abra uma ação antes de gerar o RLTS.', 'warn'); return; }
+    pd.innerHTML = renderRltsPrint(ac, ac.uo);
+  } else {
+    pd.innerHTML = renderFullPrint();
+  }
+
+  document.body.classList.add('print-mode');
+  setTimeout(() => window.print(), 120);
+}
+
+function exitPrintMode() {
+  document.body.classList.remove('print-mode');
+  setTimeout(() => { const pd = $('#printDoc'); if (pd) pd.innerHTML = ''; }, 250);
+}
+
+window.addEventListener('afterprint', exitPrintMode);
+
+/* Handlers de impressão */
+const _btnPrint = $('#btnPrint'); if (_btnPrint) _btnPrint.addEventListener('click', () => openPrintPreview('full'));
+const _btnPdfAction = $('#dPdf'); if (_btnPdfAction) _btnPdfAction.addEventListener('click', () => openPrintPreview('action'));
+const _btnRlts = $('#dRlts'); if (_btnRlts) _btnRlts.addEventListener('click', () => openPrintPreview('rlts'));
 
 /* Atalhos de teclado */
 document.addEventListener('keydown', e => {
