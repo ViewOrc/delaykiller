@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QDD × Lei + Créditos — Comparador</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <style>
 :root{
   --bg:#f4f6fb;--bg-2:#eef1f8;--surface:#ffffff;--surface-2:#f8fafc;--surface-3:#f1f5f9;
@@ -35,7 +36,6 @@ a{color:inherit;text-decoration:none}
 .upload-view[hidden]{display:none!important}
 .upload-inner{width:min(760px,100%)}
 .upload-brand{text-align:center;margin-bottom:30px}
-.upload-brand .icon{width:68px;height:68px;margin:0 auto 18px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-size:32px;box-shadow:0 12px 32px rgba(79,70,229,.28)}
 .upload-brand h1{font-size:27px;font-weight:800;letter-spacing:-.6px;margin:0 0 12px}
 .upload-brand p{font-size:14px;line-height:1.65;color:var(--ink-2);max-width:580px;margin:0 auto}
 .upload-brand p strong{color:var(--accent);font-weight:700}
@@ -62,8 +62,8 @@ a{color:inherit;text-decoration:none}
 .upload-status.ok{color:var(--ok)}
 .upload-status.err{color:var(--danger)}
 .upload-actions{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
-.upload-actions button, .upload-actions a{padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);transition:.14s;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
-.upload-actions button:hover, .upload-actions a:hover{border-color:var(--accent);color:var(--accent)}
+.upload-actions button{padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);transition:.14s;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.upload-actions button:hover{border-color:var(--accent);color:var(--accent)}
 
 .siof-shortcut{margin-top:18px;padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,#eef2ff 0%,#f0f9ff 100%);border:1px solid rgba(79,70,229,.18);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .siof-shortcut-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.24)}
@@ -89,8 +89,8 @@ a{color:inherit;text-decoration:none}
 .loader-sub{font-size:12.5px;color:var(--muted);font-weight:600}
 
 .app-view[hidden]{display:none!important}
-.app-view{display:flex;flex-direction:column;height:100vh}
-.topbar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;box-shadow:0 1px 0 rgba(15,23,42,.02)}
+.app-view{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;box-shadow:0 1px 0 rgba(15,23,42,.02)}
 .brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .brand .bico{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-size:16px;box-shadow:0 4px 12px rgba(79,70,229,.24)}
 .brand .btt{display:flex;flex-direction:column;line-height:1.15}
@@ -105,29 +105,35 @@ a{color:inherit;text-decoration:none}
 .search-box .clr{position:absolute;right:8px;width:24px;height:24px;border-radius:6px;color:var(--muted);font-size:13px;display:none;align-items:center;justify-content:center}
 .search-box.has-value .clr{display:flex}
 .search-box .clr:hover{background:var(--accent-bg);color:var(--accent)}
-.tb-btn{height:38px;padding:0 13px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:.14s;white-space:nowrap;color:var(--ink-2);cursor:pointer}
+.tb-btn{height:38px;min-width:38px;padding:0 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.14s;white-space:nowrap;color:var(--ink-2);cursor:pointer}
 .tb-btn:hover{border-color:var(--border-2);background:var(--surface-2);color:var(--ink)}
 .tb-btn.ghost{background:transparent}
+.tb-btn.danger:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
 .tb-btn.siof{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(79,70,229,.24)}
 .tb-btn.siof:hover{color:#fff;transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.3)}
-@media (max-width:1000px){.tb-btn .lbl{display:none}}
+.tb-btn svg{display:block}
 .tb-version{display:inline-flex;align-items:center;padding:4px 9px;border-radius:20px;background:var(--slate-bg);color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.4px;font-family:var(--mono);flex-shrink:0}
 @media (max-width:1100px){.tb-version{display:none}}
 
-.stats{display:flex;gap:10px;padding:14px 20px 0;overflow-x:auto;flex-shrink:0}
+.stats{display:flex;gap:8px;padding:12px 20px 0;overflow-x:auto;flex-shrink:0;scroll-snap-type:x proximity}
 .stats::-webkit-scrollbar{height:0}
-.stat{flex:1;min-width:190px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 15px;box-shadow:var(--shadow-sm);transition:.15s}
+.stat{flex:1 1 0;min-width:130px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;box-shadow:var(--shadow-sm);transition:.15s;scroll-snap-align:start}
 .stat:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
-.stat .sl{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:5px}
-.stat .sl .info{width:13px;height:13px;border-radius:50%;background:var(--slate-bg);color:var(--muted);font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0}
-.stat .sv{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.15;font-variant-numeric:tabular-nums}
-.stat .ss{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat .sl{font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;display:flex;align-items:center;gap:4px;line-height:1.25}
+.stat .sl .info{width:12px;height:12px;border-radius:50%;background:var(--slate-bg);color:var(--muted);font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0}
+.stat .sv{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.15;font-variant-numeric:tabular-nums}
+.stat .ss{font-size:10px;color:var(--muted);font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;line-height:1.3}
+@media (max-width:1400px){.stat{min-width:110px;padding:9px 10px}.stat .sv{font-size:14px}.stat .ss{font-size:9.5px}}
+@media (max-width:900px){.stat{min-width:140px}}
 .stat.ok .sv{color:var(--ok)}.stat.warn .sv{color:var(--warn)}.stat.danger .sv{color:var(--danger)}.stat.accent .sv{color:var(--accent)}
 .stat.dnp .sv{color:var(--warn)}
 .stat.dnp-pos .sv{color:var(--ok)}
 .stat.dnp-neg .sv{color:var(--danger)}
+.stat.proj .sv{color:var(--accent)}
+.stat.proj-pos .sv{color:var(--ok)}
+.stat.proj-neg .sv{color:var(--danger)}
 
-.filters{display:flex;gap:10px;padding:14px 20px;flex-wrap:wrap;align-items:center;flex-shrink:0}
+.filters{display:flex;gap:10px;padding:12px 20px;flex-wrap:wrap;align-items:center;flex-shrink:0}
 .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
 .chip{padding:6px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--border);font-size:11.5px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px;transition:.14s;cursor:pointer}
 .chip:hover{border-color:var(--border-2)}
@@ -148,23 +154,23 @@ a{color:inherit;text-decoration:none}
 .col-menu label:hover{background:var(--surface-2)}
 .col-menu input{accent-color:var(--accent);width:15px;height:15px}
 
-.scope-banner{margin:0 20px 10px;padding:9px 14px;border-radius:10px;background:var(--accent-bg);border:1px solid rgba(79,70,229,.25);color:var(--accent);font-size:12px;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap;line-height:1.4;flex-shrink:0}
+.scope-banner{margin:0 20px 10px;padding:6px 12px;border-radius:8px;background:var(--accent-bg);border:1px solid rgba(79,70,229,.25);color:var(--accent);font-size:11px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.4;flex-shrink:0}
 .scope-banner[hidden]{display:none!important}
 .scope-banner.warn{background:var(--warn-bg);border-color:rgba(217,119,6,.3);color:var(--warn)}
 .scope-banner .sb-strong{font-weight:800}
-.scope-banner .sb-btn{margin-left:auto;padding:4px 10px;border-radius:6px;background:var(--surface);border:1px solid currentColor;font-size:11px;font-weight:700;cursor:pointer;color:inherit;white-space:nowrap}
+.scope-banner .sb-btn{margin-left:auto;padding:3px 8px;border-radius:5px;background:var(--surface);border:1px solid currentColor;font-size:10.5px;font-weight:700;cursor:pointer;color:inherit;white-space:nowrap}
 .scope-banner .sb-btn:hover{background:rgba(255,255,255,.5)}
-.scope-banner .sb-btn + .sb-btn{margin-left:6px}
-.scope-banner code{font-family:var(--mono);background:rgba(79,70,229,.12);padding:1px 5px;border-radius:4px;font-size:11px}
+.scope-banner .sb-btn + .sb-btn{margin-left:4px}
+.scope-banner code{font-family:var(--mono);background:rgba(79,70,229,.12);padding:1px 4px;border-radius:4px;font-size:10.5px}
 .scope-banner.warn code{background:rgba(217,119,6,.15)}
-.scope-banner input.sb-input{padding:5px 10px;border-radius:6px;border:1px solid currentColor;font-family:var(--mono);font-size:12px;background:var(--surface);color:var(--ink);outline:none;width:200px}
+.scope-banner input.sb-input{padding:4px 8px;border-radius:5px;border:1px solid currentColor;font-family:var(--mono);font-size:11px;background:var(--surface);color:var(--ink);outline:none;width:150px}
 .scope-banner input.sb-input:focus{box-shadow:0 0 0 2px rgba(79,70,229,.2)}
 
 .table-wrap{flex:1;margin:0 20px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;box-shadow:var(--shadow-sm);position:relative}
 .table-wrap::-webkit-scrollbar{width:10px;height:10px}
 .table-wrap::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:20px;border:3px solid var(--surface);background-clip:padding-box}
 .table-wrap::-webkit-scrollbar-thumb:hover{background:var(--muted-2);background-clip:padding-box;border:3px solid var(--surface)}
-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:1250px}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:1400px}
 table thead th{position:sticky;top:0;z-index:3;background:var(--surface-2);border-bottom:1px solid var(--border);padding:11px 12px;text-align:right;font-size:10px;letter-spacing:.7px;text-transform:uppercase;font-weight:800;color:var(--muted);white-space:nowrap;user-select:none}
 table thead th.l{text-align:left}
 table thead th.sortable{cursor:pointer;transition:.12s}
@@ -188,6 +194,14 @@ table tbody tr:last-child td{border-bottom:0}
 td.l{text-align:left}
 td.r{text-align:right;font-variant-numeric:tabular-nums}
 
+td.editable-cell{cursor:text;position:relative;transition:background .12s}
+td.editable-cell:hover{background:var(--accent-bg)!important}
+td.editable-cell::after{content:'✎';position:absolute;top:4px;right:4px;font-size:8px;color:var(--muted-2);opacity:0;transition:opacity .12s}
+td.editable-cell:hover::after{opacity:1}
+td.editable-cell.editing::after{display:none}
+td.editable-cell input{width:100%;height:26px;padding:0 6px;border:1.5px solid var(--accent);border-radius:6px;font-size:11.5px;font-family:var(--mono);text-align:right;outline:none;background:var(--surface);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px rgba(147,51,234,.15)}
+
 .action-cell{min-width:230px;max-width:280px}
 .action-top{display:flex;align-items:center;gap:6px;margin-bottom:3px}
 .action-name{font-weight:700;color:var(--ink);line-height:1.28;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -201,7 +215,7 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .metric .mrow:not(.q-line){border-top:1px dashed var(--border);padding-top:2px;margin-top:1px}
 .metric .mrow:not(.q-line) .mtag{color:var(--slate)}
 
-.delta{display:inline-flex;align-items:center;justify-content:flex-end;font-weight:800;font-size:12.5px;font-variant-numeric:tabular-nums}
+.delta{display:inline-block;vertical-align:middle;font-weight:800;font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .delta.zero{color:var(--muted-2);font-weight:600}
 .delta.pos{color:var(--ok)}
 .delta.neg{color:var(--danger)}
@@ -210,8 +224,14 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .badge .bdot{width:6px;height:6px;border-radius:50%;background:var(--b-color,var(--slate))}
 .num-pill{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;padding:0 7px;background:var(--slate-bg);color:var(--ink-2);border-radius:8px;font-size:11px;font-weight:800;font-family:var(--mono)}
 
-.dnp-cell{font-weight:700;color:var(--warn);font-size:11.5px}
+.dnp-cell{font-weight:700;color:var(--warn);font-size:11.5px;white-space:nowrap}
 .dnp-cell.empty{font-weight:600;color:var(--muted-2)}
+.gp-cell-view{font-weight:700;color:var(--violet);font-size:11.5px;white-space:nowrap}
+.gp-cell-view.empty{font-weight:600;color:var(--muted-2)}
+.proj-cell{font-weight:700;font-size:11.5px;white-space:nowrap}
+.proj-cell.positivo{color:var(--ok)}
+.proj-cell.negativo{color:var(--danger)}
+.proj-cell.zero{color:var(--muted-2);font-weight:600}
 
 .load-more{padding:18px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;background:var(--surface-2);border-top:1px solid var(--border)}
 .load-more button{margin-top:8px;background:var(--accent);color:#fff;font-weight:700;padding:9px 20px;border-radius:10px;font-size:12.5px;box-shadow:0 4px 12px rgba(79,70,229,.24);transition:.15s}
@@ -251,11 +271,15 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .delta-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
 .delta-card{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
 .delta-card .dcl{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-.delta-card .dcv{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.delta-card .dcv{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2;margin-bottom:6px;}
 .delta-card .dcv.zero{color:var(--muted-2)}
 .delta-card .dcv.pos{color:var(--ok)}
 .delta-card .dcv.neg{color:var(--danger)}
-.delta-card .dcs{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+.delta-card .dcs{display:flex;flex-direction:column;gap:3px;font-size:10.5px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.delta-card .dcs div{display:flex;justify-content:space-between;align-items:center;}
+.delta-card .dcs .t{font-family:var(--mono);font-size:8.5px;font-weight:800;padding:1px 4px;border-radius:3px;}
+.delta-card .dcs .t.qdd{background:rgba(100,116,139,.14);color:var(--muted)}
+.delta-card .dcs .t.spg{background:rgba(79,70,229,.12);color:var(--accent)}
 
 .section-title{font-size:10.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);margin:22px 0 10px;display:flex;justify-content:space-between;align-items:center}
 .section-title:first-child{margin-top:0}
@@ -270,61 +294,114 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .cmp-row .d.zero{color:var(--muted-2);font-weight:600}
 .cmp-row .d.pos{color:var(--ok)}
 .cmp-row .d.neg{color:var(--danger)}
+
 .cmp-row.dnp-row{background:var(--warn-bg);border-top:2px solid rgba(217,119,6,.25)}
 .cmp-row.dnp-row .k{color:var(--warn)}
 .cmp-row.dnp-row .v.dnp-val{color:var(--warn);font-weight:800}
 .cmp-row.dnp-row .d{color:var(--warn);font-weight:800;font-size:11px;letter-spacing:.4px;text-transform:uppercase}
 .cmp-row.dnp-row.positivo{background:var(--ok-bg);border-top:2px solid rgba(22,163,74,.3)}
-.cmp-row.dnp-row.positivo .k{color:var(--ok)}
+.cmp-row.dnp-row.positivo .k,
 .cmp-row.dnp-row.positivo .v.dnp-val,
 .cmp-row.dnp-row.positivo .d{color:var(--ok)}
 .cmp-row.dnp-row.negativo{background:var(--danger-bg);border-top:2px solid rgba(220,38,38,.3)}
-.cmp-row.dnp-row.negativo .k{color:var(--danger)}
+.cmp-row.dnp-row.negativo .k,
 .cmp-row.dnp-row.negativo .v.dnp-val,
 .cmp-row.dnp-row.negativo .d{color:var(--danger)}
+
+.cmp-row.gp-row{background:rgba(147,51,234,.05);border-top:2px solid rgba(147,51,234,.25)}
+.cmp-row.gp-row .k{color:var(--violet)}
+.cmp-row.gp-row .v.gp-val{color:var(--violet);font-weight:800}
+.cmp-row.gp-row .d{color:var(--violet);font-weight:800;font-size:11px;letter-spacing:.4px;text-transform:uppercase}
+
+.cmp-row.proj-row{background:var(--accent-bg);border-top:2px solid rgba(79,70,229,.3);border-bottom:0}
+.cmp-row.proj-row .k{color:var(--accent)}
+.cmp-row.proj-row .v.proj-val{color:var(--accent);font-weight:800;font-size:14px}
+.cmp-row.proj-row .d{color:var(--accent);font-weight:800;font-size:11px;letter-spacing:.4px;text-transform:uppercase}
+.cmp-row.proj-row.positivo{background:var(--ok-bg);border-top-color:rgba(22,163,74,.35)}
+.cmp-row.proj-row.positivo .k,
+.cmp-row.proj-row.positivo .v.proj-val,
+.cmp-row.proj-row.positivo .d{color:var(--ok)}
+.cmp-row.proj-row.negativo{background:var(--danger-bg);border-top-color:rgba(220,38,38,.35)}
+.cmp-row.proj-row.negativo .k,
+.cmp-row.proj-row.negativo .v.proj-val,
+.cmp-row.proj-row.negativo .d{color:var(--danger)}
 
 .cmp-row.src-head{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 14px}
 .cmp-row.src-head .src-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
 .cmp-row.src-head .src-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .cmp-block.src-block{margin-bottom:10px;border-left:3px solid var(--src-color,var(--border))}
 
-.dnp-acao-box{background:var(--warn-bg);border:1px solid rgba(217,119,6,.25);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.dnp-acao-box label{font-size:11.5px;font-weight:800;color:var(--warn);letter-spacing:.2px}
-.dnp-acao-box input{width:170px;height:30px;padding:0 10px;border:1px solid rgba(217,119,6,.35);border-radius:6px;font-size:12px;font-family:var(--mono);text-align:right;background:var(--surface);outline:none}
-.dnp-acao-box input:focus{border-color:var(--warn);box-shadow:0 0 0 2px rgba(217,119,6,.15)}
-.dnp-total{margin-left:auto;font-size:11.5px;color:var(--warn);font-weight:700}
-.dnp-total strong{font-size:13.5px;font-variant-numeric:tabular-nums}
+.dnp-acao-box{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:12px}
+.dnp-acao-box .box-header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.dnp-acao-box .box-title{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-2)}
+.clear-action-btn{height:28px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;transition:.14s;cursor:pointer}
+.clear-action-btn:hover{background:var(--danger-bg);color:var(--danger);border-color:var(--danger)}
+.dnp-inputs-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:540px){.dnp-inputs-row{grid-template-columns:1fr}}
+.dnp-input-group{display:flex;flex-direction:column;gap:4px}
+.dnp-input-group label{font-size:10.5px;font-weight:800;color:var(--warn);letter-spacing:.3px;text-transform:uppercase}
+.dnp-input-group.gp label{color:var(--violet)}
+.dnp-input-group input{height:34px;padding:0 12px;border:1.5px solid rgba(217,119,6,.35);border-radius:8px;font-size:13px;font-family:var(--mono);text-align:right;background:var(--surface);outline:none;transition:.14s;width:100%}
+.dnp-input-group.gp input{border-color:rgba(147,51,234,.35)}
+.dnp-input-group input:focus{border-color:var(--warn);box-shadow:0 0 0 3px rgba(217,119,6,.15)}
+.dnp-input-group.gp input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(147,51,234,.15)}
+.dnp-input-group .hint{font-size:10px;color:var(--muted);font-weight:600}
 
-.dc-dnp{display:flex;align-items:center;gap:8px;padding:8px 0 0;border-top:1px dashed var(--border);margin-top:10px;font-size:11px}
-.dc-dnp label{font-weight:700;color:var(--muted);white-space:nowrap;flex-shrink:0}
-.dc-dnp input{flex:1;min-width:0;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:6px;font-size:11.5px;font-family:var(--mono);text-align:right;background:var(--surface);outline:none}
-.dc-dnp input:focus{border-color:var(--warn);box-shadow:0 0 0 2px rgba(217,119,6,.12)}
+.input-with-clear{position:relative;display:flex;align-items:center;gap:4px}
+.input-with-clear input{flex:1}
+.input-with-clear .clear-btn{width:30px;height:30px;flex-shrink:0;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;transition:.14s;cursor:pointer;line-height:1}
+.input-with-clear .clear-btn:hover{background:var(--danger-bg);color:var(--danger);border-color:var(--danger)}
 
-.fonte-breakdown {margin-top: 8px;border: 1px solid var(--border);border-radius: 10px;overflow: hidden;background: var(--surface-2);}
-.fonte-breakdown summary {padding: 10px 12px;cursor: pointer;background: var(--surface);font-weight: 700;font-size: 12px;display: flex;align-items: center;justify-content: space-between;list-style: none;border-bottom: 1px solid transparent;gap:6px}
-.fonte-breakdown[open] summary {border-bottom-color: var(--border);}
-.fonte-breakdown summary::-webkit-details-marker { display: none; }
-.fonte-breakdown summary::before {content: '▶';font-size: 8px;margin-right: 6px;color: var(--muted);transition: transform .2s;flex-shrink:0}
-.fonte-breakdown[open] summary::before {transform: rotate(90deg);}
-.fonte-summary-main {flex: 1;display: flex;align-items: center;gap: 6px;min-width: 0;overflow: hidden;flex-wrap:wrap}
-.fonte-summary-main .ff-name {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;font-weight: 600; color: var(--ink-2);max-width:100%}
-.fonte-summary-delta {font-variant-numeric: tabular-nums;font-weight: 800;font-size: 11.5px;white-space: nowrap;margin-left: 8px;}
-.fonte-summary-delta.pos { color: var(--ok); }
-.fonte-summary-delta.neg { color: var(--danger); }
-.fonte-summary-delta.zero { color: var(--muted-2); }
+.proj-result{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--accent-bg);border:1.5px solid rgba(79,70,229,.25);border-radius:10px;flex-wrap:wrap}
+.proj-result.positivo{background:var(--ok-bg);border-color:rgba(22,163,74,.35)}
+.proj-result.negativo{background:var(--danger-bg);border-color:rgba(220,38,38,.35)}
+.proj-result .pr-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--accent)}
+.proj-result.positivo .pr-label{color:var(--ok)}
+.proj-result.negativo .pr-label{color:var(--danger)}
+.proj-result .pr-value{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);letter-spacing:-.4px}
+.proj-result.positivo .pr-value{color:var(--ok)}
+.proj-result.negativo .pr-value{color:var(--danger)}
+.proj-result .pr-formula{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:600}
+.proj-result .pr-badge{padding:3px 10px;border-radius:20px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;background:var(--surface);border:1px solid currentColor;color:var(--accent)}
+.proj-result.positivo .pr-badge{color:var(--ok)}
+.proj-result.negativo .pr-badge{color:var(--danger)}
 
-.inner-breakdown-table {width: 100%;border-collapse: collapse;font-size: 11px;}
-.inner-breakdown-table th {padding: 6px 10px;text-align: right;font-size: 9px;font-weight: 800;color: var(--muted);background: var(--surface-2);border-bottom: 1px solid var(--border);white-space: nowrap;}
-.inner-breakdown-table th.l { text-align: left; }
-.inner-breakdown-table td {padding: 7px 10px;border-bottom: 1px solid var(--border);text-align: right;font-variant-numeric: tabular-nums;background: var(--surface);}
-.inner-breakdown-table td.l { text-align: left; font-weight: 600; color: var(--ink-2); }
-.inner-breakdown-table tr:last-child td { border-bottom: 0; }
+.dc-dnp{display:flex;flex-direction:column;gap:6px;padding:9px 0 0;border-top:1px dashed var(--border);margin-top:10px;font-size:11px}
+.dc-input-row{display:flex;gap:8px;align-items:center}
+.dc-input-row label{font-weight:700;color:var(--muted);white-space:nowrap;flex-shrink:0;font-size:10.5px;min-width:44px}
+.dc-input-row .input-with-clear{flex:1}
+.dc-input-row input{height:28px;padding:0 8px;border:1px solid var(--border);border-radius:6px;font-size:11.5px;font-family:var(--mono);text-align:right;background:var(--surface);outline:none}
+.dc-input-row input:focus{border-color:var(--warn);box-shadow:0 0 0 2px rgba(217,119,6,.12)}
+.dc-input-row .clear-btn{width:26px;height:26px;font-size:12px}
+
+.fonte-breakdown{margin-top:8px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface-2)}
+.fonte-breakdown summary{padding:10px 12px;cursor:pointer;background:var(--surface);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:space-between;list-style:none;border-bottom:1px solid transparent;gap:6px}
+.fonte-breakdown[open] summary{border-bottom-color:var(--border)}
+.fonte-breakdown summary::-webkit-details-marker{display:none}
+.fonte-breakdown summary::before{content:'▶';font-size:8px;margin-right:6px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.fonte-breakdown[open] summary::before{transform:rotate(90deg)}
+.fonte-summary-main{flex:1;display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;flex-wrap:wrap}
+.fonte-summary-main .ff-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;color:var(--ink-2);max-width:100%}
+.fonte-summary-delta{font-variant-numeric:tabular-nums;font-weight:800;font-size:11.5px;white-space:nowrap;margin-left:8px}
+.fonte-summary-delta.pos{color:var(--ok)}
+.fonte-summary-delta.neg{color:var(--danger)}
+.fonte-summary-delta.zero{color:var(--muted-2)}
+
+.inner-breakdown-table{width:100%;border-collapse:collapse;font-size:11px}
+.inner-breakdown-table th{padding:6px 10px;text-align:right;font-size:9px;font-weight:800;color:var(--muted);background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+.inner-breakdown-table th.l{text-align:left}
+.inner-breakdown-table td{padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;background:var(--surface)}
+.inner-breakdown-table td.l{text-align:left;font-weight:600;color:var(--ink-2)}
+.inner-breakdown-table tr:last-child td{border-bottom:0}
 
 .dot-search{width:100%;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);padding:0 12px;font-size:12.5px;outline:none;transition:.15s;margin-bottom:10px}
 .dot-search:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
 .dot-cards{display:flex;flex-direction:column;gap:8px}
-.dot-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 14px;transition:.14s}
+.dot-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 14px;transition:.14s;position:relative}
 .dot-card:hover{border-color:var(--border-2);box-shadow:var(--shadow-sm)}
+.dot-card.unused{opacity:.6;background:var(--surface-2)}
+.dot-card.unused .dc-id{text-decoration:line-through;color:var(--muted)}
+.dot-card.unused .dc-metrics{opacity:.5}
 .dot-card .dc-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
 .dot-card .dc-id{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--ink)}
 
@@ -384,6 +461,8 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 .backup-stat .bsl{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .backup-stat .bsv{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
 .backup-stat .bsv.dnp{color:var(--warn)}
+.backup-stat .bsv.gp{color:var(--violet)}
+.backup-stat .bsv.proj{color:var(--accent)}
 .backup-textarea{width:100%;min-height:180px;font-family:var(--mono);font-size:11px;padding:10px;border:1px solid var(--border);border-radius:8px;resize:vertical;background:var(--surface-2);color:var(--ink);outline:none;line-height:1.4}
 .backup-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
@@ -397,153 +476,6 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 
 .tt{position:fixed;z-index:9999;pointer-events:none;background:#0f172a;color:#fff;font-size:11.5px;font-weight:500;padding:8px 11px;border-radius:8px;max-width:360px;line-height:1.5;box-shadow:0 4px 16px rgba(15,23,42,.24);opacity:0;transition:opacity .12s;transform:translateY(-2px)}
 .tt.show{opacity:1}
-
-/* ════════════════════════════════════════════════════════════════
-   PRINT / PDF EXPORT
-   ════════════════════════════════════════════════════════════════ */
-#printDoc.print-doc{display:none;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:11px;line-height:1.4;color:#0f172a;background:#fff}
-#printDoc .p-header{background:linear-gradient(135deg,#4f46e5 0%,#6366f1 100%);color:#fff;padding:14px 18px;border-radius:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-#printDoc .p-header h1{margin:0 0 2px;font-size:15px;font-weight:800;letter-spacing:-.2px;color:#fff}
-#printDoc .p-sub{font-size:10.5px;opacity:.92;font-weight:500}
-#printDoc .p-meta{text-align:right;font-size:9.5px;opacity:.9;line-height:1.4;white-space:nowrap}
-#printDoc .p-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-badge-dot{width:6px;height:6px;border-radius:50%;background:#fff;flex-shrink:0}
-#printDoc .p-section-title{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#4f46e5;margin:14px 0 6px;padding-bottom:4px;border-bottom:1.5px solid #e2e8f0}
-#printDoc .p-action-head{margin-bottom:12px}
-#printDoc .p-action-name{font-size:15px;font-weight:800;line-height:1.2;margin:4px 0;color:#0f172a}
-#printDoc .p-action-meta{font-size:10px;color:#64748b;font-weight:600;font-family:monospace}
-#printDoc .p-action-meta.p-inline{font-family:inherit;font-weight:600;color:#334155;margin-top:2px}
-#printDoc .p-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
-#printDoc .p-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-card-l{font-size:8.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#64748b;margin-bottom:3px}
-#printDoc .p-card-v{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
-#printDoc .p-card-v.pos{color:#16a34a}
-#printDoc .p-card-v.neg{color:#dc2626}
-#printDoc .p-card-v.zero{color:#94a3b8}
-#printDoc .p-card-s{font-size:8.5px;color:#64748b;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
-#printDoc .p-table{width:100%;border-collapse:collapse;font-size:10px;margin:6px 0 12px}
-#printDoc .p-table th{padding:6px 8px;text-align:right;font-size:8.5px;font-weight:800;text-transform:uppercase;color:#64748b;background:#f1f5f9;border-bottom:1.5px solid #cbd5e1;letter-spacing:.4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-table th.l{text-align:left}
-#printDoc .p-table td{padding:5px 8px;border-bottom:1px solid #e2e8f0;text-align:right;font-variant-numeric:tabular-nums;color:#0f172a}
-#printDoc .p-table td.l{text-align:left;font-weight:600;color:#334155}
-#printDoc .p-table td.pos{color:#16a34a;font-weight:800}
-#printDoc .p-table td.neg{color:#dc2626;font-weight:800}
-#printDoc .p-table td.zero{color:#94a3b8;font-weight:600}
-#printDoc .p-dots{display:flex;flex-direction:column;gap:6px;margin:6px 0}
-#printDoc .p-dot{border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;background:#f8fafc;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-dot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px}
-#printDoc .p-dot-id{font-family:monospace;font-size:11px;font-weight:800;color:#0f172a}
-#printDoc .p-dot-fonte{font-size:9.5px;line-height:1.3;margin-bottom:4px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-#printDoc .p-dot-code{font-family:monospace;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-dot-name{font-weight:700;color:#334155}
-#printDoc .p-dot-macro{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
-#printDoc .p-dot-meta{font-size:9px;color:#64748b;font-weight:600;margin-bottom:6px}
-#printDoc .p-dot-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:9px}
-#printDoc .p-dot-metric-l{font-size:8px;font-weight:800;text-transform:uppercase;color:#94a3b8;margin-bottom:1px;letter-spacing:.3px}
-#printDoc .p-dot-metric-r{display:flex;gap:3px;align-items:baseline;font-variant-numeric:tabular-nums}
-#printDoc .p-dot-metric-tag{font-size:7.5px;font-weight:800;padding:0 3px;border-radius:2px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-dot-metric-tag.q{background:rgba(100,116,139,.15);color:#64748b}
-#printDoc .p-dot-metric-tag.s{background:rgba(79,70,229,.15);color:#4f46e5}
-#printDoc .p-dot-metric-v{font-weight:700;color:#0f172a}
-#printDoc .p-dot-delta{font-size:9.5px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
-#printDoc .p-dot-delta.pos{color:#16a34a}
-#printDoc .p-dot-delta.neg{color:#dc2626}
-#printDoc .p-dot-delta.zero{color:#94a3b8}
-#printDoc .p-footer{margin-top:16px;padding-top:8px;border-top:1.5px solid #e2e8f0;font-size:8.5px;color:#64748b;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-#printDoc .p-footer a{color:#4f46e5;text-decoration:none;font-weight:700}
-#printDoc .p-legend{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0;font-size:8.5px}
-#printDoc .p-legend-item{display:inline-flex;align-items:center;gap:3px;font-weight:600;color:#334155}
-#printDoc .p-legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-#printDoc .p-filter-bar{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:9.5px;color:#334155;display:flex;flex-wrap:wrap;gap:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-filter-bar strong{font-weight:800;color:#0f172a}
-#printDoc .p-full-table{width:100%;border-collapse:collapse;font-size:9.5px}
-#printDoc .p-full-table th{padding:5px 6px;text-align:right;font-size:8px;font-weight:800;text-transform:uppercase;color:#64748b;background:#f1f5f9;border-bottom:1.5px solid #cbd5e1;letter-spacing:.3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .p-full-table th.l{text-align:left}
-#printDoc .p-full-table td{padding:4px 6px;border-bottom:1px solid #e2e8f0;text-align:right;font-variant-numeric:tabular-nums;color:#0f172a}
-#printDoc .p-full-table td.l{text-align:left}
-#printDoc .p-full-table td.pos{color:#16a34a;font-weight:700}
-#printDoc .p-full-table td.neg{color:#dc2626;font-weight:700}
-#printDoc .p-full-table td.zero{color:#94a3b8}
-#printDoc .p-full-table tr{page-break-inside:avoid}
-#printDoc .p-cls-mini{display:inline-block;padding:1px 6px;border-radius:8px;font-size:7.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-
-/* Bloco por fonte no PDF de ação */
-#printDoc .p-src-block{margin-bottom:8px;page-break-inside:avoid}
-#printDoc .p-src-head{display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;padding:4px 0;border-bottom:1px solid #cbd5e1}
-#printDoc .p-src-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* ════════════════════════════════════════════════════════════════
-   RLTS — Relatório Simples (full-width, sem bordas, minimalista)
-   ════════════════════════════════════════════════════════════════ */
-#printDoc .rlts{width:100%;padding:0;margin:0;font-size:11px;line-height:1.45}
-
-/* Cabeçalho */
-#printDoc .rlts-head{text-align:center;padding-bottom:16px;margin-bottom:18px;border-bottom:2px solid #4f46e5}
-#printDoc .rlts-head h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.6px;color:#0f172a}
-#printDoc .rlts-sub{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#4f46e5;font-weight:800;margin-top:4px}
-#printDoc .rlts-meta{font-size:9.5px;color:#94a3b8;font-weight:600;margin-top:6px}
-
-/* Bloco de identificação da ação */
-#printDoc .rlts-action{margin-bottom:20px;text-align:center}
-#printDoc .rlts-badges{display:flex;justify-content:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-#printDoc .rlts-action-name{font-size:16px;font-weight:800;color:#0f172a;line-height:1.3;margin-bottom:5px}
-#printDoc .rlts-action-info{font-size:10px;color:#64748b;font-weight:600;line-height:1.5;font-family:monospace}
-#printDoc .rlts-action-info.p-inline{font-family:inherit;color:#475569;margin-top:2px}
-
-/* Hero: Delay total em destaque */
-#printDoc .rlts-hero{text-align:center;padding:20px 16px;margin:8px 0 22px;background:#f8fafc;border-radius:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .rlts-hero-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#4f46e5;margin-bottom:6px}
-#printDoc .rlts-hero-value{font-size:38px;font-weight:800;letter-spacing:-1.5px;line-height:1;font-variant-numeric:tabular-nums}
-#printDoc .rlts-hero-value.pos{color:#16a34a}
-#printDoc .rlts-hero-value.neg{color:#dc2626}
-#printDoc .rlts-hero-value.zero{color:#94a3b8}
-#printDoc .rlts-hero-sub{font-size:10px;color:#64748b;font-weight:600;margin-top:8px;font-variant-numeric:tabular-nums}
-#printDoc .rlts-hero-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-
-/* Título de seção */
-#printDoc .rlts-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#4f46e5;margin:22px 0 10px;padding-bottom:6px;border-bottom:1.5px solid #e2e8f0}
-
-/* Tabela clean, sem bordas */
-#printDoc .rlts-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:6px}
-#printDoc .rlts-table thead th{padding:8px 10px;text-align:right;font-size:9px;font-weight:800;text-transform:uppercase;color:#64748b;letter-spacing:.6px;background:transparent;border-bottom:1.5px solid #e2e8f0}
-#printDoc .rlts-table thead th.l{text-align:left}
-#printDoc .rlts-table tbody td{padding:10px;text-align:right;font-variant-numeric:tabular-nums;color:#0f172a;font-weight:600;border-bottom:1px solid #f1f5f9}
-#printDoc .rlts-table tbody td.l{text-align:left;font-weight:700;color:#334155}
-#printDoc .rlts-table tbody td.pos{color:#16a34a;font-weight:800}
-#printDoc .rlts-table tbody td.neg{color:#dc2626;font-weight:800}
-#printDoc .rlts-table tbody td.zero{color:#94a3b8;font-weight:600}
-#printDoc .rlts-table tbody tr:last-child td{border-bottom:0}
-
-/* Linha de cabeçalho de fonte dentro da tabela */
-#printDoc .rlts-table tr.src-head td{background:#f8fafc;padding:10px;font-weight:800;font-size:11.5px;border-bottom:1.5px solid #e2e8f0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .rlts-src-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
-
-/* Tabela de totais: destaque sutil */
-#printDoc .rlts-table.totals{background:#f8fafc;border-radius:8px;padding:4px;margin-top:2px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#printDoc .rlts-table.totals tbody td{padding:11px 10px;font-weight:800}
-#printDoc .rlts-table.totals tbody td.l{font-weight:800;color:#0f172a}
-
-/* Rodapé */
-#printDoc .rlts-foot{margin-top:28px;padding-top:12px;border-top:1.5px solid #e2e8f0;text-align:center;font-size:9px;color:#94a3b8;font-weight:600;line-height:1.7}
-#printDoc .rlts-foot a{color:#4f46e5;text-decoration:none;font-weight:700}
-
-@media print{
-  @page{size:A4 portrait;margin:12mm 10mm}
-  body.print-mode > *:not(#printDoc){display:none!important}
-  body.print-mode #printDoc.print-doc{display:block!important}
-  body.print-mode #printDoc *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body.print-mode #printDoc .p-dot,
-  body.print-mode #printDoc .p-card,
-  body.print-mode #printDoc .p-table tr,
-  body.print-mode #printDoc .p-full-table tr,
-  body.print-mode #printDoc .p-src-block,
-  body.print-mode #printDoc .rlts-hero,
-  body.print-mode #printDoc .rlts-table tr{page-break-inside:avoid}
-  body.print-mode #printDoc .p-section-title,
-  body.print-mode #printDoc .rlts-section-title{page-break-after:avoid}
-  body.print-mode #printDoc h1,
-  body.print-mode #printDoc h2{page-break-after:avoid}
-}
 </style>
 </head>
 <body>
@@ -552,9 +484,9 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
   <div class="upload-inner">
     <div class="upload-brand">
       <h1>QDD × Lei + Créditos</h1>
-      <p>Envie o <strong>QDD</strong> (Excel) e a <strong>Listagem</strong> (Lei + Créditos em CSV) para caucular o <strong>delay</strong>
-        entre as duas fontes. Se necessario consulte <strong>?</strong> a baixo.</p>
-      <span class="hint">Comparativo QDD ↔ Dotação · Escopo automático · Fonte/Subfonte/Região</span>
+      <p>Envie o <strong>QDD</strong> (Excel) e a <strong>Listagem</strong> (Lei + Créditos em CSV) para calcular o <strong>delay</strong>
+        e a <strong>projeção</strong> entre as duas fontes.</p>
+      <span class="hint">Comparativo QDD ↔ Dotação · Escopo automático · Fonte/Subfonte/Região · Projeção</span>
     </div>
 
     <div class="dropzones">
@@ -562,10 +494,7 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
         <div class="ico">📄</div>
         <div class="tt">QDD</div>
         <div class="sb">Quadro de Detalhamento da Despesa</div>
-        <div class="formats">
-          <span class="fmt">.XLS</span>
-          <span class="fmt">.XLSX</span>
-        </div>
+        <div class="formats"><span class="fmt">.XLS</span><span class="fmt">.XLSX</span></div>
         <div class="fn" data-file></div>
         <input type="file" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       </div>
@@ -595,13 +524,10 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     </div>
 
     <footer class="upload-footer">
-      <span>v1.3.1</span>
+      <span>v1.6.0</span>
       <span class="uf-sep">·</span>
       <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener noreferrer">
         Código-fonte no GitHub
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M7 17L17 7M7 7h10v10"/>
-        </svg>
       </a>
     </footer>
   </div>
@@ -631,19 +557,24 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     </div>
     <a href="https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx"
        target="_blank" rel="noopener noreferrer" class="tb-btn siof" title="Abrir SIOF em nova aba">
-      <span>🏛</span><span class="lbl">SIOF</span>
+      <span>🏛</span>
     </a>
-    <button class="tb-btn" id="btnPrint" title="Exportar PDF da visualização atual (respeita filtros)">
-      <span>🖨</span><span class="lbl">PDF</span>
+    <button class="tb-btn" id="btnXlsx" title="Exportar Excel completo da visualização atual">
+      <span>📊</span>
     </button>
-    <button class="tb-btn" id="btnBackup" title="Backup das Despesas Não Programadas"><span>💾</span><span class="lbl">DNP</span></button>
-    <button class="tb-btn" id="btnHelp" title="Documentação"><span>?</span><span class="lbl">Doc</span></button>
-    <button class="tb-btn" id="btnExport" title="Exportar CSV"><span>⬇</span><span class="lbl">Exportar</span></button>
-    <button class="tb-btn ghost" id="btnReset" title="Novo carregamento"><span>↺</span><span class="lbl">Novo</span></button>
-    <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener noreferrer" class="tb-btn ghost" title="Código-fonte no GitHub">
-      <span>&lt;/&gt;</span><span class="lbl">🐈‍⬛</span>
+    <button class="tb-btn danger" id="btnClearData" title="Limpar todos os DNP e Gasto Pretendido (mantém QDD e SPG carregados)">
+      <span>🗑</span>
+    </button>
+    <button class="tb-btn" id="btnBackup" title="Backup de DNP e Gasto Pretendido"><span>💾</span></button>
+    <button class="tb-btn" id="btnHelp" title="Documentação"><span>?</span></button>
+    <button class="tb-btn" id="btnExport" title="Exportar CSV (dados brutos)"><span>⬇</span></button>
+    <button class="tb-btn ghost" id="btnReset" title="Novo carregamento"><span>↺</span></button>
+    <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener noreferrer" class="tb-btn ghost" title="Código-fonte no GitHub" aria-label="GitHub">
+      <svg height="18" viewBox="0 0 16 16" width="18" aria-hidden="true" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+      </svg>
     </a>
-    <span class="tb-version" title="beta">v1.3.1</span>
+    <span class="tb-version" title="beta">v1.6.0</span>
   </header>
 
   <div class="stats" id="stats"></div>
@@ -656,6 +587,7 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
         <select id="sortSel">
           <option value="dSal">maior delay</option>
           <option value="delay">maior divergência</option>
+          <option value="proj">maior |projeção|</option>
           <option value="dnp">maior DNP</option>
           <option value="lAut">maior Lei + Créditos</option>
           <option value="lEmp">maior empenhado</option>
@@ -665,7 +597,7 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
         </select>
       </div>
       <div class="col-picker">
-        <button class="tb-btn" id="btnCols"><span>⚙</span><span class="lbl">Colunas</span></button>
+        <button class="tb-btn" id="btnCols"><span>⚙</span></button>
         <div class="col-menu" id="colMenu" hidden>
           <div class="cm-title">Colunas visíveis</div>
           <label><input type="checkbox" data-col="uo" checked> Unidade Orçamentária</label>
@@ -673,7 +605,9 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
           <label><input type="checkbox" data-col="aut" checked> Lei + Créditos</label>
           <label><input type="checkbox" data-col="emp" checked> Empenhado</label>
           <label><input type="checkbox" data-col="sal" checked> Saldo</label>
-          <label><input type="checkbox" data-col="dnp" checked> Despesa Não Programada</label>
+          <label><input type="checkbox" data-col="dnp" checked> DNP</label>
+          <label><input type="checkbox" data-col="gp" checked> Gasto Pretendido</label>
+          <label><input type="checkbox" data-col="proj" checked> Projeção</label>
           <label><input type="checkbox" data-col="delay" checked> Delay</label>
         </div>
       </div>
@@ -686,47 +620,61 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     <table id="mainTable">
       <thead>
         <tr>
-          <th class="l sticky-col sortable" data-sort="name" style="width:290px">
+          <th class="l sticky-col sortable" data-sort="name" style="width:280px">
             <div class="th-inner">Ação <span class="arrow">↕</span></div>
           </th>
-          <th class="l sortable" data-col-th="uo" data-sort="uo" style="width:150px">
+          <th class="l sortable" data-col-th="uo" data-sort="uo" style="width:140px">
             <div class="th-inner">UO <span class="arrow">↕</span></div>
           </th>
-          <th class="r sortable" data-col-th="dots" data-sort="qtd" style="width:70px">
-            <div class="th-inner">Dotações <span class="arrow">↕</span></div>
+          <th class="r sortable" data-col-th="dots" data-sort="qtd" style="width:64px">
+            <div class="th-inner">Dots <span class="arrow">↕</span></div>
           </th>
-          <th class="r sortable" data-col-th="aut" data-sort="lAut" style="width:180px">
+          <th class="r sortable" data-col-th="aut" data-sort="lAut" style="width:170px">
             <div class="th-inner">
               Lei + Créditos
-              <span class="help" data-tooltip="QDD: valor autorizado no Quadro de Detalhamento da Despesa (via SIOF). SPG: valor da Lei + Créditos na Listagem (via SPG).">?</span>
+              <span class="help" data-tooltip="QDD: valor autorizado no SIOF. SPG: valor da Lei + Créditos na Listagem.">?</span>
               <span class="arrow">↕</span>
             </div>
           </th>
-          <th class="r sortable" data-col-th="emp" data-sort="lEmp" style="width:180px">
+          <th class="r sortable" data-col-th="emp" data-sort="lEmp" style="width:170px">
             <div class="th-inner">
               Empenhado
               <span class="help" data-tooltip="QDD: empenhado no QDD. SPG: empenhado na Listagem.">?</span>
               <span class="arrow">↕</span>
             </div>
           </th>
-          <th class="r sortable" data-col-th="sal" data-sort="lSal" style="width:180px">
+          <th class="r sortable" data-col-th="sal" data-sort="lSal" style="width:170px">
             <div class="th-inner">
               Saldo
-              <span class="help" data-tooltip="QDD: saldo = Autorizada − Empenhado. SPG: saldo = Lei + Créditos − Parcelas.">?</span>
+              <span class="help" data-tooltip="QDD: Autorizada − Empenhado. SPG: Lei + Créditos − Parcelas.">?</span>
               <span class="arrow">↕</span>
             </div>
           </th>
-          <th class="r sortable" data-col-th="dnp" data-sort="dnp" style="width:130px">
+          <th class="r sortable" data-col-th="dnp" data-sort="dnp" style="width:110px">
             <div class="th-inner">
               DNP
-              <span class="help" data-tooltip="Despesa Não Programada: valor informado manualmente por dotação ou ação. Positivo = valor suplementado; negativo = déficit orçamentário. Não integra o cálculo do delay.">?</span>
+              <span class="help" data-tooltip="Despesa Não Programada. Positivo = suplemento, negativo = déficit. Clique na célula para editar (vazio = limpar).">?</span>
               <span class="arrow">↕</span>
             </div>
           </th>
-          <th class="r sortable active" data-col-th="delay" data-sort="dSal" style="width:160px">
+          <th class="r sortable" data-col-th="gp" data-sort="gp" style="width:130px">
+            <div class="th-inner">
+              Gasto Pretendido
+              <span class="help" data-tooltip="Despesa total pretendida até 31/dez. Default = Autorizada QDD menos dotações não utilizadas. Clique para editar.">?</span>
+              <span class="arrow">↕</span>
+            </div>
+          </th>
+          <th class="r sortable" data-col-th="proj" data-sort="proj" style="width:130px">
+            <div class="th-inner">
+              Projeção
+              <span class="help" data-tooltip="Projeção = Autorizada QDD + DNP − Gasto Pretendido. Meta: 0 ao final do exercício.">?</span>
+              <span class="arrow">↕</span>
+            </div>
+          </th>
+          <th class="r sortable active" data-col-th="delay" data-sort="dSal" style="width:150px">
             <div class="th-inner">
               Delay
-              <span class="help" data-tooltip="Delay = Listagem (Lei + Créditos − Parcelas) − QDD (Autorizada − Empenhado). Indicador principal de divergência.">?</span>
+              <span class="help" data-tooltip="Delay = (Lei + Créditos − Parcelas) − (Autorizada − Empenhado).">?</span>
               <span class="arrow">↕</span>
             </div>
           </th>
@@ -753,10 +701,9 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
       <button class="drawer-close" id="dClose" title="Fechar (Esc)" aria-label="Fechar">✕</button>
     </div>
     <div class="drawer-tools">
-      <button id="dCopy"><span>📋</span> Copiar registros</button>
-      <button id="dCsv"><span>⬇</span> Exportar esta ação</button>
-      <button id="dRlts" title="Relatório Simples (RLTS) — versão minimalista"><span>📄</span> RLTS</button>
-      <button id="dPdf" title="Exportar PDF desta ação"><span>🖨</span> PDF desta ação</button>
+      <button id="dCsv"><span>⬇</span> CSV desta ação</button>
+      <button id="dRlts" title="Excel RLTS"><span>📊</span> RLTS (Excel)</button>
+      <button id="dXlsx" title="Excel formatado desta ação"><span>📊</span> Excel desta ação</button>
     </div>
   </div>
   <div class="drawer-body" id="dBody"></div>
@@ -773,82 +720,45 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
     </div>
     <div class="modal-body">
       <h3>Como extrair o QDD (manual)</h3>
-      <p>O QDD é gerado pelo <strong>SIOF, </strong> por hora, estamos trabalhando para automatizar (<code>integração comparador/SIOF</code>) portanto, neste momento você deve fazer a extração <strong>manual</strong>:</p>
+      <p>O QDD é gerado pelo <strong>SIOF</strong>. Por ora, a extração deve ser feita <strong>manualmente</strong>:</p>
       <ul class="help-list">
-        <li><span class="step">1</span><a href="https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">Abra o SIOF</a> e siga as etapas abaixo:</li>
+        <li><span class="step">1</span>Abra o SIOF e siga as etapas abaixo:</li>
         <li><span class="step">2</span>Filtre por Ano, Mês, Secretaria, Órgão e Unidade Orçamentária desejados.</li>
         <li><span class="step">3</span>Em <em>Relatório</em>, escolha a opção que expõe <strong>dotação</strong> e <strong>natureza da despesa</strong> por linha.</li>
         <li><span class="step">4</span>Em <em>Tipo de Exibição</em>, selecione <strong>Planilha Formatada</strong> (Xls).</li>
         <li><span class="step">5</span>Clique em <strong>Visualizar</strong> e baixe o arquivo XLS.</li>
         <li><span class="step">6</span>Volte a esta página e envie o XLS na zona QDD.</li>
       </ul>
-      <p style="margin-top:10px;font-size:12px;color:var(--muted)">Observação: o QDD pode ser enviado filtrado por <strong>uma UO</strong>. O app detecta o escopo automaticamente e restringe a Listagem às dotações daquela UO.</p>
-
-      <h3>Fontes</h3>
-      <ul class="help-list">
-        <li><span class="lbl">QDD — Quadro de Detalhamento da Despesa (via SIOF)</span>Documento oficial que detalha a despesa autorizada por unidade orçamentária, ação, localidade, natureza e fonte de recurso. Envie em Excel (.xls/.xlsx).</li>
-        <li><span class="lbl">Dotações Lei + Créditos (Extração via SPG)</span>Valor inicial somado aos créditos adicionais, conforme extração em tempo real (Listagem), em CSV.</li>
-        <li><strong>(OBS).</strong> Considerando que a extração de dotações/listagem ocorre em ambiente autenticado, o usuário é responsável pela utilização do arquivo, esta ferramenta atua exclusivamente como facilitadora pós extração e organização das informações, cabendo ao usuário assegurar que sua utilização observe as normas aplicáveis.</li>
-      </ul>
 
       <h3>Escopo automático</h3>
-      <p>Se o QDD tiver <strong>uma única Unidade Orçamentária</strong>, o app filtra a Listagem para considerar apenas dotações daquela UO. Detecção em cascata:</p>
+      <p>Se o QDD tiver <strong>uma única Unidade Orçamentária</strong>, o app filtra a Listagem para considerar apenas dotações daquela UO.</p>
+
+      <h3>Delay</h3>
+      <p>Diferença entre o saldo da Listagem e o saldo do QDD. Calculado como <code>(Lei + Créditos − Parcelas) − (Autorizada − Empenhado)</code>.</p>
+
+      <h3>DNP — Despesa Não Programada</h3>
+      <p><strong>Positivo</strong> = valor suplementado; <strong>negativo</strong> = déficit orçamentário. Editável inline na tabela (célula DNP) ou no drawer.</p>
+
+      <h3>Gasto Pretendido (GP)</h3>
+      <p>Despesa total que se pretende empenhar até 31/dez. Default = <strong>Autorizada QDD − saldo das dotações "Não utilizadas"</strong>.</p>
+
+      <h3>Projeção (fim do exercício)</h3>
+      <p><code>Projeção = Autorizada QDD + DNP − Gasto Pretendido</code>. Meta: R$ 0,00.</p>
+
+      <h3>Exportação Excel</h3>
       <ul class="help-list">
-        <li><span class="lbl">1. Prefixo = código da UO</span>Se todas as dotações iniciam com o código da UO (após normalização), usa esse prefixo.</li>
-        <li><span class="lbl">2. Maior prefixo comum</span>Se a anterior não se aplica, calcula o maior prefixo comum entre as dotações.</li>
-        <li><span class="lbl">3. Entrada manual</span>Se nenhuma se aplica, exibe campo para informar o prefixo.</li>
-      </ul>
-
-      <h3>Rótulos QDD e SPG nas células</h3>
-      <p>Cada célula apresenta dois valores empilhados:</p>
-      <ul class="help-list">
-        <li><span class="lbl">QDD</span>Valor registrado no Quadro de Detalhamento da Despesa.</li>
-        <li><span class="lbl">SPG</span>Valor registrado na Listagem (Lei + Créditos).</li>
-      </ul>
-
-      <h3>Métrica Delay</h3>
-      <p>O <strong>Delay</strong> é a diferença entre o saldo da Listagem e o saldo do QDD. Calculado como <code>(Lei + Créditos − Parcelas) − (Autorizada − Empenhado)</code>. Valor diferente de zero indica que as duas fontes não estão sincronizadas.</p>
-
-      <h3>Comparativo por fonte</h3>
-      <p>No drawer de cada ação, os grupos macro de fonte (Tesouro, Saúde Vinculada, Educação Vinculada, Transferências, RPPS, Extraorçamentários, Outros) são apresentados individualmente <strong>antes</strong> do total agregado. Isso permite ao auditor verificar, por exemplo, se o delay está concentrado nos recursos do Tesouro ou em fontes vinculadas.</p>
-
-      <h3>Despesa Não Programada (DNP)</h3>
-      <p>Despesa ausente no QDD e na Lei + Créditos que precisa ser rastreada. Pode ser registrada por dotação ou por ação. O valor admite <strong>sinal positivo</strong> (valor suplementado) ou <strong>negativo</strong> (déficit orçamentário). Persistido no navegador; exportável/importável via JSON.</p>
-
-      <h3>Classificação do atraso</h3>
-      <ul class="help-list">
-        <li><span class="lbl" style="color:#16a34a">Sincronizado</span>QDD e Lei + Créditos coincidem em todas as métricas.</li>
-        <li><span class="lbl" style="color:#65a30d">Atraso leve</span>Divergência total inferior a 1% da autorizada.</li>
-        <li><span class="lbl" style="color:#d97706">Atraso moderado</span>Divergência entre 1% e 5%.</li>
-        <li><span class="lbl" style="color:#dc2626">Atraso crítico</span>Divergência igual ou superior a 5%.</li>
-        <li><span class="lbl" style="color:#9333ea">Apenas na Listagem</span>Registro presente na Listagem, ausente no QDD.</li>
-        <li><span class="lbl" style="color:#64748b">Apenas no QDD</span>Registro presente no QDD, ausente na Listagem.</li>
+        <li><strong>📊 Excel desta ação</strong> — relatório completo da ação aberta (KPIs, comparativos por fonte, todas as dotações, legenda).</li>
+        <li><strong>📊 RLTS (Excel)</strong> — versão enxuta com foco no Delay Total.</li>
+        <li><strong>📊 Excel completo</strong> (topbar) — todas as ações filtradas em uma única planilha.</li>
+        <li><strong>⬇ CSV desta ação</strong> — dados brutos (uma linha por dotação).</li>
       </ul>
 
       <h3>Fonte / Subfonte / Região</h3>
-      <p>O código da fonte é interpretado em até 3 níveis:</p>
-      <ul class="help-list">
-        <li><span class="lbl">Fonte (3 dígitos)</span>Ex.: <code>500</code> = Recursos não Vinculados de Impostos.</li>
-        <li><span class="lbl">Subfonte (10 dígitos)</span>Ex.: <code>500.9100100</code> = Recursos não Vinculados de Impostos — Contrapartida de Convênios. Baseada no catálogo oficial do SIOF (2026).</li>
-        <li><span class="lbl">Grupo macro</span>Tesouro, Educação Vinculada, Saúde Vinculada, Transferências, RPPS, etc.</li>
-        <li><span class="lbl">Região</span>Cariri, Centro Sul, Grande Fortaleza, Litoral Leste, … (15 regiões do CE).</li>
-      </ul>
-
-      <h3>Exportação PDF, RLTS e CSV</h3>
-      <p>Três modos de exportação de relatório:</p>
-      <ul class="help-list">
-        <li><span class="lbl">PDF (topbar)</span>Consolidado das ações visíveis, respeitando os filtros ativos (classificação, pesquisa, escopo). A4 retrato, colorido, com legenda.</li>
-        <li><span class="lbl">PDF desta ação (drawer)</span>Detalhamento completo de uma ação — comparativo por fonte, total, dotações individuais.</li>
-        <li><span class="lbl">RLTS — Relatório Simples (drawer)</span>Versão minimalista que ocupa toda a folha: hero com Delay Total, comparativo por fonte agregado e total agregado. Ideal para apresentar ao gestor.</li>
-      </ul>
+      <p>O código da fonte é interpretado em até 3 níveis: <strong>Fonte</strong> (3 dígitos), <strong>Subfonte</strong> (10 dígitos) e <strong>Grupo macro</strong>. A região vem da localidade (15 regiões do CE).</p>
 
       <h3>Privacidade e dependências</h3>
-      <p>Processamento local. Nenhum arquivo é compartilhado com esta aplicação.</p>
-      <p>Dependência externa SheetJS (CDN), utilizada exclusivamente para leitura do QDD.</p>
-      <p>Esta aplicação é um projeto independente, desenvolvido com o objetivo de facilitar a leitura, a interpretação e a análise de informações orçamentárias. Não se trata de um sistema oficial, nem de uma aplicação desenvolvida, mantida, endossada ou homologada por qualquer órgão ou entidade governamental.</p>
-      <p>A aplicação é fornecida "no estado em que se encontra" (as is), sem garantias expressas ou implícitas, na máxima extensão permitida pela legislação aplicável. O autor não se responsabiliza por modificações, cópias, redistribuições ou utilizações realizadas por terceiros, nem por eventuais consequências decorrentes dessas intervenções.</p>
-      <h3>Código-fonte</h3>
-      <p>Disponível em <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">github.com/wendellmoura</a>.</p>
+      <p>Processamento local. Dependências externas: SheetJS (leitura de Excel), ExcelJS (escrita de Excel), ambas via CDN.</p>
+      <p><strong>Código-fonte:</strong> <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener">github.com/wendellmoura</a></p>
     </div>
     <div class="modal-foot"><button class="primary" id="helpCloseFoot">Fechar</button></div>
   </div>
@@ -857,34 +767,42 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 <div class="modal-back" id="backupBack" hidden>
   <div class="modal" style="max-width:680px" role="dialog" aria-modal="true">
     <div class="modal-head">
-      <h2>Backup — Despesas Não Programadas</h2>
+      <h2>Backup — DNP + Gasto Pretendido + Saldos Ignorados</h2>
       <button class="drawer-close" id="backupClose" aria-label="Fechar">✕</button>
     </div>
     <div class="modal-body">
-      <p style="margin-top:0">Os valores de DNP são persistidos automaticamente neste navegador. Realize backup em JSON para preservá-los ao trocar de máquina ou limpar o cache.</p>
+      <p style="margin-top:0">DNP, Gasto Pretendido e Dotações não utilizadas são persistidos automaticamente neste navegador.</p>
       <div class="backup-grid">
         <div class="backup-stat">
           <div class="bsl">Registros DNP</div>
-          <div class="bsv" id="backupCount">0</div>
+          <div class="bsv dnp" id="backupCount">0</div>
         </div>
         <div class="backup-stat">
           <div class="bsl">Total DNP</div>
           <div class="bsv dnp" id="backupTotal">R$ 0,00</div>
         </div>
+        <div class="backup-stat">
+          <div class="bsl">Registros GP</div>
+          <div class="bsv gp" id="backupGpCount">0</div>
+        </div>
+        <div class="backup-stat">
+          <div class="bsl">Projeção Total</div>
+          <div class="bsv proj" id="backupProjTotal">R$ 0,00</div>
+        </div>
       </div>
       <h3>JSON atual</h3>
       <textarea class="backup-textarea" id="backupText" spellcheck="false"></textarea>
       <div class="backup-actions">
-        <button class="tb-btn" id="backupRefresh"><span>↻</span> Atualizar do estado</button>
-        <button class="tb-btn" id="backupApply"><span>✓</span> Aplicar do JSON</button>
+        <button class="tb-btn" id="backupRefresh"><span>↻</span> Atualizar</button>
+        <button class="tb-btn" id="backupApply"><span>✓</span> Aplicar JSON</button>
         <label class="tb-btn" style="cursor:pointer">
-          <span>⬆</span> Importar arquivo
+          <span>⬆</span> Importar
           <input type="file" id="backupImportFile" accept=".json,application/json" hidden>
         </label>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="danger" id="backupClear">Limpar registros</button>
+      <button class="danger" id="backupClear">🗑 Limpar tudo</button>
       <button id="backupCloseFoot">Fechar</button>
       <button class="primary" id="backupExport">⬇ Exportar JSON</button>
     </div>
@@ -892,32 +810,20 @@ td.r{text-align:right;font-variant-numeric:tabular-nums}
 </div>
 
 <div id="toasts" aria-live="polite"></div>
-<div id="printDoc" class="print-doc"></div>
 
 <script>
 "use strict";
-/**
- * Comparador QDD × Lei + Créditos — v1.3.1
- *
- * Changelog:
- *  - v1.3.1: "RS" renomeado para RLTS (Relatório Simples). Layout full-width,
- *            sem bordas, comparativo por fonte + total agregado.
- *  - v1.3.0: Comparativo agregado por fonte antes do total; refino visual da linha DNP.
- *  - v1.2.0: Exportação PDF (ação + consolidado), link GitHub, versão visível, timestamp.
- *  - v1.1.0: SUBFONTES (catálogo SIOF), parseFonte em cascata, decodificação de região (CE).
- *  - v1.0.0: versão de produção. Escopo automático, DNP com sinal, backup JSON versionado.
- */
-const APP_VERSION = '1.3.1';
+const APP_VERSION = '1.6.0';
 const SIOF_URL = 'https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx';
 const REPO_URL = 'https://github.com/wendellmoura?tab=repositories';
 
 const CLASSIF = {
-  sincronizado: { label:'Sincronizado',         short:'OK',   color:'#16a34a', bg:'#f0fdf4', desc:'QDD e Lei + Créditos coincidem em todas as métricas.' },
-  leve:         { label:'Atraso leve',          short:'Leve', color:'#65a30d', bg:'#f7fee7', desc:'Divergência total inferior a 1% da autorizada.' },
+  sincronizado: { label:'Sincronizado',         short:'OK',   color:'#16a34a', bg:'#f0fdf4', desc:'QDD e Lei + Créditos coincidem.' },
+  leve:         { label:'Atraso leve',          short:'Leve', color:'#65a30d', bg:'#f7fee7', desc:'Divergência < 1%.' },
   moderado:     { label:'Atraso moderado',      short:'Mod.', color:'#d97706', bg:'#fffbeb', desc:'Divergência entre 1% e 5%.' },
-  critico:      { label:'Atraso crítico',       short:'Crít.',color:'#dc2626', bg:'#fef2f2', desc:'Divergência igual ou superior a 5%.' },
-  sem_par_qdd:  { label:'Apenas na Listagem',   short:'Só L', color:'#9333ea', bg:'#faf5ff', desc:'Dotação presente na Lei + Créditos, ausente no QDD.' },
-  sem_par_list: { label:'Apenas no QDD',        short:'Só Q', color:'#64748b', bg:'#f1f5f9', desc:'Dotação presente no QDD, ausente na Lei + Créditos.' }
+  critico:      { label:'Atraso crítico',       short:'Crít.',color:'#dc2626', bg:'#fef2f2', desc:'Divergência ≥ 5%.' },
+  sem_par_qdd:  { label:'Apenas na Listagem',   short:'Só L', color:'#9333ea', bg:'#faf5ff', desc:'Só na Lei + Créditos.' },
+  sem_par_list: { label:'Apenas no QDD',        short:'Só Q', color:'#64748b', bg:'#f1f5f9', desc:'Só no QDD.' }
 };
 
 const FONTE_GRUPOS = {
@@ -1374,6 +1280,15 @@ function fmtDnpSigned(v) {
   return { value: (v > 0 ? '+' : '') + fmtBRL(v), label: v > 0 ? 'Suplementado' : 'Déficit', cls: v > 0 ? 'positivo' : 'negativo' };
 }
 
+function fmtProjSigned(v) {
+  if (Math.abs(v) < 0.005) return { value: 'R$ 0,00', label: 'Equilibrado', cls: 'zero' };
+  return {
+    value: (v > 0 ? '+' : '') + fmtBRL(v),
+    label: v > 0 ? 'prevista' : 'Déficit previsto',
+    cls: v > 0 ? 'positivo' : 'negativo'
+  };
+}
+
 function computeLCP(strings) {
   if (!strings.length) return '';
   const norm = strings.map(normalizeDotacao).filter(Boolean);
@@ -1550,22 +1465,105 @@ async function readRawQddFile(file) {
   const ws = wb.Sheets[firstSheetName];
   const aoa = XLSX.utils.sheet_to_json(ws, { header:1, raw:true, defval:null, blankrows:false });
   const parsed = parseRawQddAoa(aoa);
-  if (!parsed.records.length) throw new Error('Nenhuma linha de detalhe (Natureza) encontrada no Excel. Confirme que é o relatório QDD correto.');
+  if (!parsed.records.length) throw new Error('Nenhuma linha de detalhe (Natureza) encontrada.');
   const warnings = [];
-  if (wb.SheetNames.length > 1) warnings.push('O arquivo possui ' + wb.SheetNames.length + ' abas — utilizada apenas a primeira ("' + firstSheetName + '").');
+  if (wb.SheetNames.length > 1) warnings.push('O arquivo possui ' + wb.SheetNames.length + ' abas — utilizada apenas a primeira.');
   if (parsed.missingDot > 0) warnings.push(parsed.missingDot.toLocaleString('pt-BR') + ' linha(s) sem dotação descartada(s).');
-  if (parsed.duplicateDotCount > 0) warnings.push(parsed.duplicateDotCount.toLocaleString('pt-BR') + ' dotação(ões) duplicada(s) — mantida apenas a primeira ocorrência.');
-  return { rows: parsed.records, rowsCount: parsed.totalNat, sheetName: firstSheetName, warnings, missingDot: parsed.missingDot, duplicateDotCount: parsed.duplicateDotCount };
+  if (parsed.duplicateDotCount > 0) warnings.push(parsed.duplicateDotCount.toLocaleString('pt-BR') + ' dotação(ões) duplicada(s).');
+  return { rows: parsed.records, rowsCount: parsed.totalNat, sheetName: firstSheetName, warnings };
 }
 
-const DNP_STORAGE_KEY = 'qdd_dnp_v1';
+/* ── Persistência v3 ── */
+const STORAGE_KEY = 'qdd_analise_v3';
+const LEGACY_V2_KEY = 'qdd_analise_v2';
+const LEGACY_V1_KEY = 'qdd_dnp_v1';
+
+function loadFromStorage() {
+  try {
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      state.dnp.dots = (data && data.dnp && data.dnp.dots) || {};
+      state.dnp.acoes = (data && data.dnp && data.dnp.acoes) || {};
+      state.gp.acoes = (data && data.gp && data.gp.acoes) || {};
+      state.unused = (data && data.unused) || {};
+      return;
+    }
+    const rawV2 = localStorage.getItem(LEGACY_V2_KEY);
+    if (rawV2) {
+      const data = JSON.parse(rawV2);
+      state.dnp.dots = (data && data.dnp && data.dnp.dots) || {};
+      state.dnp.acoes = (data && data.dnp && data.dnp.acoes) || {};
+      state.gp.acoes = {};
+      state.unused = {};
+      saveToStorage();
+      toast('Dados v2 migrados para v3.', 'ok', 5000);
+      return;
+    }
+    const rawV1 = localStorage.getItem(LEGACY_V1_KEY);
+    if (rawV1) {
+      const old = JSON.parse(rawV1);
+      state.dnp.dots = (old && old.dots) || {};
+      state.dnp.acoes = (old && old.acoes) || {};
+      state.gp.acoes = {};
+      state.unused = {};
+      saveToStorage();
+      toast('Dados v1 migrados para v3.', 'ok', 5000);
+    }
+  } catch(e) { console.warn('Falha ao carregar dados', e); }
+}
+
+let saveTimer;
+function saveToStorageDebounced() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToStorage, 400);
+}
+function saveToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      v: 3,
+      dnp: { dots: state.dnp.dots, acoes: state.dnp.acoes },
+      gp: { acoes: state.gp.acoes },
+      unused: state.unused,
+      savedAt: new Date().toISOString()
+    }));
+  } catch(e) { console.warn('Falha ao salvar', e); }
+}
+
 function getDotDnp(id) { return Number(state.dnp.dots[id]) || 0; }
-function getAcaoDnpKey(uo, cod) { return uo + '|' + cod; }
-function getAcaoDnp(uo, cod) { return Number(state.dnp.acoes[getAcaoDnpKey(uo, cod)]) || 0; }
+function getAcaoKey(uo, cod) { return uo + '|' + cod; }
+function getAcaoDnp(uo, cod) { return Number(state.dnp.acoes[getAcaoKey(uo, cod)]) || 0; }
+function hasAcaoGp(uo, cod) {
+  const v = state.gp.acoes[getAcaoKey(uo, cod)];
+  return v !== undefined && v !== null && v !== '';
+}
+function getAcaoGp(uo, cod, defaultVal) {
+  const k = getAcaoKey(uo, cod);
+  const v = state.gp.acoes[k];
+  if (v !== undefined && v !== null && v !== '') {
+    const n = Number(v);
+    return isFinite(n) ? n : defaultVal;
+  }
+  return defaultVal;
+}
 function getTotalDnpForAcao(ac) {
   let t = getAcaoDnp(ac.uo.cod, ac.cod);
   for (const d of ac.dots) t += getDotDnp(d.dotId);
   return t;
+}
+function getUnusedSaldo(ac) {
+  if (!ac || !ac.dots) return 0;
+  let t = 0;
+  for (const d of ac.dots) if (state.unused[d.dotId]) t += d.qSal;
+  return t;
+}
+function getTotalGpForAcao(ac) {
+  const unused = getUnusedSaldo(ac);
+  const defaultGp = ac.tot.qAut - unused;
+  return getAcaoGp(ac.uo.cod, ac.cod, defaultGp);
+}
+function getTotalProjForAcao(ac) {
+  return ac.tot.qAut + getTotalDnpForAcao(ac) - getTotalGpForAcao(ac);
 }
 function getTotalDnp() {
   if (!state.model) return 0;
@@ -1573,29 +1571,18 @@ function getTotalDnp() {
   for (const ac of state.model.acoes) t += getTotalDnpForAcao(ac);
   return t;
 }
+function getTotalProj() {
+  if (!state.model) return 0;
+  let t = 0;
+  for (const ac of state.model.acoes) t += getTotalProjForAcao(ac);
+  return t;
+}
 function countDnpEntries() {
   return Object.keys(state.dnp.dots).filter(k => Number(state.dnp.dots[k]) !== 0).length +
          Object.keys(state.dnp.acoes).filter(k => Number(state.dnp.acoes[k]) !== 0).length;
 }
-function loadDnpFromStorage() {
-  try {
-    const raw = localStorage.getItem(DNP_STORAGE_KEY);
-    if (!raw) return;
-    const data = JSON.parse(raw);
-    state.dnp.dots = (data && data.dots) || {};
-    state.dnp.acoes = (data && data.acoes) || {};
-  } catch(e) { console.warn('Falha ao carregar DNP', e); }
-}
-let dnpSaveTimer;
-function saveDnpDebounced() {
-  clearTimeout(dnpSaveTimer);
-  dnpSaveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem(DNP_STORAGE_KEY, JSON.stringify({
-        v: 1, dots: state.dnp.dots, acoes: state.dnp.acoes, savedAt: new Date().toISOString()
-      }));
-    } catch(e) { console.warn('Falha ao salvar DNP', e); }
-  }, 400);
+function countGpEntries() {
+  return Object.keys(state.gp.acoes).filter(k => state.gp.acoes[k] !== '' && state.gp.acoes[k] !== null && state.gp.acoes[k] !== undefined).length;
 }
 
 function classificarDelta(dAut, dEmp, dSal, base) {
@@ -1623,6 +1610,8 @@ function buildModel(qddRows, listRows) {
   const stats = {
     totalDots: allDots.size, matched: 0, onlyQdd: 0, onlyList: 0,
     byClassif: { sincronizado:0, leve:0, moderado:0, critico:0, sem_par_qdd:0, sem_par_list:0 },
+    totActions: 0,
+    byClassifActions: { sincronizado:0, leve:0, moderado:0, critico:0, sem_par_qdd:0, sem_par_list:0 },
     totQAut:0, totQEmp:0, totQSal:0,
     totLAut:0, totLEmp:0, totLSal:0, totLPar:0
   };
@@ -1654,9 +1643,6 @@ function buildModel(qddRows, listRows) {
     const lEmp = toNum(l && l['Valor Empenhado']);
     const lPar = toNum(l && l['Valor Parcelas (B)']);
     const lSal = toNum(l && l['Valor Saldo (A - B)']);
-    const lGestor = String((l && l['Gestor']) || '').trim();
-    const lExerc = String((l && l['Exercício']) || '').trim();
-    const lFunc = String((l && l['Funcional']) || '').trim();
 
     const dAut = lAut - qAut;
     const dEmp = lEmp - qEmp;
@@ -1700,7 +1686,7 @@ function buildModel(qddRows, listRows) {
       dotId, uoCod, uoNome, progCod, progNome, acaoCod, acaoNome,
       locCod: loc.cod, locNome: loc.nome, locRegiao: loc.regiao,
       natCod, natNome, fonteRaw, fonte, grupoMacro,
-      qAut, qEmp, qSal, qExec, lAut, lEmp, lPar, lSal, lGestor, lExerc, lFunc,
+      qAut, qEmp, qSal, qExec, lAut, lEmp, lPar, lSal,
       dAut, dEmp, dSal, classif
     });
 
@@ -1733,6 +1719,9 @@ function buildModel(qddRows, listRows) {
 
   const acoes = [];
   uos.forEach(uo => { uo.acoes.forEach(ac => { ac.uo = uo; acoes.push(ac); }); });
+  
+  stats.totActions = acoes.length;
+  acoes.forEach(ac => { stats.byClassifActions[ac.classif]++; });
 
   return { uos, acoes, stats };
 }
@@ -1740,9 +1729,11 @@ function buildModel(qddRows, listRows) {
 const state = {
   model: null, filter: 'all', query: '',
   sortKey: 'dSal', sortDir: 'desc', shown: 150,
-  columns: { uo:true, dots:true, aut:true, emp:true, sal:true, dnp:true, delay:true },
+  columns: { uo:true, dots:true, aut:true, emp:true, sal:true, dnp:true, gp:true, proj:true, delay:true },
   focusedRow: -1, drawerKey: null,
   dnp: { dots: {}, acoes: {} },
+  gp: { acoes: {} },
+  unused: {},
   rawQdd: null,
   rawList: null,
   scope: {
@@ -1782,9 +1773,7 @@ function setupDropzones() {
           uploadState[target] = { kind: 'xls', name: file.name, size: file.size, rows: parsed.rows, rowsCount: parsed.rowsCount, warnings: parsed.warnings, sheetName: parsed.sheetName };
           setDzState(dz, 'loaded');
           $('[data-file]', dz).innerHTML = esc(file.name) + ' <small>(' + (file.size/1024).toFixed(0) + ' KB · ' + parsed.rowsCount.toLocaleString('pt-BR') + ' linhas)</small>';
-          if (parsed.warnings && parsed.warnings.length) {
-            parsed.warnings.forEach(w => toast(w, 'warn', 6000));
-          }
+          if (parsed.warnings && parsed.warnings.length) parsed.warnings.forEach(w => toast(w, 'warn', 6000));
           checkReady();
         }
       } catch (err) {
@@ -1822,34 +1811,27 @@ async function processFiles() {
   try {
     const qddRows = uploadState.qdd.rows;
     if (!qddRows || !qddRows.length) throw new Error('QDD sem linhas.');
-
-    showLoader('Processando…', 'Lendo a Listagem (Lei + Créditos)');
+    showLoader('Processando…', 'Lendo a Listagem');
     await new Promise(r => setTimeout(r, 40));
     const listRows = parseCSV(uploadState.list.text);
     if (!listRows.length) throw new Error('Listagem sem linhas.');
-
     const lKeys = Object.keys(listRows[0]);
-    if (!lKeys.includes('Dotação') && !lKeys.includes('Dotacao')) throw new Error('Listagem não contém a coluna "Dotação". Colunas encontradas: ' + lKeys.slice(0,8).join(', '));
+    if (!lKeys.includes('Dotação') && !lKeys.includes('Dotacao')) throw new Error('Listagem sem coluna "Dotação".');
 
     state.rawQdd = qddRows;
     state.rawList = listRows;
     state.scope.forceScope = null;
     state.scope.manualPrefix = undefined;
 
-    showLoader('Processando…', 'Conciliando dados e aplicando escopo');
+    showLoader('Processando…', 'Conciliando dados');
     await new Promise(r => setTimeout(r, 40));
-
     $('#uploadView').hidden = true;
     $('#appView').hidden = false;
-
     rebuild();
     hideLoader();
 
     const s = state.model.stats;
-    const sc = state.scope;
-    let msg = 'Concluído: ' + s.matched + ' conciliadas, ' + (s.onlyQdd + s.onlyList) + ' sem correspondência, ' + s.byClassif.critico + ' críticas.';
-    if (sc.applied) msg += ' Escopo ativo (prefixo ' + sc.prefix + ', ' + sc.filteredCount + ' excluídas).';
-    toast(msg, 'ok', 6500);
+    toast('Concluído: ' + s.matched + ' conciliadas, ' + s.byClassif.critico + ' críticas.', 'ok', 6500);
   } catch (err) {
     hideLoader(); console.error(err);
     st.className = 'upload-status err'; st.textContent = 'Erro: ' + err.message;
@@ -1876,7 +1858,6 @@ function rebuild() {
   if (unicaUo) autoInfo = detectPrefix(qddRows, uosInfo[0]);
   const manualSet = state.scope.manualPrefix !== undefined;
   const prefix = manualSet ? state.scope.manualPrefix : (autoInfo ? autoInfo.prefix : null);
-  const prefixSource = manualSet ? 'manual' : (autoInfo ? autoInfo.method : null);
 
   let shouldFilter;
   if (!prefix) shouldFilter = false;
@@ -1898,8 +1879,8 @@ function rebuild() {
   }
 
   state.scope = {
-    unicaUo, uos, uosInfo,
-    prefix, prefixSource, prefixMethod: autoInfo ? autoInfo.method : null,
+    unicaUo, uos, uosInfo, prefix,
+    prefixSource: manualSet ? 'manual' : (autoInfo ? autoInfo.method : null),
     applied: shouldFilter && !!prefix,
     filteredCount, totalListDots: listRows.length,
     forceScope: state.scope.forceScope,
@@ -1907,7 +1888,7 @@ function rebuild() {
   };
 
   const model = buildModel(qddRows, listToUse);
-  if (!model.acoes.length) throw new Error('Nenhuma ação encontrada após aplicar o filtro de escopo. Ajuste o prefixo ou clique em "Incluir todas".');
+  if (!model.acoes.length) throw new Error('Nenhuma ação encontrada.');
 
   state.model = model;
   state.shown = 150; state.filter = 'all'; state.query = '';
@@ -1929,24 +1910,19 @@ function updateScopeBanner() {
   const el = $('#scopeBanner');
   if (!el) return;
   const sc = state.scope;
-
   if (!sc.uos || sc.uos.length === 0) { el.hidden = true; return; }
 
   const uosLabel = sc.uosInfo.map(u => u.nome ? (u.cod + ' — ' + u.nome) : u.cod).slice(0, 3).join(' · ')
     + (sc.uosInfo.length > 3 ? ' · +' + (sc.uosInfo.length - 3) : '');
-
   const methodLabel = sc.prefixSource === 'manual' ? 'informado manualmente'
     : sc.prefixSource === 'uo_codigo' ? 'do código da UO'
-    : sc.prefixSource === 'lcp' ? 'maior prefixo comum'
-    : '';
+    : sc.prefixSource === 'lcp' ? 'maior prefixo comum' : '';
 
   if (sc.applied && sc.prefix) {
-    el.hidden = false;
-    el.className = 'scope-banner';
+    el.hidden = false; el.className = 'scope-banner';
     el.innerHTML =
       '<span>🔍 <span class="sb-strong">Escopo ativo:</span> QDD com '
-      + (sc.unicaUo ? '1 UO' : sc.uos.length + ' UOs')
-      + ' (' + esc(uosLabel) + '). '
+      + (sc.unicaUo ? '1 UO' : sc.uos.length + ' UOs') + ' (' + esc(uosLabel) + '). '
       + 'Prefixo <code>' + esc(sc.prefix) + '</code>'
       + (methodLabel ? ' <em>(' + esc(methodLabel) + ')</em>' : '') + '. '
       + sc.filteredCount.toLocaleString('pt-BR') + ' de ' + sc.totalListDots.toLocaleString('pt-BR')
@@ -1954,46 +1930,40 @@ function updateScopeBanner() {
       + '<button class="sb-btn" id="scopeToggleOff">Incluir todas</button>'
       + '<button class="sb-btn" id="scopeEditPrefix">Editar prefixo</button>';
     const b = $('#scopeToggleOff');
-    if (b) b.onclick = () => { state.scope.forceScope = false; rebuild(); toast('Filtro desativado — listagem completa incluída.', 'warn', 4000); };
+    if (b) b.onclick = () => { state.scope.forceScope = false; rebuild(); toast('Filtro desativado.', 'warn', 4000); };
     const e = $('#scopeEditPrefix');
     if (e) e.onclick = () => { state.scope.forceScope = false; rebuild(); setTimeout(() => { const i = $('#scopeManualPrefix'); if (i) { i.focus(); i.select(); } }, 50); };
     return;
   }
 
   if (sc.unicaUo && !sc.prefix) {
-    el.hidden = false;
-    el.className = 'scope-banner warn';
+    el.hidden = false; el.className = 'scope-banner warn';
     const defaultVal = normalizeDotacao(sc.uos[0] || '');
     el.innerHTML =
-      '<span>⚠️ <span class="sb-strong">Escopo não detectado automaticamente.</span> '
-      + 'QDD com 1 UO (' + esc(uosLabel) + '), mas as dotações não possuem prefixo comum reconhecível. '
-      + 'Informe o prefixo (sem separadores) para restringir a listagem:</span>'
+      '<span>⚠️ <span class="sb-strong">Escopo não detectado.</span> QDD com 1 UO (' + esc(uosLabel) + '). Informe o prefixo:</span>'
       + '<input class="sb-input" id="scopeManualPrefix" type="text" placeholder="ex.: ' + esc(defaultVal) + '" value="' + esc(sc.manualPrefix || defaultVal) + '">'
       + '<button class="sb-btn" id="scopeApplyPrefix">Aplicar</button>'
       + '<button class="sb-btn" id="scopeSkipPrefix">Prosseguir sem filtro</button>';
     const apply = () => {
       const v = normalizeDotacao($('#scopeManualPrefix').value);
-      if (!v || v.length < 2) { toast('Prefixo muito curto — mínimo 2 caracteres.', 'warn'); return; }
-      state.scope.manualPrefix = v;
-      state.scope.forceScope = true;
-      rebuild();
-      toast('Escopo aplicado com prefixo ' + v + '.', 'ok', 4000);
+      if (!v || v.length < 2) { toast('Prefixo muito curto.', 'warn'); return; }
+      state.scope.manualPrefix = v; state.scope.forceScope = true; rebuild();
+      toast('Escopo aplicado.', 'ok', 4000);
     };
     const ba = $('#scopeApplyPrefix'); if (ba) ba.onclick = apply;
     const bi = $('#scopeManualPrefix'); if (bi) bi.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); apply(); } });
     const bs = $('#scopeSkipPrefix');
-    if (bs) bs.onclick = () => { state.scope.forceScope = false; state.scope.manualPrefix = undefined; rebuild(); toast('Prosseguindo com varredura completa.', 'warn', 4000); };
+    if (bs) bs.onclick = () => { state.scope.forceScope = false; state.scope.manualPrefix = undefined; rebuild(); toast('Varredura completa.', 'warn', 4000); };
     return;
   }
 
   if (!sc.unicaUo) {
-    el.hidden = false;
-    el.className = 'scope-banner';
+    el.hidden = false; el.className = 'scope-banner';
     el.innerHTML =
-      '<span>📊 QDD com ' + sc.uos.length + ' UOs (' + esc(uosLabel) + '). Varredura completa aplicada.</span>'
+      '<span>📊 QDD com ' + sc.uos.length + ' UOs (' + esc(uosLabel) + '). Varredura completa.</span>'
       + '<button class="sb-btn" id="scopeToggleOn">Restringir às UOs do QDD</button>';
     const b = $('#scopeToggleOn');
-    if (b) b.onclick = () => { state.scope.forceScope = true; rebuild(); toast('Filtro aplicado: apenas dotações das UOs presentes no QDD.', 'ok', 4000); };
+    if (b) b.onclick = () => { state.scope.forceScope = true; rebuild(); toast('Filtro aplicado.', 'ok', 4000); };
     return;
   }
 
@@ -2005,45 +1975,79 @@ function renderAll() { renderStats(); renderChips(); renderTable(); }
 function renderStats() {
   const s = state.model.stats;
   const dSal = s.totLSal - s.totQSal;
-  const totalDelayAbs = Math.abs(dSal) + Math.abs(s.totLEmp - s.totQEmp);
-  const divergentes = s.totalDots - s.byClassif.sincronizado;
+  const divergentes = s.totActions - s.byClassifActions.sincronizado;
   const dnpTotal = getTotalDnp();
   const dnpFmt = fmtDnpSigned(dnpTotal);
   const dnpCls = dnpTotal > 0 ? 'dnp-pos' : dnpTotal < 0 ? 'dnp-neg' : 'dnp';
-  const dnpSub = countDnpEntries() + ' registro(s) · ' + (dnpTotal > 0 ? 'suplementado' : dnpTotal < 0 ? 'déficit' : 'neutro');
+
+  const projTotal = getTotalProj();
+  const projFmt = fmtProjSigned(projTotal);
+  const projCls = projTotal > 0 ? 'proj-pos' : projTotal < 0 ? 'proj-neg' : 'proj';
 
   const cards = [
-    { lbl: 'Quadro de Detalhamento da Despesa', v: fmtBRLShort(s.totQAut), sub: 'total ' + fmtBRL(s.totQAut), tip: 'Soma da dotação autorizada registrada no QDD (via SIOF).' },
-    { lbl: 'Lei + Créditos', v: fmtBRLShort(s.totLAut), sub: 'total ' + fmtBRL(s.totLAut), tip: 'Soma da autorização atualizada com créditos adicionais, conforme a Listagem (via SPG).' },
+    { lbl: 'QDD', v: fmtBRLShort(s.totQAut), sub: fmtBRL(s.totQAut), tip: 'Dotação autorizada no QDD.' },
+    { lbl: 'Lei + Créditos', v: fmtBRLShort(s.totLAut), sub: fmtBRL(s.totLAut), tip: 'Autorização atualizada (SPG).' },
     { lbl: 'Delay (Saldo)', v: (dSal>=0?'+':'') + fmtBRLShort(dSal), sub: fmtBRL(dSal),
-      cls: Math.abs(dSal) < 0.01 ? '' : (dSal > 0 ? 'ok' : 'danger'), tip: 'Delay = Listagem (Lei + Créditos − Parcelas) − QDD (Autorizada − Empenhado).' },
-    { lbl: 'Atraso total (|Δ|)', v: fmtBRLShort(totalDelayAbs), sub: 'soma de |saldo| + |empenhado|', tip: 'Soma dos módulos dos deltas de saldo e empenhado.' },
-    { lbl: 'Despesa Não Programada', v: dnpFmt.value, sub: dnpSub, cls: dnpCls,
-      tip: 'Saldo líquido das Despesas Não Programadas. Positivo = valor suplementado; negativo = déficit orçamentário. Não integra o cálculo do delay.' },
-    { lbl: 'Divergentes', v: divergentes.toLocaleString('pt-BR') + ' / ' + s.totalDots.toLocaleString('pt-BR'),
-      sub: s.byClassif.critico + ' críticas · ' + (s.onlyQdd + s.onlyList) + ' sem correspondência',
-      cls: divergentes > 0 ? 'warn' : 'ok', tip: 'Ações cuja classificação difere de "Sincronizado".' }
+      cls: Math.abs(dSal) < 0.01 ? '' : (dSal > 0 ? 'ok' : 'danger'), tip: 'Delay = SPG saldo − QDD saldo.' },
+    { lbl: 'DNP', v: dnpFmt.value, sub: countDnpEntries() + ' registro(s)', cls: dnpCls,
+      tip: 'Despesa Não Programada. Positivo = suplemento; negativo = déficit.' },
+    { lbl: 'Projeção', v: projFmt.value, sub: projFmt.label + ' · meta: R$ 0,00', cls: projCls,
+      tip: 'Projeção = Autorizada QDD + DNP − Gasto Pretendido.' },
+    { lbl: 'Divergentes', v: divergentes.toLocaleString('pt-BR') + ' / ' + s.totActions.toLocaleString('pt-BR'),
+      sub: s.byClassifActions.critico + ' críticas', cls: divergentes > 0 ? 'warn' : 'ok', tip: 'Ações divergentes.' }
   ];
   $('#stats').innerHTML = cards.map(c => {
-    const isDnp = c.cls && (c.cls === 'dnp' || c.cls === 'dnp-pos' || c.cls === 'dnp-neg');
+    const isDnp = c.cls && c.cls.startsWith('dnp');
+    const isProj = c.cls && c.cls.startsWith('proj');
     return `
     <div class="stat ${c.cls || ''}">
       <div class="sl"><span>${esc(c.lbl)}</span><span class="info" data-tooltip="${esc(c.tip)}">?</span></div>
-      <div class="sv" ${isDnp ? 'id="statDnpValue"' : ''}>${esc(c.v)}</div>
-      <div class="ss" ${isDnp ? 'id="statDnpSub"' : ''}>${esc(c.sub)}</div>
+      <div class="sv" ${isDnp ? 'id="statDnpValue"' : ''}${isProj ? 'id="statProjValue"' : ''}>${esc(c.v)}</div>
+      <div class="ss" ${isDnp ? 'id="statDnpSub"' : ''}${isProj ? 'id="statProjSub"' : ''}>${esc(c.sub)}</div>
     </div>`;
   }).join('');
+}
+
+function updateStatsDnpProj() {
+  if (!state.model) return;
+  const t2 = getTotalDnp();
+  const f2 = fmtDnpSigned(t2);
+  const valEl = document.getElementById('statDnpValue');
+  if (valEl) valEl.textContent = f2.value;
+  const subEl = document.getElementById('statDnpSub');
+  if (subEl) subEl.textContent = countDnpEntries() + ' registro(s)';
+  const dnpCard = valEl ? valEl.closest('.stat') : null;
+  if (dnpCard) {
+    dnpCard.classList.remove('dnp', 'dnp-pos', 'dnp-neg');
+    if (t2 > 0) dnpCard.classList.add('dnp-pos');
+    else if (t2 < 0) dnpCard.classList.add('dnp-neg');
+    else dnpCard.classList.add('dnp');
+  }
+
+  const pt = getTotalProj();
+  const pf = fmtProjSigned(pt);
+  const projValEl = document.getElementById('statProjValue');
+  if (projValEl) projValEl.textContent = pf.value;
+  const projSubEl = document.getElementById('statProjSub');
+  if (projSubEl) projSubEl.textContent = pf.label + ' · meta: R$ 0,00';
+  const projCard = projValEl ? projValEl.closest('.stat') : null;
+  if (projCard) {
+    projCard.classList.remove('proj', 'proj-pos', 'proj-neg');
+    if (pt > 0) projCard.classList.add('proj-pos');
+    else if (pt < 0) projCard.classList.add('proj-neg');
+    else projCard.classList.add('proj');
+  }
 }
 
 function renderChips() {
   const s = state.model.stats;
   const all = [
-    { key:'all', label:'Todos', color:'#4f46e5', bg:'#eef2ff', n: s.totalDots },
-    ...Object.entries(CLASSIF).map(([k, v]) => ({ key:k, label:v.label, color:v.color, bg:v.bg, n: s.byClassif[k] })).filter(c => c.n > 0)
+    { key:'all', label:'Todos', color:'#4f46e5', bg:'#eef2ff', n: s.totActions },
+    ...Object.entries(CLASSIF).map(([k, v]) => ({ key:k, label:v.label, color:v.color, bg:v.bg, n: s.byClassifActions[k] })).filter(c => c.n > 0)
   ];
   $('#chips').innerHTML = all.map(c => `
     <button class="chip ${c.key === state.filter ? 'active' : ''}" data-filter="${c.key}"
-            style="--chip-color:${c.color};--chip-bg:${c.bg}" title="Filtrar por: ${esc(c.label)}">
+            style="--chip-color:${c.color};--chip-bg:${c.bg}">
       ${c.key !== 'all' ? '<span class="cdot"></span>' : ''}
       <span>${esc(c.label)}</span>
       <span class="cn">${c.n}</span>
@@ -2063,10 +2067,8 @@ function getFilteredSorted() {
   if (f !== 'all') rows = rows.filter(r => r.classif === f);
   if (q) {
     rows = rows.filter(r => {
-      const text = [
-        r.nome, r.cod, r.progNome, r.progCod, r.uo.nome, r.uo.cod,
-        ...r.dots.map(d => d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + (d.locRegiao || '') + ' ' + d.fonteRaw + ' ' + (d.fonte && d.fonte.subDesc ? d.fonte.subDesc : ''))
-      ].join(' ').toLowerCase();
+      const text = [r.nome, r.cod, r.progNome, r.progCod, r.uo.nome, r.uo.cod,
+        ...r.dots.map(d => d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + (d.locRegiao || '') + ' ' + d.fonteRaw)].join(' ').toLowerCase();
       return text.includes(q);
     });
   }
@@ -2074,14 +2076,16 @@ function getFilteredSorted() {
   const dir = state.sortDir === 'asc' ? 1 : -1;
   const sorters = {
     delay: (a, b) => (Math.abs(b.tot.dSal) + Math.abs(b.tot.dEmp)) - (Math.abs(a.tot.dSal) + Math.abs(a.tot.dEmp)),
-    dnp: (a, b) => getTotalDnpForAcao(b) - getTotalDnpForAcao(a),
-    lAut: (a, b) => b.tot.lAut - a.tot.lAut,
-    lEmp: (a, b) => b.tot.lEmp - a.tot.lEmp,
-    lSal: (a, b) => b.tot.lSal - a.tot.lSal,
-    dSal: (a, b) => b.tot.dSal - a.tot.dSal,
-    qtd:  (a, b) => b.tot.dots - a.tot.dots,
-    uo:   (a, b) => a.uo.nome.localeCompare(b.uo.nome, 'pt-BR'),
-    name: (a, b) => a.nome.localeCompare(b.nome, 'pt-BR')
+    proj:  (a, b) => Math.abs(getTotalProjForAcao(b)) - Math.abs(getTotalProjForAcao(a)),
+    dnp:   (a, b) => getTotalDnpForAcao(b) - getTotalDnpForAcao(a),
+    gp:    (a, b) => getTotalGpForAcao(b) - getTotalGpForAcao(a),
+    lAut:  (a, b) => b.tot.lAut - a.tot.lAut,
+    lEmp:  (a, b) => b.tot.lEmp - a.tot.lEmp,
+    lSal:  (a, b) => b.tot.lSal - a.tot.lSal,
+    dSal:  (a, b) => b.tot.dSal - a.tot.dSal,
+    qtd:   (a, b) => b.tot.dots - a.tot.dots,
+    uo:    (a, b) => a.uo.nome.localeCompare(b.uo.nome, 'pt-BR'),
+    name:  (a, b) => a.nome.localeCompare(b.nome, 'pt-BR')
   };
   const base = sorters[k] || sorters.dSal;
   rows.sort((a, b) => dir * base(a, b));
@@ -2113,7 +2117,7 @@ function renderTable() {
   if (!rows.length) {
     tbody.innerHTML = `<tr><td colspan="20" style="border:0;background:transparent">
       <div class="empty"><div class="big">🔍</div><h3>Nenhum resultado</h3>
-      <p>Ajuste os filtros, a pesquisa ou o chip de classificação.</p>
+      <p>Ajuste os filtros ou a pesquisa.</p>
       <button id="clearFilters">Limpar filtros</button></div></td></tr>`;
     const bf = $('#clearFilters');
     if (bf) bf.onclick = () => {
@@ -2130,8 +2134,58 @@ function renderTable() {
 
   $$('tr[data-acao]').forEach((tr, i) => {
     tr.tabIndex = 0;
-    tr.onclick = () => openDrawer(tr.getAttribute('data-acao'));
+    tr.onclick = (e) => {
+      if (e.target.closest('.editable-cell') || e.target.closest('input')) return;
+      openDrawer(tr.getAttribute('data-acao'));
+    };
     tr.onfocus = () => { state.focusedRow = i; };
+  });
+
+  $$('td.editable-cell[data-dnp-acao-row]').forEach(td => {
+    td.onclick = (e) => {
+      e.stopPropagation();
+      if (td.classList.contains('editing')) return;
+      const key = td.getAttribute('data-dnp-acao-row');
+      const [cod, uoCod] = key.split('|');
+      const cur = getAcaoDnp(uoCod, cod);
+      const curDisplay = cur !== 0 ? String(cur) : '';
+      startInlineEdit(td, curDisplay, true, (v) => {
+        if (v !== 0) state.dnp.acoes[key] = v;
+        else delete state.dnp.acoes[key];
+        saveToStorageDebounced();
+        updateStatsDnpProj();
+        td.innerHTML = getAcaoDnp(uoCod, cod) !== 0
+          ? '<span class="dnp-cell">' + fmtBRLShort(getAcaoDnp(uoCod, cod)) + '</span>'
+          : '<span class="dnp-cell empty">—</span>';
+        updateRowProjCell(cod, uoCod);
+      });
+    };
+  });
+
+  $$('td.editable-cell[data-gp-acao-row]').forEach(td => {
+    td.onclick = (e) => {
+      e.stopPropagation();
+      if (td.classList.contains('editing')) return;
+      const key = td.getAttribute('data-gp-acao-row');
+      const [cod, uoCod] = key.split('|');
+      const uo = state.model.uos.find(u => u.cod === uoCod);
+      const ac = uo ? uo.acoes.find(a => a.cod === cod) : null;
+      const defVal = ac ? ac.tot.qAut - getUnusedSaldo(ac) : 0;
+      const curRaw = state.gp.acoes[key];
+      const displayVal = curRaw !== undefined && curRaw !== null && curRaw !== '' ? String(curRaw) : String(defVal);
+      startInlineEdit(td, displayVal, false, (v, raw) => {
+        if (raw === '') delete state.gp.acoes[key];
+        else state.gp.acoes[key] = v;
+        saveToStorageDebounced();
+        updateStatsDnpProj();
+        const isOv = hasAcaoGp(uoCod, cod);
+        const gpVal = getTotalGpForAcao(ac);
+        td.innerHTML = isOv
+          ? '<span class="gp-cell-view">' + fmtBRLShort(gpVal) + '</span>'
+          : '<span class="gp-cell-view" style="color:var(--muted-2);font-weight:600" title="Default = Autorizada QDD − Não Util.">' + fmtBRLShort(gpVal) + '</span>';
+        updateRowProjCell(cod, uoCod);
+      });
+    };
   });
 
   if (rows.length > state.shown) {
@@ -2141,9 +2195,56 @@ function renderTable() {
     $('#loadMoreBtn').onclick = () => { state.shown += 150; renderTable(); };
   } else {
     lm.hidden = false;
-    $('#loadMoreInfo').textContent = rows.length.toLocaleString('pt-BR') + ' ação' + (rows.length === 1 ? '' : 'ões') + ' · fim da listagem';
+    $('#loadMoreInfo').textContent = rows.length.toLocaleString('pt-BR') + ' ação' + (rows.length === 1 ? '' : 'ões') + ' · fim';
     $('#loadMoreBtn').hidden = true;
   }
+}
+
+function updateRowProjCell(cod, uoCod) {
+  const uo = state.model.uos.find(u => u.cod === uoCod);
+  const ac = uo ? uo.acoes.find(a => a.cod === cod) : null;
+  if (!ac) return;
+  const rowKey = cod + '|' + uoCod;
+  const cell = document.querySelector('td[data-proj-acao-row="' + CSS.escape(rowKey) + '"]');
+  if (!cell) return;
+  const proj = getTotalProjForAcao(ac);
+  const projCls = Math.abs(proj) < 0.005 ? 'zero' : proj > 0 ? 'positivo' : 'negativo';
+  const projText = Math.abs(proj) < 0.005 ? 'R$ 0,00' : (proj > 0 ? '+' : '') + fmtBRLShort(proj);
+  cell.innerHTML = '<span class="proj-cell ' + projCls + '">' + projText + '</span>';
+}
+
+function startInlineEdit(td, displayValue, allowEmpty, onSave) {
+  if (td.classList.contains('editing')) return;
+  const originalHTML = td.innerHTML;
+  td.classList.add('editing');
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.step = '0.01';
+  input.value = displayValue;
+  input.title = allowEmpty ? 'Vazio = limpar' : 'Vazio = volta ao padrão';
+  td.innerHTML = '';
+  td.appendChild(input);
+  input.focus();
+  input.select();
+  let done = false;
+  const finish = (save) => {
+    if (done) return;
+    done = true;
+    const raw = input.value.trim();
+    td.classList.remove('editing');
+    if (save) {
+      const v = parseFloat(raw) || 0;
+      if (raw === '' && allowEmpty) onSave(0, '');
+      else onSave(v, raw);
+    } else {
+      td.innerHTML = originalHTML;
+    }
+  };
+  input.addEventListener('blur', () => finish(true));
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+  });
 }
 
 function metricCell(tag, value, isSPG) {
@@ -2162,6 +2263,11 @@ function renderAcaoRow(ac) {
   const delayCls = deltaClass(t.dSal);
   const divergent = (Math.abs(t.dSal) + Math.abs(t.dEmp)) > 0 && ac.classif !== 'sincronizado';
   const dnp = getTotalDnpForAcao(ac);
+  const gp = getTotalGpForAcao(ac);
+  const gpOverride = hasAcaoGp(ac.uo.cod, ac.cod);
+  const proj = getTotalProjForAcao(ac);
+  const projCls = Math.abs(proj) < 0.005 ? 'zero' : proj > 0 ? 'positivo' : 'negativo';
+  const projText = Math.abs(proj) < 0.005 ? 'R$ 0,00' : (proj > 0 ? '+' : '') + fmtBRLShort(proj);
   const rowKey = ac.cod + '|' + ac.uo.cod;
 
   const uoCell = colVisible('uo') ? `<td class="l">
@@ -2172,8 +2278,26 @@ function renderAcaoRow(ac) {
   const autCell  = colVisible('aut')  ? `<td class="r">${metricBlock(t,'aut')}</td>` : '';
   const empCell  = colVisible('emp')  ? `<td class="r">${metricBlock(t,'emp')}</td>` : '';
   const salCell  = colVisible('sal')  ? `<td class="r">${metricBlock(t,'sal')}</td>` : '';
-  const dnpCell  = colVisible('dnp')  ? `<td class="r" data-dnp-cell="${esc(rowKey)}">${dnp !== 0 ? '<span class="dnp-cell">' + esc(fmtBRLShort(dnp)) + '</span>' : '<span class="dnp-cell empty">—</span>'}</td>` : '';
-  const delayCell = colVisible('delay') ? `<td class="r"><span class="delta ${delayCls}">${esc(deltaText(t.dSal))}</span></td>` : '';
+
+  const dnpInner = dnp !== 0
+    ? '<span class="dnp-cell">' + esc(fmtBRLShort(dnp)) + '</span>'
+    : '<span class="dnp-cell empty">—</span>';
+  const dnpCell = colVisible('dnp')
+    ? `<td class="r editable-cell" data-dnp-acao-row="${esc(rowKey)}" title="Clique para editar · vazio = limpar">${dnpInner}</td>`
+    : '';
+
+  const gpInner = gpOverride
+    ? '<span class="gp-cell-view">' + esc(fmtBRLShort(gp)) + '</span>'
+    : '<span class="gp-cell-view" style="color:var(--muted-2);font-weight:600" title="Default = Autorizada QDD − Não Util.">' + esc(fmtBRLShort(gp)) + '</span>';
+  const gpCell = colVisible('gp')
+    ? `<td class="r editable-cell gp-cell" data-gp-acao-row="${esc(rowKey)}" title="Clique para editar · vazio = volta ao padrão">${gpInner}</td>`
+    : '';
+
+  const projCell = colVisible('proj')
+    ? `<td class="r" data-proj-acao-row="${esc(rowKey)}"><span class="proj-cell ${projCls}">${esc(projText)}</span></td>`
+    : '';
+
+  const delayCell = colVisible('delay') ? `<td class="r" style="white-space:nowrap;"><span class="delta ${delayCls}">${esc(deltaText(t.dSal))}</span></td>` : '';
 
   return `<tr class="${divergent ? 'row-dup' : ''}" data-acao="${esc(rowKey)}">
     <td class="l sticky-col">
@@ -2185,7 +2309,7 @@ function renderAcaoRow(ac) {
         <div class="action-uo">${esc(ac.cod)}</div>
       </div>
     </td>
-    ${uoCell}${dotsCell}${autCell}${empCell}${salCell}${dnpCell}${delayCell}
+    ${uoCell}${dotsCell}${autCell}${empCell}${salCell}${dnpCell}${gpCell}${projCell}${delayCell}
   </tr>`;
 }
 
@@ -2211,6 +2335,9 @@ function closeDrawer() {
 function renderCmpBlock(tot, opts = {}) {
   const dnpInfo = opts.dnpFmt || null;
   const dnpCls = opts.dnpCls || '';
+  const gpVal = opts.gpVal || 0;
+  const projInfo = opts.projFmt || null;
+  const projCls = opts.projCls || '';
   return `
     <div class="cmp-block">
       <div class="cmp-row head">
@@ -2234,6 +2361,18 @@ function renderCmpBlock(tot, opts = {}) {
         <div class="v dnp-val" id="dnpCmpValue">${esc(dnpInfo.value)}</div>
         <div class="d" id="dnpCmpLabel">${esc(dnpInfo.label)}</div>
       </div>` : ''}
+      <div class="cmp-row gp-row">
+        <div class="k">Gasto Pretendido</div>
+        <div class="v">—</div>
+        <div class="v gp-val" id="gpCmpValue">${esc(fmtBRL(gpVal))}</div>
+        <div class="d">até dez</div>
+      </div>
+      ${projInfo ? `<div class="cmp-row proj-row ${projCls}" id="projCmpRow">
+        <div class="k">Projeção (fim do exercício)</div>
+        <div class="v">—</div>
+        <div class="v proj-val" id="projCmpValue">${esc(projInfo.value)}</div>
+        <div class="d" id="projCmpLabel">${esc(projInfo.label)}</div>
+      </div>` : ''}
     </div>
   `;
 }
@@ -2244,7 +2383,14 @@ function renderDrawer(ac, uo) {
   const dnpAcao = getAcaoDnp(ac.uo.cod, ac.cod);
   const dnpTotal = getTotalDnpForAcao(ac);
   const dnpFmt = fmtDnpSigned(dnpTotal);
+  const gpOverride = hasAcaoGp(ac.uo.cod, ac.cod);
+  const unusedSaldo = getUnusedSaldo(ac);
+  const gpVal = getTotalGpForAcao(ac);
+  const projTotal = getTotalProjForAcao(ac);
+  const projFmt = fmtProjSigned(projTotal);
   const macroGroups = groupFontesByMacro(ac);
+  const gpKey = ac.uo.cod + '|' + ac.cod;
+  const hasAnyAdjust = dnpTotal !== 0 || gpOverride || ac.dots.some(d => getDotDnp(d.dotId) !== 0) || ac.dots.some(d => state.unused[d.dotId]);
 
   $('#dBadges').innerHTML = `
     <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}"><span class="bdot"></span>${esc(c.label)}</span>
@@ -2256,28 +2402,70 @@ function renderDrawer(ac, uo) {
 
   $('#dBody').innerHTML = `
     <div class="legend-strip">
-      <span class="tag qdd"><span class="chip-dot">QDD</span> Quadro de Detalhamento da Despesa (SIOF)</span>
+      <span class="tag qdd"><span class="chip-dot">QDD</span> Quadro de Detalhamento (SIOF)</span>
       <span class="tag lc"><span class="chip-dot">SPG</span> Lei + Créditos (Listagem)</span>
     </div>
 
     <div class="delta-cards">
-      <div class="delta-card"><div class="dcl">Delay (Saldo)</div>
-        <div class="dcv ${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</div>
-        <div class="dcs">QDD ${esc(fmtBRLShort(t.qSal))} · SPG ${esc(fmtBRLShort(t.lSal))}</div></div>
-      <div class="delta-card"><div class="dcl">Δ Empenhado</div>
-        <div class="dcv ${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</div>
-        <div class="dcs">QDD ${esc(fmtBRLShort(t.qEmp))} · SPG ${esc(fmtBRLShort(t.lEmp))}</div></div>
-      <div class="delta-card"><div class="dcl">Δ Lei + Créditos</div>
-        <div class="dcv ${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</div>
-        <div class="dcs">QDD ${esc(fmtBRLShort(t.qAut))} · SPG ${esc(fmtBRLShort(t.lAut))}</div></div>
+      <div class="delta-card">
+        <div class="dcl">Delay (Saldo)</div>
+        ${Math.abs(t.dSal) >= 0.005 ? `<div class="dcv ${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</div>` : ''}
+        <div class="dcs">
+          <div><span class="t qdd">QDD</span> <span>${esc(fmtBRLShort(t.qSal))}</span></div>
+          <div><span class="t spg">SPG</span> <span>${esc(fmtBRLShort(t.lSal))}</span></div>
+        </div>
+      </div>
+      <div class="delta-card">
+        <div class="dcl">Δ Empenhado</div>
+        ${Math.abs(t.dEmp) >= 0.005 ? `<div class="dcv ${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</div>` : ''}
+        <div class="dcs">
+          <div><span class="t qdd">QDD</span> <span>${esc(fmtBRLShort(t.qEmp))}</span></div>
+          <div><span class="t spg">SPG</span> <span>${esc(fmtBRLShort(t.lEmp))}</span></div>
+        </div>
+      </div>
+      <div class="delta-card">
+        <div class="dcl">Δ Lei + Créditos</div>
+        ${Math.abs(t.dAut) >= 0.005 ? `<div class="dcv ${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</div>` : ''}
+        <div class="dcs">
+          <div><span class="t qdd">QDD</span> <span>${esc(fmtBRLShort(t.qAut))}</span></div>
+          <div><span class="t spg">SPG</span> <span>${esc(fmtBRLShort(t.lAut))}</span></div>
+        </div>
+      </div>
     </div>
 
     <div class="dnp-acao-box">
-      <label for="dnpAcaoInput">Despesa Não Programada (ação):</label>
-      <input id="dnpAcaoInput" type="number" step="0.01" placeholder="0,00 (use - para déficit)"
-             data-dnp-acao="${esc(ac.uo.cod + '|' + ac.cod)}"
-             value="${dnpAcao !== 0 ? dnpAcao : ''}">
-      <div class="dnp-total" id="dnpTotalDrawer">Total DNP nesta ação: <strong>${esc(dnpFmt.value)}</strong></div>
+      <div class="box-header">
+        <span class="box-title">⚙ Ajustes manuais</span>
+        <button class="clear-action-btn" id="clearActionBtn" title="${hasAnyAdjust ? 'Limpar DNP e GP desta ação' : 'Nenhum ajuste para limpar'}" ${hasAnyAdjust ? '' : 'disabled style="opacity:.4;cursor:not-allowed"'}>🗑 Limpar esta ação</button>
+      </div>
+      <div class="dnp-inputs-row">
+        <div class="dnp-input-group">
+          <label for="dnpAcaoInput">DNP — Despesa Não Programada</label>
+          <div class="input-with-clear">
+            <input id="dnpAcaoInput" type="number" step="0.01" placeholder="0,00 (+ suplemento / − déficit)"
+                   data-dnp-acao="${esc(gpKey)}"
+                   value="${dnpAcao !== 0 ? dnpAcao : ''}">
+            <button class="clear-btn" data-clear-target="dnp-acao" title="Limpar DNP da ação">×</button>
+          </div>
+          <span class="hint" id="dnpHint">Total na ação: ${esc(dnpFmt.value)} (${esc(dnpFmt.label)})</span>
+        </div>
+        <div class="dnp-input-group gp">
+          <label for="gpAcaoInput">Gasto Pretendido até dez</label>
+          <div class="input-with-clear">
+            <input id="gpAcaoInput" type="number" step="0.01" placeholder="padrão: ${esc(fmtBRL(getTotalGpForAcao(ac)))}"
+                   data-gp-acao="${esc(gpKey)}"
+                   value="${gpOverride ? state.gp.acoes[gpKey] : getTotalGpForAcao(ac)}">
+            <button class="clear-btn" data-clear-target="gp-acao" title="Limpar GP (volta ao padrão = Autorizada)">×</button>
+          </div>
+          <span class="hint">Default = Autorizada ${esc(fmtBRL(t.qAut))} − Não Util. ${esc(fmtBRL(unusedSaldo))}</span>
+        </div>
+      </div>
+      <div class="proj-result ${projFmt.cls}" id="projResultBox">
+        <span class="pr-label">Projeção</span>
+        <span class="pr-value">${esc(projFmt.value)}</span>
+        <span class="pr-badge">${esc(projFmt.label)}</span>
+        <span class="pr-formula">= ${esc(fmtBRLShort(t.qAut))} + ${esc(fmtBRLShort(dnpTotal))} − ${esc(fmtBRLShort(gpVal))}</span>
+      </div>
     </div>
 
     ${macroGroups.length > 1 ? `
@@ -2288,11 +2476,8 @@ function renderDrawer(ac, uo) {
             <div class="src-label" style="color:${g.color}">
               <span class="src-dot" style="background:${g.color}"></span>
               ${esc(g.label)}
-              <span style="font-weight:600;font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px">${g.fontes.length} fonte${g.fontes.length === 1 ? '' : 's'}</span>
             </div>
-            <div class="v">QDD</div>
-            <div class="v">SPG</div>
-            <div class="d">Δ</div>
+            <div class="v">QDD</div><div class="v">SPG</div><div class="d">Δ</div>
           </div>
           <div class="cmp-row"><div class="k">Lei + Créditos</div>
             <div class="v">${esc(fmtBRL(g.tot.qAut))}</div><div class="v">${esc(fmtBRL(g.tot.lAut))}</div>
@@ -2309,12 +2494,11 @@ function renderDrawer(ac, uo) {
 
     <div class="section-title"><span>${macroGroups.length > 1 ? 'Comparativo agregado (total)' : 'Comparativo agregado'}</span></div>
 
-    ${renderCmpBlock(t, { dnpFmt, dnpCls: dnpFmt.cls })}
+    ${renderCmpBlock(t, { dnpFmt, dnpCls: dnpFmt.cls, gpVal, projFmt, projCls: projFmt.cls })}
 
     <div style="margin-top:12px;font-size:11.5px;color:var(--muted);line-height:1.6;background:var(--surface-2);padding:10px;border-radius:8px;border:1px solid var(--border)">
-      <strong style="color:${c.color}">${esc(c.label)}</strong> — ${esc(c.desc)}<br>
-      <em>Nota:</em> QDD calcula <strong>Saldo = Lei + Créditos − Empenhado</strong>; Listagem (SPG) calcula <strong>Saldo = Lei + Créditos − Parcelas</strong>. Quando as parcelas estão zeradas, o saldo da listagem equivale ao valor Lei + Créditos, produzindo delay expressivo.<br>
-      <em>DNP:</em> valor informado manualmente. <span style="color:var(--ok);font-weight:700">Positivo = Valor Suplementado</span> · <span style="color:var(--danger);font-weight:700">Negativo = Déficit Orçamentário</span>. Não integra o cálculo do delay.
+      <em>Fórmula:</em> <strong>Projeção = Autorizada QDD + DNP − Gasto Pretendido</strong>. Meta: R$ 0,00 ao final do exercício.<br>
+      <em>Dica:</em> use os botões <strong>×</strong> ao lado dos campos ou <strong>🗑 Limpar esta ação</strong> para zerar.
     </div>
 
     ${ac.fontesArr && ac.fontesArr.length ? `
@@ -2322,7 +2506,6 @@ function renderDrawer(ac, uo) {
       <div style="display:flex;flex-direction:column;gap:6px">
         ${ac.fontesArr.map(f => {
           const ft = f.tot;
-          const dcls = deltaClass(ft.dSal);
           if (!f.fonte) return '';
           const nomeExibir = f.fonte.subDesc || f.fonte.fonteNome;
           const macro = f.grupoMacro ? GRUPO_FONTE_MACRO[f.grupoMacro] : null;
@@ -2332,53 +2515,29 @@ function renderDrawer(ac, uo) {
               <span class="fonte-summary-main">
                 <span class="ff-code" style="--f-bg:${f.fonte.catBg};--f-color:${f.fonte.catColor}">${esc(f.fonte.fonte)}</span>
                 <span class="ff-name" title="${esc(f.fonte.raw)}">${esc(nomeExibir)}</span>
-                <span class="ff-grupo">${esc(f.fonte.grupoShort)}</span>
                 ${macro ? `<span class="ff-macro" style="--m-color:${macro.color};--m-bg:${macro.bg}">${esc(macro.label)}</span>` : ''}
               </span>
-              <span class="fonte-summary-delta ${dcls}">${esc(deltaText(ft.dSal))}</span>
+              <span class="fonte-summary-delta ${deltaClass(ft.dSal)}">${esc(deltaText(ft.dSal))}</span>
             </summary>
             <table class="inner-breakdown-table">
-              <thead>
-                <tr>
-                  <th class="l">Métrica</th>
-                  <th>QDD (SIOF)</th>
-                  <th>SPG/Dotações</th>
-                  <th>Δ</th>
-                </tr>
-              </thead>
+              <thead><tr><th class="l">Métrica</th><th>QDD</th><th>SPG</th><th>Δ</th></tr></thead>
               <tbody>
-                <tr>
-                  <td class="l">Lei + Créditos</td>
-                  <td>${esc(fmtBRL(ft.qAut))}</td>
-                  <td>${esc(fmtBRL(ft.lAut))}</td>
-                  <td class="${deltaClass(ft.dAut)}" style="font-weight:800">${esc(deltaText(ft.dAut))}</td>
-                </tr>
-                <tr>
-                  <td class="l">Empenhado</td>
-                  <td>${esc(fmtBRL(ft.qEmp))}</td>
-                  <td>${esc(fmtBRL(ft.lEmp))}</td>
-                  <td class="${deltaClass(ft.dEmp)}" style="font-weight:800">${esc(deltaText(ft.dEmp))}</td>
-                </tr>
-                <tr>
-                  <td class="l">Saldo</td>
-                  <td>${esc(fmtBRL(ft.qSal))}</td>
-                  <td>${esc(fmtBRL(ft.lSal))}</td>
-                  <td class="${deltaClass(ft.dSal)}" style="font-weight:800">${esc(deltaText(ft.dSal))}</td>
-                </tr>
+                <tr><td class="l">Lei + Créditos</td><td>${esc(fmtBRL(ft.qAut))}</td><td>${esc(fmtBRL(ft.lAut))}</td><td class="${deltaClass(ft.dAut)}" style="font-weight:800">${esc(deltaText(ft.dAut))}</td></tr>
+                <tr><td class="l">Empenhado</td><td>${esc(fmtBRL(ft.qEmp))}</td><td>${esc(fmtBRL(ft.lEmp))}</td><td class="${deltaClass(ft.dEmp)}" style="font-weight:800">${esc(deltaText(ft.dEmp))}</td></tr>
+                <tr><td class="l">Saldo</td><td>${esc(fmtBRL(ft.qSal))}</td><td>${esc(fmtBRL(ft.lSal))}</td><td class="${deltaClass(ft.dSal)}" style="font-weight:800">${esc(deltaText(ft.dSal))}</td></tr>
               </tbody>
             </table>
-          </details>
-          `;
+          </details>`;
         }).join('')}
       </div>
     ` : ''}
 
     <div class="section-title" style="margin-top:26px">
       <span>Dotações desta ação (${ac.dots.length})</span>
-      <span style="font-weight:700;color:var(--muted);font-size:11px;text-transform:none;letter-spacing:0">|Delay| total ${esc(fmtBRL(totalDeltaAbs))}</span>
+      <span style="font-weight:700;color:var(--muted);font-size:11px;text-transform:none;letter-spacing:0">|Delay| ${esc(fmtBRL(totalDeltaAbs))}</span>
     </div>
 
-    ${ac.dots.length > 6 ? `<input class="dot-search" id="dotSearch" type="search" placeholder="Filtrar por dotação, natureza, região, fonte…">` : ''}
+    ${ac.dots.length > 6 ? `<input class="dot-search" id="dotSearch" type="search" placeholder="Filtrar dotação, natureza, região, fonte…">` : ''}
     <div class="dot-cards" id="dotCards">${ac.dots.map(renderDotCard).join('')}</div>
   `;
 
@@ -2387,11 +2546,11 @@ function renderDrawer(ac, uo) {
     ds.addEventListener('input', () => {
       const q = ds.value.toLowerCase().trim();
       const filtered = q
-        ? ac.dots.filter(d => (d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + (d.locRegiao || '') + ' ' + d.fonteRaw + ' ' + (d.fonte && d.fonte.subDesc ? d.fonte.subDesc : '')).toLowerCase().includes(q))
+        ? ac.dots.filter(d => (d.dotId + ' ' + d.natNome + ' ' + d.locNome + ' ' + (d.locRegiao || '') + ' ' + d.fonteRaw).toLowerCase().includes(q))
         : ac.dots;
       $('#dotCards').innerHTML = filtered.length
         ? filtered.map(renderDotCard).join('')
-        : '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12.5px">Nenhuma dotação corresponde ao filtro.</div>';
+        : '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12.5px">Nenhuma dotação corresponde.</div>';
     });
   }
 }
@@ -2399,7 +2558,7 @@ function renderDrawer(ac, uo) {
 function renderDotCard(d) {
   const c = CLASSIF[d.classif] || CLASSIF.sincronizado;
   const dnp = getDotDnp(d.dotId);
-
+  const isUnused = !!state.unused[d.dotId];
   const nomeFonte = d.fonte ? (d.fonte.subDesc || d.fonte.fonteNome) : null;
   const macro = d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro] : null;
   const subCodigo = d.fonte && d.fonte.detalhe ? (d.fonte.fonte + '.' + d.fonte.detalhe) : (d.fonte ? d.fonte.raw : '');
@@ -2408,7 +2567,6 @@ function renderDotCard(d) {
     <div class="dc-fonte">
       <span class="ff-code" style="--f-bg:${d.fonte.catBg};--f-color:${d.fonte.catColor}">${esc(d.fonte.fonte)}</span>
       <span class="ff-name" title="${esc(d.fonte.raw)}">${esc(nomeFonte)}</span>
-      <span class="ff-grupo">${esc(d.fonte.grupoShort)}</span>
       ${macro ? `<span class="ff-macro" style="--m-color:${macro.color};--m-bg:${macro.bg}">${esc(macro.label)}</span>` : ''}
       ${d.fonte.subDesc && d.fonte.detalhe ? `<div class="ff-sub">Subfonte: ${esc(subCodigo)}</div>` : ''}
       <div class="ff-desc">${esc(d.fonte.catLabel)} · fonte: ${esc(d.fonteRaw)}</div>
@@ -2418,10 +2576,14 @@ function renderDotCard(d) {
     ? `<span class="regiao-tag" title="Região">📍 ${esc(d.locRegiao)}</span>`
     : (REGIOES[d.locCod] ? `<span class="regiao-tag" title="Região">📍 ${esc(REGIOES[d.locCod])}</span>` : '');
 
-  return `<div class="dot-card">
+  return `<div class="dot-card ${isUnused ? 'unused' : ''}">
     <div class="dc-head">
       <span class="dc-id">${esc(d.dotId)}</span>
-      <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}" title="${esc(c.label)}"><span class="bdot"></span>${esc(c.short)}</span>
+      <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}"><span class="bdot"></span>${esc(c.short)}</span>
+      <label style="margin-left:auto; font-size:10px; font-weight:700; color:var(--muted); display:flex; align-items:center; gap:4px; cursor:pointer;" title="Marcar como não utilizada. O saldo vai para a projeção.">
+        <input type="checkbox" class="unused-cb" data-unused-dot="${esc(d.dotId)}" ${isUnused ? 'checked' : ''} style="accent-color:var(--accent);">
+        Não utilizada
+      </label>
     </div>
     ${fonteHtml}
     <div class="dc-meta">${esc(d.natNome)} · ${esc(d.locNome)} ${regiaoTag}</div>
@@ -2440,10 +2602,15 @@ function renderDotCard(d) {
         <div class="dcd ${deltaClass(d.dSal)}">${esc(deltaText(d.dSal))}</div></div>
     </div>
     <div class="dc-dnp">
-      <label>Despesa Não Programada (R$):</label>
-      <input type="number" step="0.01" placeholder="0,00 (use - para déficit)"
-             data-dnp-dot="${esc(d.dotId)}"
-             value="${dnp !== 0 ? dnp : ''}">
+      <div class="dc-input-row">
+        <label>DNP:</label>
+        <div class="input-with-clear">
+          <input type="number" step="0.01" placeholder="0,00"
+                 data-dnp-dot="${esc(d.dotId)}"
+                 value="${dnp !== 0 ? dnp : ''}">
+          <button class="clear-btn" data-clear-target="dnp-dot" data-dot-id="${esc(d.dotId)}" title="Limpar DNP desta dotação">×</button>
+        </div>
+      </div>
     </div>
   </div>`;
 }
@@ -2456,72 +2623,178 @@ function currentDrawerAcao() {
   return uo.acoes.find(a => a.cod === cod) || null;
 }
 
-function refreshDnpUI() {
+function updateDrawerResults() {
   const ac = currentDrawerAcao();
   if (!ac) return;
-  const total = getTotalDnpForAcao(ac);
-  const fmt = fmtDnpSigned(total);
 
-  const drawerTotal = $('#dnpTotalDrawer');
-  if (drawerTotal) drawerTotal.innerHTML = 'Total DNP nesta ação: <strong>' + esc(fmt.value) + '</strong>';
+  const dnpTotal = getTotalDnpForAcao(ac);
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const gpVal = getTotalGpForAcao(ac);
+  const projTotal = getTotalProjForAcao(ac);
+  const projFmt = fmtProjSigned(projTotal);
 
-  const cmpVal = $('#dnpCmpValue');
-  if (cmpVal) cmpVal.textContent = fmt.value;
+  const dnpHint = document.getElementById('dnpHint');
+  if (dnpHint) dnpHint.textContent = 'Total na ação: ' + dnpFmt.value + ' (' + dnpFmt.label + ')';
 
-  const cmpLabel = $('#dnpCmpLabel');
-  if (cmpLabel) cmpLabel.textContent = fmt.label;
-
-  const cmpRow = $('#dnpCmpRow');
-  if (cmpRow) {
-    cmpRow.classList.remove('positivo', 'negativo');
-    if (fmt.cls) cmpRow.classList.add(fmt.cls);
+  const projBox = document.getElementById('projResultBox');
+  if (projBox) {
+    projBox.classList.remove('positivo', 'negativo');
+    if (projFmt.cls === 'positivo') projBox.classList.add('positivo');
+    else if (projFmt.cls === 'negativo') projBox.classList.add('negativo');
+    const prVal = projBox.querySelector('.pr-value');
+    const prBadge = projBox.querySelector('.pr-badge');
+    const prFormula = projBox.querySelector('.pr-formula');
+    if (prVal) prVal.textContent = projFmt.value;
+    if (prBadge) prBadge.textContent = projFmt.label;
+    if (prFormula) prFormula.textContent = '= ' + fmtBRLShort(ac.tot.qAut) + ' + ' + fmtBRLShort(dnpTotal) + ' − ' + fmtBRLShort(gpVal);
   }
 
-  const rowKey = ac.cod + '|' + ac.uo.cod;
-  const rowCell = document.querySelector('td[data-dnp-cell="' + rowKey.replace(/"/g, '\\"') + '"]');
-  if (rowCell) {
-    rowCell.innerHTML = total !== 0
-      ? '<span class="dnp-cell">' + esc(fmtBRLShort(total)) + '</span>'
-      : '<span class="dnp-cell empty">—</span>';
+  const dnpCmpRow = document.getElementById('dnpCmpRow');
+  if (dnpCmpRow) {
+    dnpCmpRow.classList.remove('positivo', 'negativo');
+    if (dnpFmt.cls) dnpCmpRow.classList.add(dnpFmt.cls);
+  }
+  const dnpCmpVal = document.getElementById('dnpCmpValue');
+  if (dnpCmpVal) dnpCmpVal.textContent = dnpFmt.value;
+  const dnpCmpLbl = document.getElementById('dnpCmpLabel');
+  if (dnpCmpLbl) dnpCmpLbl.textContent = dnpFmt.label;
+
+  const gpCmpVal = document.getElementById('gpCmpValue');
+  if (gpCmpVal) gpCmpVal.textContent = fmtBRL(gpVal);
+
+  const projCmpRow = document.getElementById('projCmpRow');
+  if (projCmpRow) {
+    projCmpRow.classList.remove('positivo', 'negativo');
+    if (projFmt.cls === 'positivo') projCmpRow.classList.add('positivo');
+    else if (projFmt.cls === 'negativo') projCmpRow.classList.add('negativo');
+  }
+  const projCmpVal = document.getElementById('projCmpValue');
+  if (projCmpVal) projCmpVal.textContent = projFmt.value;
+  const projCmpLbl = document.getElementById('projCmpLabel');
+  if (projCmpLbl) projCmpLbl.textContent = projFmt.label;
+
+  const clearBtn = document.getElementById('clearActionBtn');
+  if (clearBtn) {
+    const hasAny = dnpTotal !== 0 || hasAcaoGp(ac.uo.cod, ac.cod) || ac.dots.some(d => getDotDnp(d.dotId) !== 0) || ac.dots.some(d => state.unused[d.dotId]);
+    clearBtn.disabled = !hasAny;
+    clearBtn.style.opacity = hasAny ? '1' : '.4';
+    clearBtn.style.cursor = hasAny ? 'pointer' : 'not-allowed';
   }
 
-  clearTimeout(refreshDnpUI._t);
-  refreshDnpUI._t = setTimeout(() => {
-    const t2 = getTotalDnp();
-    const f2 = fmtDnpSigned(t2);
-    const valEl = $('#statDnpValue');
-    if (valEl) valEl.textContent = f2.value;
-    const subEl = $('#statDnpSub');
-    if (subEl) {
-      const entries = countDnpEntries();
-      const lbl = t2 > 0 ? 'suplementado' : t2 < 0 ? 'déficit' : 'neutro';
-      subEl.textContent = entries + ' registro(s) · ' + lbl;
-    }
-    const card = valEl ? valEl.closest('.stat') : null;
-    if (card) {
-      card.classList.remove('dnp', 'dnp-pos', 'dnp-neg');
-      if (t2 > 0) card.classList.add('dnp-pos');
-      else if (t2 < 0) card.classList.add('dnp-neg');
-      else card.classList.add('dnp');
-    }
-  }, 80);
+  updateStatsDnpProj();
 }
 
-$('#dBody').addEventListener('input', e => {
-  const dotInp = e.target.closest('[data-dnp-dot]');
-  if (dotInp) {
-    const v = parseFloat(dotInp.value) || 0;
-    if (v !== 0) state.dnp.dots[dotInp.dataset.dnpDot] = v;
-    else delete state.dnp.dots[dotInp.dataset.dnpDot];
-    saveDnpDebounced(); refreshDnpUI();
+document.addEventListener('input', e => {
+  if (!e.target.closest('#dBody')) return;
+  const t = e.target;
+  if (t.matches('[data-dnp-dot]')) {
+    const v = parseFloat(t.value) || 0;
+    if (v !== 0) state.dnp.dots[t.dataset.dnpDot] = v;
+    else delete state.dnp.dots[t.dataset.dnpDot];
+    saveToStorageDebounced();
     return;
   }
-  const acInp = e.target.closest('[data-dnp-acao]');
-  if (acInp) {
-    const v = parseFloat(acInp.value) || 0;
-    if (v !== 0) state.dnp.acoes[acInp.dataset.dnpAcao] = v;
-    else delete state.dnp.acoes[acInp.dataset.dnpAcao];
-    saveDnpDebounced(); refreshDnpUI();
+  if (t.matches('[data-dnp-acao]')) {
+    const v = parseFloat(t.value) || 0;
+    if (v !== 0) state.dnp.acoes[t.dataset.dnpAcao] = v;
+    else delete state.dnp.acoes[t.dataset.dnpAcao];
+    saveToStorageDebounced();
+    return;
+  }
+  if (t.matches('[data-gp-acao]')) {
+    const raw = t.value.trim();
+    const k = t.dataset.gpAcao;
+    if (raw === '') delete state.gp.acoes[k];
+    else {
+      const v = parseFloat(raw);
+      if (isFinite(v)) state.gp.acoes[k] = v;
+    }
+    saveToStorageDebounced();
+    return;
+  }
+});
+
+document.addEventListener('change', e => {
+  if (!e.target.closest('#dBody')) return;
+  if (e.target.matches('[data-dnp-dot], [data-dnp-acao], [data-gp-acao]')) {
+    updateDrawerResults();
+  } else if (e.target.matches('.unused-cb')) {
+    const dotId = e.target.dataset.unusedDot;
+    if (e.target.checked) state.unused[dotId] = true;
+    else delete state.unused[dotId];
+    saveToStorageDebounced();
+    const ac = currentDrawerAcao();
+    if (ac) {
+      const scrollPos = $('#dBody').scrollTop;
+      renderDrawer(ac, ac.uo);
+      $('#dBody').scrollTop = scrollPos;
+      renderStats(); renderTable();
+    }
+  }
+});
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-clear-target]');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const target = btn.dataset.clearTarget;
+  const ac = currentDrawerAcao();
+  if (!ac) return;
+  const key = ac.uo.cod + '|' + ac.cod;
+
+  if (target === 'dnp-acao') {
+    delete state.dnp.acoes[key];
+    const input = document.getElementById('dnpAcaoInput');
+    if (input) input.value = '';
+    toast('DNP da ação limpo.', 'ok', 2000);
+  } else if (target === 'gp-acao') {
+    delete state.gp.acoes[key];
+    const input = document.getElementById('gpAcaoInput');
+    if (input) input.value = getTotalGpForAcao(ac);
+    toast('GP limpo — voltou à Autorizada QDD.', 'ok', 2000);
+  } else if (target === 'dnp-dot') {
+    const dotId = btn.dataset.dotId;
+    if (!dotId) return;
+    delete state.dnp.dots[dotId];
+    const input = btn.closest('.input-with-clear').querySelector('input');
+    if (input) input.value = '';
+    toast('DNP da dotação limpo.', 'ok', 2000);
+  }
+  saveToStorageDebounced();
+  updateDrawerResults();
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#clearActionBtn')) return;
+  const ac = currentDrawerAcao();
+  if (!ac) return;
+  if (!confirm('Limpar DNP, GP e Dotações não utilizadas desta ação?\n\nA projeção voltará a refletir apenas a Autorizada e os Saldos utilizáveis.')) return;
+  const key = ac.uo.cod + '|' + ac.cod;
+  delete state.dnp.acoes[key];
+  delete state.gp.acoes[key];
+  for (const d of ac.dots) {
+    delete state.dnp.dots[d.dotId];
+    delete state.unused[d.dotId];
+  }
+  saveToStorageDebounced();
+  renderDrawer(ac, ac.uo);
+  updateStatsDnpProj();
+  const dnpCell = document.querySelector('td[data-dnp-acao-row="' + CSS.escape(key) + '"]');
+  if (dnpCell) dnpCell.innerHTML = '<span class="dnp-cell empty">—</span>';
+  const gpCell = document.querySelector('td[data-gp-acao-row="' + CSS.escape(key) + '"]');
+  if (gpCell) {
+    gpCell.innerHTML = '<span class="gp-cell-view" style="color:var(--muted-2);font-weight:600" title="Default = Autorizada QDD − Não Util.">' + fmtBRLShort(ac.tot.qAut) + '</span>';
+  }
+  updateRowProjCell(ac.cod, ac.uo.cod);
+  toast('DNP, GP e Dotações não utilizadas foram limpos.', 'ok');
+});
+
+document.addEventListener('keydown', e => {
+  if (!e.target.closest('#dBody')) return;
+  if (e.target.matches('[data-dnp-dot], [data-dnp-acao], [data-gp-acao]') && e.key === 'Enter') {
+    e.preventDefault();
+    e.target.blur();
   }
 });
 
@@ -2529,46 +2802,15 @@ $('#dClose').onclick = closeDrawer;
 $('#dCloseFoot').onclick = closeDrawer;
 $('#drawerBack').onclick = closeDrawer;
 
-$('#dCopy').onclick = () => {
-  const ac = currentDrawerAcao(); if (!ac) return;
-  const lines = [];
-  lines.push('Ação;' + ac.cod + ';' + ac.nome);
-  lines.push('UO;' + ac.uo.nome);
-  lines.push('');
-  lines.push('Dotação;Localidade;Região;Natureza;Fonte;Subfonte;Destinação;Grupo;GrupoMacro;QDD_LC;SPG_LC;Delta_LC;QDD_Emp;SPG_Emp;Delta_Emp;QDD_Sal;SPG_Sal;Delay;DNP;Classificação');
-  for (const d of ac.dots) {
-    lines.push([
-      d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
-      d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
-      d.fonte ? d.fonte.fonteNome : '', d.fonte ? d.fonte.grupoShort : '',
-      d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro].label : '',
-      d.qAut.toFixed(2), d.lAut.toFixed(2), d.dAut.toFixed(2),
-      d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.dEmp.toFixed(2),
-      d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
-      getDotDnp(d.dotId).toFixed(2),
-      CLASSIF[d.classif].label
-    ].join(';'));
-  }
-  navigator.clipboard.writeText(lines.join('\n'))
-    .then(() => toast('Registros copiados.', 'ok'))
-    .catch(() => toast('Falha ao copiar.', 'err'));
-};
-
 $('#dCsv').onclick = () => {
   const ac = currentDrawerAcao(); if (!ac) return;
-  const lines = [['Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','Destinacao','Grupo','GrupoMacro','QDD_LC','SPG_LC','Delta_LC','QDD_Emp','SPG_Emp','Delta_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Classificacao'].join(';')];
+  const lines = [['Dotacao','Localidade','Regiao','Natureza','Fonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Utilizada','Classificacao'].join(';')];
   for (const d of ac.dots) {
-    lines.push([
-      d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
-      d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
-      d.fonte ? d.fonte.fonteNome : '', d.fonte ? d.fonte.grupoShort : '',
-      d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro].label : '',
-      d.qAut.toFixed(2), d.lAut.toFixed(2), d.dAut.toFixed(2),
-      d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.dEmp.toFixed(2),
-      d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
-      getDotDnp(d.dotId).toFixed(2),
-      CLASSIF[d.classif].label
-    ].map(v => String(v ?? '').replace(/;/g, ',')).join(';'));
+    lines.push([d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
+      d.fonte ? d.fonte.fonte : '', d.qAut.toFixed(2), d.lAut.toFixed(2),
+      d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
+      getDotDnp(d.dotId).toFixed(2), state.unused[d.dotId] ? 'NAO' : 'SIM', CLASSIF[d.classif].label]
+      .map(v => String(v ?? '').replace(/;/g, ',')).join(';'));
   }
   const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -2604,27 +2846,42 @@ $('#searchClear').onclick = () => {
   $('#searchBox').classList.remove('has-value'); renderTable();
 };
 
-$('#btnReset').onclick = () => { if (confirm('Retornar à tela de carregamento? Os dados atuais serão descartados (a DNP permanece salva no navegador).')) location.reload(); };
+$('#btnClearData').onclick = () => {
+  if (!confirm('Limpar TODOS os valores de DNP, GP e Dotações não utilizadas?\n\nQDD e SPG carregados serão mantidos.\n\nAção irreversível.')) return;
+  state.dnp.dots = {}; state.dnp.acoes = {}; state.gp.acoes = {}; state.unused = {};
+  saveToStorage();
+  renderStats(); renderTable();
+  if ($('#drawer').classList.contains('on')) {
+    const ac = currentDrawerAcao();
+    if (ac) renderDrawer(ac, ac.uo);
+  }
+  toast('Todos os valores de DNP, GP e Dotações não utilizadas foram limpos.', 'ok');
+};
+
+$('#btnReset').onclick = () => { if (confirm('Retornar à tela de carregamento? Os dados atuais serão descartados (DNP e GP permanecem salvos).')) location.reload(); };
 $('#btnHelp').onclick = () => { $('#helpBack').hidden = false; };
 $('#uploadHelp').onclick = () => { $('#helpBack').hidden = false; };
 $('#helpClose').onclick = () => { $('#helpBack').hidden = true; };
 $('#helpCloseFoot').onclick = () => { $('#helpBack').hidden = true; };
 $('#helpBack').addEventListener('click', e => { if (e.target === $('#helpBack')) $('#helpBack').hidden = true; });
 
-function dnpSnapshotText() {
+function snapshotText() {
   return JSON.stringify({
     app: 'qdd-x-lei-creditos',
     appVersion: APP_VERSION,
-    schemaVersion: 1,
+    schemaVersion: 3,
     exportedAt: new Date().toISOString(),
-    dots: state.dnp.dots,
-    acoes: state.dnp.acoes
+    dnp: { dots: state.dnp.dots, acoes: state.dnp.acoes },
+    gp: { acoes: state.gp.acoes },
+    unused: state.unused
   }, null, 2);
 }
 function openBackupModal() {
-  $('#backupText').value = dnpSnapshotText();
+  $('#backupText').value = snapshotText();
   $('#backupCount').textContent = countDnpEntries();
   $('#backupTotal').textContent = fmtDnpSigned(getTotalDnp()).value;
+  $('#backupGpCount').textContent = countGpEntries();
+  $('#backupProjTotal').textContent = fmtProjSigned(getTotalProj()).value;
   $('#backupBack').hidden = false;
 }
 function closeBackupModal() { $('#backupBack').hidden = true; }
@@ -2635,29 +2892,47 @@ $('#backupCloseFoot').onclick = closeBackupModal;
 $('#backupBack').addEventListener('click', e => { if (e.target === $('#backupBack')) closeBackupModal(); });
 
 $('#backupRefresh').onclick = () => {
-  $('#backupText').value = dnpSnapshotText();
+  $('#backupText').value = snapshotText();
   $('#backupCount').textContent = countDnpEntries();
   $('#backupTotal').textContent = fmtDnpSigned(getTotalDnp()).value;
-  toast('JSON atualizado a partir do estado atual.', 'ok', 2000);
+  $('#backupGpCount').textContent = countGpEntries();
+  $('#backupProjTotal').textContent = fmtProjSigned(getTotalProj()).value;
+  toast('JSON atualizado.', 'ok', 2000);
 };
 
 $('#backupApply').onclick = () => {
   try {
     const data = JSON.parse($('#backupText').value);
     if (!data || typeof data !== 'object') throw new Error('JSON inválido.');
-    if (!confirm('Aplicar o JSON do campo de texto? Os valores atuais de DNP serão substituídos.')) return;
-    state.dnp.dots = (data.dots && typeof data.dots === 'object') ? data.dots : {};
-    state.dnp.acoes = (data.acoes && typeof data.acoes === 'object') ? data.acoes : {};
-    saveDnpDebounced();
+    if (!confirm('Aplicar o JSON? Os valores atuais serão substituídos.')) return;
+
+    if (data.dnp && (data.dnp.dots || data.dnp.acoes)) {
+      state.dnp.dots = data.dnp.dots || {};
+      state.dnp.acoes = data.dnp.acoes || {};
+      state.gp.acoes = (data.gp && data.gp.acoes) || {};
+      state.unused = data.unused || {};
+    } else if (data.dots || data.acoes) {
+      state.dnp.dots = data.dots || {};
+      state.dnp.acoes = data.acoes || {};
+      state.gp.acoes = {};
+      state.unused = {};
+      toast('Backup v1: DNP importado.', 'warn', 4000);
+    } else {
+      throw new Error('Estrutura não reconhecida.');
+    }
+
+    saveToStorageDebounced();
     $('#backupCount').textContent = countDnpEntries();
     $('#backupTotal').textContent = fmtDnpSigned(getTotalDnp()).value;
+    $('#backupGpCount').textContent = countGpEntries();
+    $('#backupProjTotal').textContent = fmtProjSigned(getTotalProj()).value;
     if (state.model) { renderStats(); renderTable(); }
     if ($('#drawer').classList.contains('on')) {
       const ac = currentDrawerAcao(); if (ac) renderDrawer(ac, ac.uo);
     }
-    toast('Valores de DNP aplicados do JSON.', 'ok');
+    toast('Dados aplicados.', 'ok');
   } catch (err) {
-    toast('Falha ao aplicar JSON: ' + err.message, 'err', 5000);
+    toast('Falha: ' + err.message, 'err', 5000);
   }
 };
 
@@ -2669,495 +2944,783 @@ $('#backupImportFile').addEventListener('change', async e => {
     $('#backupText').value = text;
     $('#backupApply').click();
   } catch (err) {
-    toast('Falha ao ler arquivo: ' + err.message, 'err', 5000);
+    toast('Falha ao ler: ' + err.message, 'err', 5000);
   } finally {
     e.target.value = '';
   }
 });
 
 $('#backupClear').onclick = () => {
-  if (!confirm('Remover TODOS os valores de DNP? A ação é irreversível.')) return;
-  state.dnp.dots = {};
-  state.dnp.acoes = {};
-  saveDnpDebounced();
-  $('#backupText').value = dnpSnapshotText();
+  if (!confirm('Remover TODOS os valores de DNP, GP e Dotações não utilizadas? Irreversível.')) return;
+  state.dnp.dots = {}; state.dnp.acoes = {}; state.gp.acoes = {}; state.unused = {};
+  saveToStorageDebounced();
+  $('#backupText').value = snapshotText();
   $('#backupCount').textContent = 0;
   $('#backupTotal').textContent = '—';
+  $('#backupGpCount').textContent = 0;
+  $('#backupProjTotal').textContent = '—';
   if (state.model) { renderStats(); renderTable(); }
   if ($('#drawer').classList.contains('on')) {
     const ac = currentDrawerAcao(); if (ac) renderDrawer(ac, ac.uo);
   }
-  toast('Valores de DNP removidos.', 'warn');
+  toast('Valores removidos.', 'warn');
 };
 
 $('#backupExport').onclick = () => {
-  const blob = new Blob([dnpSnapshotText()], { type: 'application/json' });
+  const blob = new Blob([snapshotText()], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'dnp_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'qdd_backup_' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 500);
-  toast('Backup JSON exportado.', 'ok');
+  toast('Backup exportado.', 'ok');
 };
 
 $('#btnExport').onclick = () => {
   const rows = getFilteredSorted();
-  if (!rows.length) { toast('Nenhum registro para exportar.', 'warn'); return; }
-  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','Destinacao','Grupo','GrupoMacro','QDD_LC','SPG_LC','Delta_LC','QDD_Emp','SPG_Emp','Delta_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Classificacao'].join(';')];
+  if (!rows.length) { toast('Nenhum registro.', 'warn'); return; }
+  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Delay','DNP_dotacao','GP_acao','Projecao_acao','Utilizada','Classificacao'].join(';')];
   for (const ac of rows) {
+    const acaoDnp = getAcaoDnp(ac.uo.cod, ac.cod);
+    const acaoGp = getTotalGpForAcao(ac);
+    const acaoProj = getTotalProjForAcao(ac);
     for (const d of ac.dots) {
-      lines.push([
-        ac.uo.cod, ac.uo.nome, ac.cod, ac.nome, ac.progCod, ac.progNome,
+      lines.push([ac.uo.cod, ac.uo.nome, ac.cod, ac.nome, ac.progCod, ac.progNome,
         d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
         d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
-        d.fonte ? d.fonte.fonteNome : '', d.fonte ? d.fonte.grupoShort : '',
-        d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro].label : '',
-        d.qAut.toFixed(2), d.lAut.toFixed(2), d.dAut.toFixed(2),
-        d.qEmp.toFixed(2), d.lEmp.toFixed(2), d.dEmp.toFixed(2),
+        d.qAut.toFixed(2), d.lAut.toFixed(2),
+        d.qEmp.toFixed(2), d.lEmp.toFixed(2),
         d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
-        getDotDnp(d.dotId).toFixed(2),
-        CLASSIF[d.classif].label
-      ].map(v => String(v ?? '').replace(/;/g, ',')).join(';'));
+        getDotDnp(d.dotId).toFixed(2), acaoGp.toFixed(2), acaoProj.toFixed(2),
+        state.unused[d.dotId] ? 'NAO' : 'SIM',
+        CLASSIF[d.classif].label].map(v => String(v ?? '').replace(/;/g, ',')).join(';'));
     }
   }
   const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'qdd_vs_lei_creditos_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  a.href = url; a.download = 'qdd_vs_lei_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 500);
   toast('CSV exportado (' + (lines.length - 1) + ' linhas).', 'ok');
 };
 
 /* ════════════════════════════════════════════════════════════════
-   EXPORTAÇÃO PDF / RLTS
+   EXCEL EXPORTS — ExcelJS
    ════════════════════════════════════════════════════════════════ */
 
-function renderActionPrint(ac, uo) {
+function toArgb(hex) {
+  if (!hex) return 'FF000000';
+  let h = String(hex).replace('#', '').trim().toUpperCase();
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  if (h.length === 6) return 'FF' + h;
+  if (h.length === 8) return h;
+  return 'FF000000';
+}
+
+function applyStyle(cell, { bg, fg, bold, size, italic, align, valign, wrap, numFmt, border, borderColor } = {}) {
+  if (bg) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: toArgb(bg) } };
+  if (fg || bold || size || italic) {
+    cell.font = {
+      color: fg ? { argb: toArgb(fg) } : undefined,
+      bold: !!bold,
+      size: size || 11,
+      italic: !!italic,
+      name: 'Calibri'
+    };
+  }
+  if (align || valign || wrap) {
+    cell.alignment = { horizontal: align || 'left', vertical: valign || 'middle', wrapText: !!wrap };
+  }
+  if (numFmt) cell.numFmt = numFmt;
+  if (border) {
+    const b = { style: 'thin', color: { argb: toArgb(borderColor || '#e2e8f0') } };
+    cell.border = { top: b, left: b, bottom: b, right: b };
+  }
+}
+
+function mergeStyled(ws, range, value, style) {
+  ws.mergeCells(range);
+  const ref = range.split(':')[0];
+  const cell = ws.getCell(ref);
+  if (value !== undefined && value !== null) cell.value = value;
+  applyStyle(cell, style || {});
+  return cell;
+}
+
+function writeMoneyCell(cell, value, opts = {}) {
+  cell.value = value;
+  cell.numFmt = opts.numFmt || 'R$ #,##0.00';
+  applyStyle(cell, {
+    bg: opts.bg,
+    fg: opts.fg || '#0f172a',
+    bold: !!opts.bold,
+    align: 'right',
+    size: opts.size || 9,
+    border: true
+  });
+}
+
+function writeDiffCell(cell, value) {
+  const cls = deltaClass(value);
+  const color = cls === 'pos' ? '#16a34a' : cls === 'neg' ? '#dc2626' : '#94a3b8';
+  cell.value = Math.abs(value) < 0.005 ? '—' : value;
+  if (typeof cell.value === 'number') cell.numFmt = '+R$ #,##0.00;-R$ #,##0.00;—';
+  applyStyle(cell, { fg: color, bold: true, align: 'right', size: 9, border: true });
+}
+
+function writeHeaders4(ws, r) {
+  const hdrs = ['MÉTRICA', 'QDD', 'SPG', 'DIF.'];
+  hdrs.forEach((h, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = h;
+    applyStyle(cell, { bg: '#f1f5f9', fg: '#64748b', bold: true, size: 8, align: i === 0 ? 'left' : 'right', border: true });
+  });
+}
+
+/* ── EXPORT 1: Excel da AÇÃO (Layout 4 Colunas igual a este.xlsx) ── */
+async function exportActionExcel(ac, uo) {
+  if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'QDD × Lei + Créditos';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet('Ação ' + ac.cod);
+  ws.columns = [
+    { width: 36 }, { width: 22 }, { width: 22 }, { width: 20 }
+  ];
+  ws.pageSetup = { orientation: 'portrait', fitToPage: true, fitToWidth: 1 };
+
+  let r = 1;
   const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
   const t = ac.tot;
   const dnpTotal = getTotalDnpForAcao(ac);
   const dnpFmt = fmtDnpSigned(dnpTotal);
-  const now = new Date().toLocaleString('pt-BR');
+  const gpVal = getTotalGpForAcao(ac);
+  const projTotal = getTotalProjForAcao(ac);
+  const projFmt = fmtProjSigned(projTotal);
   const macroGroups = groupFontesByMacro(ac);
+  const now = new Date().toLocaleString('pt-BR');
 
-  const cards = [
-    { l: 'Delay (Saldo)',    v: deltaText(t.dSal), cls: deltaClass(t.dSal), s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
-    { l: 'Δ Empenhado',      v: deltaText(t.dEmp), cls: deltaClass(t.dEmp), s: `QDD ${fmtBRLShort(t.qEmp)} · SPG ${fmtBRLShort(t.lEmp)}` },
-    { l: 'Δ Lei + Créditos', v: deltaText(t.dAut), cls: deltaClass(t.dAut), s: `QDD ${fmtBRLShort(t.qAut)} · SPG ${fmtBRLShort(t.lAut)}` }
+  /* === HEADER === */
+  mergeStyled(ws, `A${r}:D${r}`, '💰 QDD × Lei + Créditos — Relatório de Ação', { bg: '#4f46e5', fg: '#ffffff', bold: true, size: 14 });
+  ws.getRow(r).height = 30; r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION}`, { bg: '#4f46e5', fg: '#ffffff', size: 9 });
+  ws.getRow(r).height = 18; r++;
+  r++;
+
+  /* === BADGES === */
+  mergeStyled(ws, `A${r}:B${r}`, c.label.toUpperCase(), { bg: c.color, fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  mergeStyled(ws, `C${r}:D${r}`, uo.nome, { bg: '#64748b', fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  r++;
+
+  /* === ACTION INFO === */
+  mergeStyled(ws, `A${r}:D${r}`, ac.nome, { fg: '#0f172a', bold: true, size: 13, wrap: true });
+  ws.getRow(r).height = 36; r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Ação ${ac.cod} · UO ${uo.cod} · Programa ${ac.progCod}`, { fg: '#64748b', size: 9 });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, ac.progNome, { fg: '#334155', size: 9, italic: true });
+  r++;
+  r++;
+
+  /* === KPI CARDS (3 colunas horizontais) === */
+  const colorMap = { pos: '#16a34a', neg: '#dc2626', zero: '#94a3b8', '': '#0f172a' };
+  const dSalCls = deltaClass(t.dSal);
+  const projClsK = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
+
+  const kpis = [
+    { l: 'DELAY (SALDO)', v: deltaText(t.dSal), vCls: dSalCls, s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
+    { l: 'GASTO PRETENDIDO', v: fmtBRLShort(gpVal), vCls: '', s: `Autorizada ${fmtBRLShort(t.qAut)}` },
+    { l: 'PROJEÇÃO', v: projFmt.value, vCls: projClsK, s: projFmt.label }
   ];
 
-  const dotsHtml = ac.dots.map(d => {
+  kpis.forEach((k, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = k.l;
+    applyStyle(cell, { bg: '#f8fafc', fg: '#64748b', bold: true, size: 8, align: 'left', border: true });
+  });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  ws.getRow(r).height = 16; r++;
+
+  kpis.forEach((k, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = k.v;
+    applyStyle(cell, { bg: '#f8fafc', fg: colorMap[k.vCls] || '#0f172a', bold: true, size: 12, align: 'left', border: true });
+  });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  ws.getRow(r).height = 22; r++;
+
+  kpis.forEach((k, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = k.s;
+    applyStyle(cell, { bg: '#f8fafc', fg: '#64748b', size: 8, align: 'left', border: true });
+  });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  r++;
+  r++;
+
+  /* === COMPARATIVO POR FONTE === */
+  if (macroGroups.length > 0) {
+    mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO POR FONTE', { fg: '#4f46e5', bold: true, size: 10 });
+    for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+    r++;
+
+    macroGroups.forEach((g, idx) => {
+      mergeStyled(ws, `A${r}:D${r}`, '● ' + g.label, { bg: g.color, fg: '#ffffff', bold: true, size: 10, border: true });
+      ws.getRow(r).height = 20; r++;
+
+      writeHeaders4(ws, r); r++;
+
+      const rows = [
+        ['Lei + Créditos', g.tot.qAut, g.tot.lAut, g.tot.dAut],
+        ['Empenhado', g.tot.qEmp, g.tot.lEmp, g.tot.dEmp],
+        ['Saldo', g.tot.qSal, g.tot.lSal, g.tot.dSal]
+      ];
+      for (const [label, qv, lv, dv] of rows) {
+        ws.getCell(r, 1).value = label;
+        applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+        writeMoneyCell(ws.getCell(r, 2), qv);
+        writeMoneyCell(ws.getCell(r, 3), lv);
+        writeDiffCell(ws.getCell(r, 4), dv);
+        r++;
+      }
+      if (idx < macroGroups.length - 1) r++;
+    });
+    r++;
+  }
+
+  /* === COMPARATIVO AGREGADO (TOTAL) === */
+  mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO AGREGADO (TOTAL)', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+
+  writeHeaders4(ws, r); r++;
+
+  const aggRows = [
+    ['Lei + Créditos', t.qAut, t.lAut, t.dAut],
+    ['Empenhado', t.qEmp, t.lEmp, t.dEmp],
+    ['Saldo', t.qSal, t.lSal, t.dSal]
+  ];
+  for (const [label, qv, lv, dv] of aggRows) {
+    ws.getCell(r, 1).value = label;
+    applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+    writeMoneyCell(ws.getCell(r, 2), qv);
+    writeMoneyCell(ws.getCell(r, 3), lv);
+    writeDiffCell(ws.getCell(r, 4), dv);
+    r++;
+  }
+
+  // DNP
+  const dnpBg = dnpFmt.cls === 'positivo' ? '#f0fdf4' : dnpFmt.cls === 'negativo' ? '#fef2f2' : '#fffbeb';
+  const dnpFg = dnpFmt.cls === 'positivo' ? '#16a34a' : dnpFmt.cls === 'negativo' ? '#dc2626' : '#d97706';
+  ws.getCell(r, 1).value = 'DNP';
+  applyStyle(ws.getCell(r, 1), { bg: dnpBg, fg: dnpFg, bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: dnpBg, fg: dnpFg, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = dnpTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;—';
+  applyStyle(ws.getCell(r, 3), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = dnpFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  // GP
+  ws.getCell(r, 1).value = 'Gasto Pretendido';
+  applyStyle(ws.getCell(r, 1), { bg: '#faf5ff', fg: '#9333ea', bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: '#faf5ff', fg: '#9333ea', align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = gpVal;
+  ws.getCell(r, 3).numFmt = 'R$ #,##0.00';
+  applyStyle(ws.getCell(r, 3), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = 'ATÉ DEZ';
+  applyStyle(ws.getCell(r, 4), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  // Projeção
+  const projBg = projFmt.cls === 'positivo' ? '#f0fdf4' : projFmt.cls === 'negativo' ? '#fef2f2' : '#eef2ff';
+  const projFg2 = projFmt.cls === 'positivo' ? '#16a34a' : projFmt.cls === 'negativo' ? '#dc2626' : '#4f46e5';
+  ws.getCell(r, 1).value = 'Projeção';
+  applyStyle(ws.getCell(r, 1), { bg: projBg, fg: projFg2, bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: projBg, fg: projFg2, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = projTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;"R$ 0,00"';
+  applyStyle(ws.getCell(r, 3), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 12, border: true });
+  ws.getCell(r, 4).value = projFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 8, border: true });
+  r++;
+  r++;
+
+  /* === DOTAÇÕES === */
+  mergeStyled(ws, `A${r}:D${r}`, `DOTAÇÕES DESTA AÇÃO (${ac.dots.length})`, { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+
+  for (const d of ac.dots) {
     const dc = CLASSIF[d.classif] || CLASSIF.sincronizado;
+    const isUnused = !!state.unused[d.dotId];
     const nomeFonte = d.fonte ? (d.fonte.subDesc || d.fonte.fonteNome) : '—';
     const macro = d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro] : null;
     const regiao = d.locRegiao || REGIOES[d.locCod] || '';
-    const metaPartes = [d.natNome];
-    if (regiao) metaPartes.push('📍 ' + regiao);
-    if (d.locNome && d.locNome !== regiao && d.locNome !== '—') metaPartes.push(d.locNome);
-    return `
-      <div class="p-dot">
-        <div class="p-dot-head">
-          <span class="p-dot-id">${esc(d.dotId)}</span>
-          <span class="p-badge" style="background:${dc.color}"><span class="p-badge-dot"></span>${esc(dc.label)}</span>
-        </div>
-        <div class="p-dot-fonte">
-          <span class="p-dot-code" style="background:${d.fonte ? d.fonte.catBg : '#f1f5f9'};color:${d.fonte ? d.fonte.catColor : '#64748b'}">${esc(d.fonte ? d.fonte.fonte : '—')}</span>
-          <span class="p-dot-name">${esc(nomeFonte)}</span>
-          ${macro ? `<span class="p-dot-macro" style="color:${macro.color}">· ${esc(macro.label)}</span>` : ''}
-        </div>
-        <div class="p-dot-meta">${metaPartes.map(esc).join(' · ')}</div>
-        <div class="p-dot-metrics">
-          <div>
-            <div class="p-dot-metric-l">Lei + Créditos</div>
-            <div class="p-dot-metric-r"><span class="p-dot-metric-tag q">QDD</span><span class="p-dot-metric-v">${esc(fmtBRL(d.qAut))}</span></div>
-            <div class="p-dot-metric-r"><span class="p-dot-metric-tag s">SPG</span><span class="p-dot-metric-v">${esc(fmtBRL(d.lAut))}</span></div>
-            <div class="p-dot-delta ${deltaClass(d.dAut)}">${esc(deltaText(d.dAut))}</div>
-          </div>
-          <div>
-            <div class="p-dot-metric-l">Empenhado</div>
-            <div class="p-dot-metric-r"><span class="p-dot-metric-tag q">QDD</span><span class="p-dot-metric-v">${esc(fmtBRL(d.qEmp))}</span></div>
-            <div class="p-dot-metric-r"><span class="p-dot-metric-tag s">SPG</span><span class="p-dot-metric-v">${esc(fmtBRL(d.lEmp))}</span></div>
-            <div class="p-dot-delta ${deltaClass(d.dEmp)}">${esc(deltaText(d.dEmp))}</div>
-          </div>
-          <div>
-            <div class="p-dot-metric-l">Saldo</div>
-            <div class="p-dot-metric-r"><span class="p-dot-metric-tag q">QDD</span><span class="p-dot-metric-v">${esc(fmtBRL(d.qSal))}</span></div>
-            <div class="p-dot-metric-r"><span class="p-dot-metric-tag s">SPG</span><span class="p-dot-metric-v">${esc(fmtBRL(d.lSal))}</span></div>
-            <div class="p-dot-delta ${deltaClass(d.dSal)}">${esc(deltaText(d.dSal))}</div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
 
-  const legendHtml = Object.values(CLASSIF).map(v =>
-    `<span class="p-legend-item"><span class="p-legend-dot" style="background:${v.color}"></span>${esc(v.label)}</span>`
-  ).join('');
+    // dot header: dotId | CLASSIF | MACRO | (empty)
+    ws.getCell(r, 1).value = d.dotId + (isUnused ? '  [NÃO UTIL.]' : '');
+    applyStyle(ws.getCell(r, 1), { fg: '#0f172a', bold: true, size: 11, border: true });
+    ws.getCell(r, 2).value = dc.label.toUpperCase();
+    applyStyle(ws.getCell(r, 2), { bg: dc.color, fg: '#ffffff', bold: true, size: 8, align: 'center', border: true });
+    ws.getCell(r, 3).value = macro ? macro.label.toUpperCase() : '';
+    applyStyle(ws.getCell(r, 3), { bg: macro ? macro.color : '#ffffff', fg: macro ? '#ffffff' : '#0f172a', bold: true, size: 8, align: 'center', border: true });
+    applyStyle(ws.getCell(r, 4), { border: true });
+    r++;
 
-  const dnpCls = dnpTotal > 0 ? 'pos' : dnpTotal < 0 ? 'neg' : 'zero';
+    // fonte (merged A:D)
+    const fonteLine = `${d.fonte ? d.fonte.fonte : '—'} · ${nomeFonte}`;
+    mergeStyled(ws, `A${r}:D${r}`, fonteLine, { bg: '#f8fafc', fg: '#334155', size: 9, border: true, wrap: true });
+    ws.getRow(r).height = Math.max(18, Math.ceil(fonteLine.length / 60) * 15);
+    r++;
 
-  const srcHtml = macroGroups.length > 1 ? `
-    <div class="p-section-title">Comparativo por Fonte</div>
-    ${macroGroups.map(g => `
-      <div class="p-src-block">
-        <div class="p-src-head" style="color:${g.color}">
-          <span class="p-src-dot" style="background:${g.color}"></span>
-          ${esc(g.label)}
-        </div>
-        <table class="p-table">
-          <thead>
-            <tr><th class="l">Métrica</th><th>QDD (SIOF)</th><th>SPG</th><th>Δ</th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="l">Lei + Créditos</td><td>${esc(fmtBRL(g.tot.qAut))}</td><td>${esc(fmtBRL(g.tot.lAut))}</td><td class="${deltaClass(g.tot.dAut)}">${esc(deltaText(g.tot.dAut))}</td></tr>
-            <tr><td class="l">Empenhado</td><td>${esc(fmtBRL(g.tot.qEmp))}</td><td>${esc(fmtBRL(g.tot.lEmp))}</td><td class="${deltaClass(g.tot.dEmp)}">${esc(deltaText(g.tot.dEmp))}</td></tr>
-            <tr><td class="l">Saldo</td><td>${esc(fmtBRL(g.tot.qSal))}</td><td>${esc(fmtBRL(g.tot.lSal))}</td><td class="${deltaClass(g.tot.dSal)}">${esc(deltaText(g.tot.dSal))}</td></tr>
-          </tbody>
-        </table>
-      </div>
-    `).join('')}
-  ` : '';
+    // meta (merged A:D)
+    const partes = [d.natNome];
+    if (regiao) partes.push('Região: ' + regiao);
+    if (d.locNome && d.locNome !== regiao && d.locNome !== '—') partes.push(d.locNome);
+    const metaLine = partes.join(' · ');
+    mergeStyled(ws, `A${r}:D${r}`, metaLine, { bg: '#f8fafc', fg: '#64748b', size: 9, border: true, wrap: true });
+    ws.getRow(r).height = Math.max(18, Math.ceil(metaLine.length / 60) * 15);
+    r++;
 
-  return `
-    <div class="p-header">
-      <div>
-        <h1>💰 QDD × Lei + Créditos</h1>
-        <div class="p-sub">Relatório de Ação — Detalhamento por dotação</div>
-      </div>
-      <div class="p-meta">${esc(now)}<br>v${esc(APP_VERSION)}</div>
-    </div>
+    // métricas header
+    writeHeaders4(ws, r); r++;
 
-    <div class="p-action-head">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
-        <span class="p-badge" style="background:${c.color}"><span class="p-badge-dot"></span>${esc(c.label)}</span>
-        <span class="p-badge" style="background:#64748b">${esc(uo.nome)}</span>
-      </div>
-      <div class="p-action-name">${esc(ac.nome)}</div>
-      <div class="p-action-meta">Ação ${esc(ac.cod)} · UO ${esc(uo.cod)} · Programa ${esc(ac.progCod)}</div>
-      <div class="p-action-meta p-inline">${esc(ac.progNome)}</div>
-    </div>
+    // métricas data
+    const metr = [
+      ['Lei + Créditos', d.qAut, d.lAut, d.dAut],
+      ['Empenhado', d.qEmp, d.lEmp, d.dEmp],
+      ['Saldo', d.qSal, d.lSal, d.dSal]
+    ];
+    for (const [label, qv, lv, dv] of metr) {
+      ws.getCell(r, 1).value = label;
+      applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+      writeMoneyCell(ws.getCell(r, 2), qv);
+      writeMoneyCell(ws.getCell(r, 3), lv);
+      writeDiffCell(ws.getCell(r, 4), dv);
+      r++;
+    }
+    r++;
+  }
 
-    <div class="p-cards">
-      ${cards.map(k => `
-        <div class="p-card">
-          <div class="p-card-l">${esc(k.l)}</div>
-          <div class="p-card-v ${k.cls}">${esc(k.v)}</div>
-          <div class="p-card-s">${esc(k.s)}</div>
-        </div>`).join('')}
-    </div>
+  /* === LEGENDA === */
+  mergeStyled(ws, `A${r}:D${r}`, 'LEGENDA', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
 
-    ${srcHtml}
+  const legendEntries = Object.values(CLASSIF);
+  for (let i = 0; i < legendEntries.length; i += 2) {
+    const items = legendEntries.slice(i, i + 2);
+    items.forEach((v, j) => {
+      const cell = ws.getCell(r, j + 1);
+      cell.value = {
+        richText: [
+          { font: { size: 12, bold: true, color: { argb: toArgb(v.color) } }, text: '● ' },
+          { font: { size: 9, color: { argb: toArgb('#334155') } }, text: v.label }
+        ]
+      };
+      applyStyle(cell, { align: 'left' });
+    });
+    r++;
+  }
+  r++;
 
-    <div class="p-section-title">${macroGroups.length > 1 ? 'Comparativo Agregado (Total)' : 'Comparativo Agregado'}</div>
-    <table class="p-table">
-      <thead>
-        <tr><th class="l">Métrica</th><th>QDD (SIOF)</th><th>SPG</th><th>Δ</th></tr>
-      </thead>
-      <tbody>
-        <tr><td class="l">Lei + Créditos</td><td>${esc(fmtBRL(t.qAut))}</td><td>${esc(fmtBRL(t.lAut))}</td><td class="${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</td></tr>
-        <tr><td class="l">Empenhado</td><td>${esc(fmtBRL(t.qEmp))}</td><td>${esc(fmtBRL(t.lEmp))}</td><td class="${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</td></tr>
-        <tr><td class="l">Saldo</td><td>${esc(fmtBRL(t.qSal))}</td><td>${esc(fmtBRL(t.lSal))}</td><td class="${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</td></tr>
-        <tr><td class="l">Despesa Não Programada</td><td>—</td><td><strong>${esc(dnpFmt.value)}</strong></td><td class="${dnpCls}" style="text-transform:uppercase;font-size:8.5px;font-weight:800">${esc(dnpFmt.label)}</td></tr>
-      </tbody>
-    </table>
+  /* === FOOTER === */
+  mergeStyled(ws, `A${r}:D${r}`, 'Fontes: QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#64748b', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, 'Projeção = Autorizada QDD + DNP − Gasto Pretendido. (GP padrão desconta as dotações não utilizadas).', { fg: '#64748b', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION} · github.com/wendellmoura`, { fg: '#94a3b8', size: 8 });
 
-    <div class="p-section-title">Dotações desta ação (${ac.dots.length})</div>
-    <div class="p-dots">${dotsHtml}</div>
-
-    <div class="p-section-title">Legenda</div>
-    <div class="p-legend">${legendHtml}</div>
-
-    <div class="p-footer">
-      <div>
-        <strong>Fontes:</strong> QDD (SIOF) · Lei + Créditos (SPG)<br>
-        Nota: QDD calcula Saldo = LC − Empenhado; SPG calcula Saldo = LC − Parcelas.<br>
-        Gerado em ${esc(now)} · Comparador v${esc(APP_VERSION)}
-      </div>
-      <div style="text-align:right">
-        <strong>Código-fonte:</strong><br>
-        <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/wendellmoura</a>
-      </div>
-    </div>
-  `;
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `acao_${ac.cod}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+  toast('Excel da ação exportado.', 'ok');
 }
 
-/* RLTS — Relatório Simples.
-   Full-width A4, sem bordas. Contém comparativo por fonte + total agregado. */
-function renderRltsPrint(ac, uo) {
+/* ── EXPORT 2: Excel RLTS ── */
+async function exportRltsExcel(ac, uo) {
+  if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'QDD × Lei + Créditos';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet('RLTS ' + ac.cod);
+  ws.columns = [
+    { width: 34 }, { width: 20 }, { width: 20 }, { width: 20 }
+  ];
+  ws.pageSetup = { orientation: 'portrait', fitToPage: true, fitToWidth: 1 };
+
+  let r = 1;
   const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
   const t = ac.tot;
   const dnpTotal = getTotalDnpForAcao(ac);
   const dnpFmt = fmtDnpSigned(dnpTotal);
-  const now = new Date().toLocaleString('pt-BR');
+  const gpVal = getTotalGpForAcao(ac);
+  const projTotal = getTotalProjForAcao(ac);
+  const projFmt = fmtProjSigned(projTotal);
   const macroGroups = groupFontesByMacro(ac);
-
-  const dSal = t.dSal;
-  const dSalCls = deltaClass(dSal);
-  const dSalText = deltaText(dSal);
-  const dSalPct = (t.lAut && t.lAut !== 0) ? Math.abs(dSal) / t.lAut * 100 : 0;
-
-  const srcRowsHtml = macroGroups.map(g => `
-    <tr class="src-head">
-      <td class="l" colspan="4" style="color:${g.color}">
-        <span class="rlts-src-dot" style="background:${g.color}"></span>
-        ${esc(g.label)}
-        <span style="font-weight:600;font-size:10px;color:#94a3b8;text-transform:none;letter-spacing:0;margin-left:6px">${g.fontes.length} fonte${g.fontes.length === 1 ? '' : 's'}</span>
-      </td>
-    </tr>
-    <tr>
-      <td class="l">Lei + Créditos</td>
-      <td>${esc(fmtBRL(g.tot.qAut))}</td>
-      <td>${esc(fmtBRL(g.tot.lAut))}</td>
-      <td class="${deltaClass(g.tot.dAut)}">${esc(deltaText(g.tot.dAut))}</td>
-    </tr>
-    <tr>
-      <td class="l">Empenhado</td>
-      <td>${esc(fmtBRL(g.tot.qEmp))}</td>
-      <td>${esc(fmtBRL(g.tot.lEmp))}</td>
-      <td class="${deltaClass(g.tot.dEmp)}">${esc(deltaText(g.tot.dEmp))}</td>
-    </tr>
-    <tr>
-      <td class="l">Saldo</td>
-      <td>${esc(fmtBRL(g.tot.qSal))}</td>
-      <td>${esc(fmtBRL(g.tot.lSal))}</td>
-      <td class="${deltaClass(g.tot.dSal)}">${esc(deltaText(g.tot.dSal))}</td>
-    </tr>
-  `).join('');
-
-  return `
-    <div class="rlts">
-      <header class="rlts-head">
-        <h1>QDD × Lei + Créditos</h1>
-        <div class="rlts-sub">Relatório Simples · RLTS</div>
-        <div class="rlts-meta">Gerado em ${esc(now)} · Comparador v${esc(APP_VERSION)}</div>
-      </header>
-
-      <div class="rlts-action">
-        <div class="rlts-badges">
-          <span class="p-badge" style="background:${c.color}"><span class="p-badge-dot"></span>${esc(c.label)}</span>
-          <span class="p-badge" style="background:#64748b">${esc(uo.nome)}</span>
-        </div>
-        <div class="rlts-action-name">${esc(ac.nome)}</div>
-        <div class="rlts-action-info">Ação ${esc(ac.cod)} · UO ${esc(uo.cod)} · Programa ${esc(ac.progCod)}</div>
-        <div class="rlts-action-info p-inline">${esc(ac.progNome)}</div>
-      </div>
-
-      <div class="rlts-hero">
-        <div class="rlts-hero-label">Delay Total</div>
-        <div class="rlts-hero-value ${dSalCls}">${esc(dSalText)}</div>
-        <div class="rlts-hero-sub">${dSalPct > 0 ? dSalPct.toFixed(2).replace('.', ',') + '% não sincronizado' : 'saldos coincidem'}</div>
-        <div class="rlts-hero-badge" style="background:${c.bg};color:${c.color}">${esc(c.label)}</div>
-      </div>
-
-      ${macroGroups.length > 0 ? `
-        <div class="rlts-section-title">Comparativo por fonte (${macroGroups.length} grupo${macroGroups.length === 1 ? '' : 's'})</div>
-        <table class="rlts-table">
-          <thead>
-            <tr>
-              <th class="l">Fonte / Métrica</th>
-              <th>QDD (SIOF)</th>
-              <th>SPG</th>
-              <th>Δ</th>
-            </tr>
-          </thead>
-          <tbody>${srcRowsHtml}</tbody>
-        </table>
-      ` : ''}
-
-      <div class="rlts-section-title">Total agregado</div>
-      <table class="rlts-table totals">
-        <thead>
-          <tr>
-            <th class="l">Métrica</th>
-            <th>QDD (SIOF)</th>
-            <th>SPG</th>
-            <th>Δ</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="l">Lei + Créditos</td>
-            <td>${esc(fmtBRL(t.qAut))}</td>
-            <td>${esc(fmtBRL(t.lAut))}</td>
-            <td class="${deltaClass(t.dAut)}">${esc(deltaText(t.dAut))}</td>
-          </tr>
-          <tr>
-            <td class="l">Empenhado</td>
-            <td>${esc(fmtBRL(t.qEmp))}</td>
-            <td>${esc(fmtBRL(t.lEmp))}</td>
-            <td class="${deltaClass(t.dEmp)}">${esc(deltaText(t.dEmp))}</td>
-          </tr>
-          <tr>
-            <td class="l">Saldo</td>
-            <td>${esc(fmtBRL(t.qSal))}</td>
-            <td>${esc(fmtBRL(t.lSal))}</td>
-            <td class="${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</td>
-          </tr>
-          <tr>
-            <td class="l">Despesa Não Programada</td>
-            <td>—</td>
-            <td>${esc(dnpFmt.value)}</td>
-            <td style="font-size:9.5px;font-weight:800;text-transform:uppercase">${esc(dnpFmt.label)}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <footer class="rlts-foot">
-        <strong>QDD (SIOF)</strong> · <strong>Lei + Créditos (SPG)</strong><br>
-        Delay = (SPG Saldo) − (QDD Saldo) · DNP não integra o delay<br>
-        <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/wendellmoura</a>
-      </footer>
-    </div>
-  `;
-}
-
-function renderFullPrint() {
-  const rows = getFilteredSorted();
-  const s = state.model.stats;
-  const sc = state.scope;
+  const dSalPct = (t.lAut && t.lAut !== 0) ? Math.abs(t.dSal) / t.lAut * 100 : 0;
   const now = new Date().toLocaleString('pt-BR');
 
-  const dSal = s.totLSal - s.totQSal;
-  const totalDelayAbs = Math.abs(dSal) + Math.abs(s.totLEmp - s.totQEmp);
-  const divergentes = s.totalDots - s.byClassif.sincronizado;
-  const dnpTotal = getTotalDnp();
-  const dnpFmt = fmtDnpSigned(dnpTotal);
-  const dnpCls = dnpTotal > 0 ? 'pos' : dnpTotal < 0 ? 'neg' : 'zero';
+  /* Header */
+  mergeStyled(ws, `A${r}:D${r}`, 'QDD × Lei + Créditos', { fg: '#0f172a', bold: true, size: 18 });
+  ws.getRow(r).height = 30; r++;
+  mergeStyled(ws, `A${r}:D${r}`, 'RELATÓRIO SIMPLES · RLTS', { fg: '#4f46e5', bold: true, size: 10 });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION}`, { fg: '#94a3b8', size: 9 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r += 2;
 
-  const filtros = [];
-  filtros.push(`Classificação: <strong>${esc(state.filter === 'all' ? 'Todos' : ((CLASSIF[state.filter] || {}).label || state.filter))}</strong>`);
-  if (state.query) filtros.push(`Pesquisa: <strong>"${esc(state.query)}"</strong>`);
-  if (sc.applied) filtros.push(`Escopo: <strong>${esc(sc.unicaUo ? '1 UO' : sc.uos.length + ' UOs')}</strong> (prefixo <code>${esc(sc.prefix)}</code>)`);
-  else if (!sc.unicaUo) filtros.push(`Escopo: <strong>varredura completa</strong>`);
+  /* Badges */
+  mergeStyled(ws, `A${r}:B${r}`, c.label.toUpperCase(), { bg: c.color, fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  mergeStyled(ws, `C${r}:D${r}`, uo.nome, { bg: '#64748b', fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  r++;
 
-  const cards = [
-    { l: 'QDD (Autorizada)',      v: fmtBRLShort(s.totQAut),  s: fmtBRL(s.totQAut),  cls: '' },
-    { l: 'Lei + Créditos',        v: fmtBRLShort(s.totLAut),  s: fmtBRL(s.totLAut),  cls: '' },
-    { l: 'Delay (Saldo)',         v: (dSal>=0?'+':'') + fmtBRLShort(dSal), s: fmtBRL(dSal), cls: Math.abs(dSal) < 0.01 ? 'zero' : (dSal > 0 ? 'pos' : 'neg') },
-    { l: 'Atraso total |Δ|',      v: fmtBRLShort(totalDelayAbs), s: '|saldo| + |empenhado|', cls: '' },
-    { l: 'Despesa Não Programada', v: dnpFmt.value, s: countDnpEntries() + ' registro(s)', cls: dnpCls },
-    { l: 'Divergentes',           v: divergentes + ' / ' + s.totalDots, s: s.byClassif.critico + ' críticas', cls: divergentes > 0 ? 'neg' : 'pos' }
-  ];
+  /* Action */
+  mergeStyled(ws, `A${r}:D${r}`, ac.nome, { fg: '#0f172a', bold: true, size: 15, wrap: true });
+  ws.getRow(r).height = 34; r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Ação ${ac.cod} · UO ${uo.cod} · Programa ${ac.progCod}`, { fg: '#64748b', size: 9 });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, ac.progNome, { fg: '#475569', size: 9, italic: true });
+  r += 2;
 
-  const rowsHtml = rows.map((ac, i) => {
-    const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
-    return `
-      <tr>
-        <td class="l" style="font-family:monospace;font-size:8px;color:#94a3b8">${i+1}</td>
-        <td class="l" style="max-width:220px">
-          <div style="font-weight:700;font-size:9.5px;color:#0f172a;line-height:1.25">${esc(ac.nome)}</div>
-          <div style="font-family:monospace;font-size:8.5px;color:#94a3b8;margin-top:1px">${esc(ac.cod)}</div>
-        </td>
-        <td class="l" style="font-size:8.5px;color:#64748b">${esc(ac.uo.nome.slice(0, 24))}${ac.uo.nome.length > 24 ? '…' : ''}</td>
-        <td><span class="p-cls-mini" style="background:${c.bg};color:${c.color}">${esc(c.short)}</span></td>
-        <td>${ac.tot.dots}</td>
-        <td>${esc(fmtBRLShort(ac.tot.qSal))}</td>
-        <td>${esc(fmtBRLShort(ac.tot.lSal))}</td>
-        <td class="${deltaClass(ac.tot.dSal)}">${esc(deltaText(ac.tot.dSal))}</td>
-        <td class="${deltaClass(ac.tot.dEmp)}">${esc(deltaText(ac.tot.dEmp))}</td>
-      </tr>`;
-  }).join('');
+  /* Hero */
+  const dSalCls = deltaClass(t.dSal);
+  const heroFg = dSalCls === 'pos' ? '#16a34a' : dSalCls === 'neg' ? '#dc2626' : '#94a3b8';
 
-  const legendHtml = Object.values(CLASSIF).map(v =>
-    `<span class="p-legend-item"><span class="p-legend-dot" style="background:${v.color}"></span>${esc(v.label)}</span>`
-  ).join('');
+  ws.getCell(r, 1).value = 'DELAY TOTAL';
+  applyStyle(ws.getCell(r, 1), { bg: '#f8fafc', fg: '#4f46e5', bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = deltaText(t.dSal);
+  applyStyle(ws.getCell(r, 2), { bg: '#f8fafc', fg: heroFg, bold: true, size: 14, align: 'center', border: true });
+  ws.getCell(r, 3).value = dSalPct > 0 ? dSalPct.toFixed(2).replace('.', ',') + '% não sincronizado' : 'saldos coincidem';
+  applyStyle(ws.getCell(r, 3), { bg: '#f8fafc', fg: '#64748b', size: 9, align: 'center', border: true });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  r++;
 
-  return `
-    <div class="p-header">
-      <div>
-        <h1>💰 QDD × Lei + Créditos</h1>
-        <div class="p-sub">Relatório Consolidado — ${rows.length} ação(ões) exibida(s)</div>
-      </div>
-      <div class="p-meta">${esc(now)}<br>v${esc(APP_VERSION)}</div>
-    </div>
+  const projCls = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
+  const projFg = projCls === 'pos' ? '#16a34a' : projCls === 'neg' ? '#dc2626' : '#94a3b8';
 
-    <div class="p-filter-bar">${filtros.join(' &nbsp;·&nbsp; ')}</div>
+  ws.getCell(r, 1).value = 'PROJEÇÃO';
+  applyStyle(ws.getCell(r, 1), { bg: '#f8fafc', fg: '#4f46e5', bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = projFmt.value;
+  applyStyle(ws.getCell(r, 2), { bg: '#f8fafc', fg: projFg, bold: true, size: 14, align: 'center', border: true });
+  ws.getCell(r, 3).value = projFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 3), { bg: '#f8fafc', fg: '#64748b', size: 9, align: 'center', border: true });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  r += 2;
 
-    <div class="p-cards">
-      ${cards.map(k => `
-        <div class="p-card">
-          <div class="p-card-l">${esc(k.l)}</div>
-          <div class="p-card-v ${k.cls || ''}">${esc(k.v)}</div>
-          <div class="p-card-s">${esc(k.s)}</div>
-        </div>`).join('')}
-    </div>
+  /* Comparativo */
+  if (macroGroups.length > 0) {
+    mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO POR FONTE', { fg: '#4f46e5', bold: true, size: 10 });
+    for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+    r++;
+    writeHeaders4(ws, r); r++;
 
-    <div class="p-section-title">Ações (${rows.length})</div>
-    <table class="p-full-table">
-      <thead>
-        <tr>
-          <th class="l" style="width:18px">#</th>
-          <th class="l" style="width:38%">Ação</th>
-          <th class="l" style="width:15%">UO</th>
-          <th style="width:42px">Class.</th>
-          <th style="width:28px">Dots</th>
-          <th>Saldo QDD</th>
-          <th>Saldo SPG</th>
-          <th>Delay</th>
-          <th>Δ Emp.</th>
-        </tr>
-      </thead>
-      <tbody>${rowsHtml}</tbody>
-    </table>
-
-    <div class="p-section-title">Legenda de classificação</div>
-    <div class="p-legend">${legendHtml}</div>
-
-    <div class="p-footer">
-      <div>
-        <strong>Fontes:</strong> QDD (SIOF) · Lei + Créditos (SPG)<br>
-        Conciliação por dotação · Delay = (SPG Saldo) − (QDD Saldo).<br>
-        Gerado em ${esc(now)} · Comparador v${esc(APP_VERSION)}
-      </div>
-      <div style="text-align:right">
-        <strong>Código-fonte:</strong><br>
-        <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/wendellmoura</a>
-      </div>
-    </div>
-  `;
-}
-
-function openPrintPreview(kind) {
-  const pd = $('#printDoc');
-  if (!pd) return;
-  if (!state.model) { toast('Nenhum dado carregado.', 'warn'); return; }
-
-  if (kind === 'action') {
-    const ac = currentDrawerAcao();
-    if (!ac) { toast('Abra uma ação antes de gerar o PDF.', 'warn'); return; }
-    pd.innerHTML = renderActionPrint(ac, ac.uo);
-  } else if (kind === 'rlts') {
-    const ac = currentDrawerAcao();
-    if (!ac) { toast('Abra uma ação antes de gerar o RLTS.', 'warn'); return; }
-    pd.innerHTML = renderRltsPrint(ac, ac.uo);
-  } else {
-    pd.innerHTML = renderFullPrint();
+    for (const g of macroGroups) {
+      mergeStyled(ws, `A${r}:D${r}`, '● ' + g.label, { bg: g.color, fg: '#ffffff', bold: true, size: 10, border: true });
+      ws.getRow(r).height = 20; r++;
+      const rows = [
+        ['Lei + Créditos', g.tot.qAut, g.tot.lAut, g.tot.dAut],
+        ['Empenhado', g.tot.qEmp, g.tot.lEmp, g.tot.dEmp],
+        ['Saldo', g.tot.qSal, g.tot.lSal, g.tot.dSal]
+      ];
+      for (const [label, qv, lv, dv] of rows) {
+        ws.getCell(r, 1).value = label;
+        applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+        writeMoneyCell(ws.getCell(r, 2), qv);
+        writeMoneyCell(ws.getCell(r, 3), lv);
+        writeDiffCell(ws.getCell(r, 4), dv);
+        r++;
+      }
+    }
   }
 
-  document.body.classList.add('print-mode');
-  setTimeout(() => window.print(), 120);
+  /* Total */
+  mergeStyled(ws, `A${r}:D${r}`, 'TOTAL AGREGADO', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+  writeHeaders4(ws, r); r++;
+
+  const mainRows = [
+    ['Lei + Créditos', t.qAut, t.lAut, t.dAut],
+    ['Empenhado', t.qEmp, t.lEmp, t.dEmp],
+    ['Saldo', t.qSal, t.lSal, t.dSal]
+  ];
+  for (const [label, qv, lv, dv] of mainRows) {
+    ws.getCell(r, 1).value = label;
+    applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+    writeMoneyCell(ws.getCell(r, 2), qv);
+    writeMoneyCell(ws.getCell(r, 3), lv);
+    writeDiffCell(ws.getCell(r, 4), dv);
+    r++;
+  }
+
+  // DNP
+  const dnpBg = dnpFmt.cls === 'positivo' ? '#f0fdf4' : dnpFmt.cls === 'negativo' ? '#fef2f2' : '#fffbeb';
+  const dnpFg = dnpFmt.cls === 'positivo' ? '#16a34a' : dnpFmt.cls === 'negativo' ? '#dc2626' : '#d97706';
+  ws.getCell(r, 1).value = 'DNP';
+  applyStyle(ws.getCell(r, 1), { bg: dnpBg, fg: dnpFg, bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: dnpBg, fg: dnpFg, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = dnpTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;—';
+  applyStyle(ws.getCell(r, 3), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = dnpFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  // GP
+  ws.getCell(r, 1).value = 'Gasto Pretendido';
+  applyStyle(ws.getCell(r, 1), { bg: '#faf5ff', fg: '#9333ea', bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: '#faf5ff', fg: '#9333ea', align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = gpVal;
+  ws.getCell(r, 3).numFmt = 'R$ #,##0.00';
+  applyStyle(ws.getCell(r, 3), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = 'ATÉ DEZ';
+  applyStyle(ws.getCell(r, 4), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  // Projeção
+  const projBg = projFmt.cls === 'positivo' ? '#f0fdf4' : projFmt.cls === 'negativo' ? '#fef2f2' : '#eef2ff';
+  const projFg2 = projFmt.cls === 'positivo' ? '#16a34a' : projFmt.cls === 'negativo' ? '#dc2626' : '#4f46e5';
+  ws.getCell(r, 1).value = 'Projeção';
+  applyStyle(ws.getCell(r, 1), { bg: projBg, fg: projFg2, bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: projBg, fg: projFg2, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = projTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;"R$ 0,00"';
+  applyStyle(ws.getCell(r, 3), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 12, border: true });
+  ws.getCell(r, 4).value = projFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 8, border: true });
+  r += 2;
+
+  /* Footer */
+  mergeStyled(ws, `A${r}:D${r}`, 'QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#94a3b8', size: 8, italic: true });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { top: { style: 'medium', color: { argb: 'FFE2E8F0' } } };
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, 'Projeção = Autorizada QDD + DNP − Gasto Pretendido. Meta: R$ 0,00.', { fg: '#94a3b8', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION} · github.com/wendellmoura`, { fg: '#94a3b8', size: 8 });
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rlts_${ac.cod}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+  toast('Excel RLTS exportado.', 'ok');
 }
 
-function exitPrintMode() {
-  document.body.classList.remove('print-mode');
-  setTimeout(() => { const pd = $('#printDoc'); if (pd) pd.innerHTML = ''; }, 250);
+/* ── EXPORT 3: Excel CONSOLIDADO ── */
+async function exportFullExcel() {
+  if (!state.model) { toast('Nenhum dado carregado.', 'warn'); return; }
+  if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
+
+  const rows = getFilteredSorted();
+  if (!rows.length) { toast('Nenhum registro.', 'warn'); return; }
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'QDD × Lei + Créditos';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet('Relatório Completo');
+  ws.columns = [
+    { width: 6 },   { width: 44 },  { width: 28 },  { width: 16 },
+    { width: 18 },  { width: 18 },  { width: 18 },  { width: 18 }
+  ];
+  ws.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1 };
+
+  let r = 1;
+  const s = state.model.stats;
+  const dSal = s.totLSal - s.totQSal;
+  const divergentes = s.totActions - s.byClassifActions.sincronizado;
+  const dnpTotal = getTotalDnp();
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const projTotal = getTotalProj();
+  const projFmt = fmtProjSigned(projTotal);
+  const now = new Date().toLocaleString('pt-BR');
+
+  mergeStyled(ws, `A${r}:H${r}`, '💰 QDD × Lei + Créditos — Relatório Consolidado', { bg: '#4f46e5', fg: '#ffffff', bold: true, size: 14 });
+  ws.getRow(r).height = 30; r++;
+  mergeStyled(ws, `A${r}:H${r}`, `Gerado em ${now} · v${APP_VERSION} · ${rows.length} ação(ões)`, { bg: '#4f46e5', fg: '#ffffff', size: 9 });
+  ws.getRow(r).height = 18; r++;
+  r++;
+
+  const filterParts = [];
+  filterParts.push('Classificação: ' + (state.filter === 'all' ? 'Todos' : ((CLASSIF[state.filter] || {}).label || state.filter)));
+  if (state.query) filterParts.push('Pesquisa: "' + state.query + '"');
+  mergeStyled(ws, `A${r}:H${r}`, filterParts.join(' · '), { bg: '#f8fafc', fg: '#334155', size: 9, border: true });
+  r += 2;
+
+  const colorMap = { pos: '#16a34a', neg: '#dc2626', zero: '#94a3b8', '': '#0f172a' };
+  const cards = [
+    { l: 'QDD', v: fmtBRLShort(s.totQAut), s: fmtBRL(s.totQAut), cls: '' },
+    { l: 'LEI + CRÉDITOS', v: fmtBRLShort(s.totLAut), s: fmtBRL(s.totLAut), cls: '' },
+    { l: 'DELAY', v: (dSal>=0?'+':'') + fmtBRLShort(dSal), s: fmtBRL(dSal), cls: Math.abs(dSal) < 0.01 ? 'zero' : (dSal > 0 ? 'pos' : 'neg') },
+    { l: 'DNP', v: dnpFmt.value, s: dnpFmt.label, cls: dnpFmt.cls === 'positivo' ? 'pos' : dnpFmt.cls === 'negativo' ? 'neg' : 'zero' },
+    { l: 'PROJEÇÃO', v: projFmt.value, s: projFmt.label, cls: projFmt.cls === 'positivo' ? 'pos' : projFmt.cls === 'negativo' ? 'neg' : 'zero' },
+    { l: 'DIVERGENTES', v: divergentes + ' / ' + s.totActions, s: s.byClassifActions.critico + ' críticas', cls: divergentes > 0 ? 'neg' : 'pos' }
+  ];
+
+  for (let i = 0; i < cards.length; i += 2) {
+    const pair = cards.slice(i, i + 2);
+    pair.forEach((k, j) => {
+      const col = j * 4 + 1;
+      mergeStyled(ws, `${String.fromCharCode(64 + col)}${r}:${String.fromCharCode(64 + col + 3)}${r}`, k.l, { bg: '#f8fafc', fg: '#64748b', bold: true, size: 8, align: 'center', border: true });
+    });
+    ws.getRow(r).height = 16; r++;
+    pair.forEach((k, j) => {
+      const col = j * 4 + 1;
+      mergeStyled(ws, `${String.fromCharCode(64 + col)}${r}:${String.fromCharCode(64 + col + 3)}${r}`, k.v, { bg: '#f8fafc', fg: colorMap[k.cls] || '#0f172a', bold: true, size: 11, align: 'center', border: true });
+    });
+    ws.getRow(r).height = 22; r++;
+    pair.forEach((k, j) => {
+      const col = j * 4 + 1;
+      mergeStyled(ws, `${String.fromCharCode(64 + col)}${r}:${String.fromCharCode(64 + col + 3)}${r}`, k.s, { bg: '#f8fafc', fg: '#64748b', size: 8, align: 'center', border: true });
+    });
+    r++;
+  }
+
+  r++;
+
+  mergeStyled(ws, `A${r}:H${r}`, `AÇÕES (${rows.length})`, { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 8; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+
+  const headers = ['#', 'AÇÃO', 'UO', 'CLASSIFICAÇÃO', 'SALDO QDD', 'GP', 'PROJEÇÃO', 'DELAY'];
+  const aligns = ['center', 'left', 'left', 'center', 'right', 'right', 'right', 'right'];
+  headers.forEach((h, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = h;
+    applyStyle(cell, { bg: '#f1f5f9', fg: '#64748b', bold: true, size: 8, align: aligns[i], border: true });
+  });
+  ws.getRow(r).height = 22; r++;
+
+  rows.forEach((ac, idx) => {
+    const cls = CLASSIF[ac.classif] || CLASSIF.sincronizado;
+    const pv = getTotalProjForAcao(ac);
+    const pvCls = pv > 0 ? 'pos' : pv < 0 ? 'neg' : 'zero';
+    const dv = ac.tot.dSal;
+    const dvCls = deltaClass(dv);
+
+    const c1 = ws.getCell(r, 1);
+    c1.value = idx + 1;
+    applyStyle(c1, { fg: '#94a3b8', size: 8, align: 'center', border: true });
+
+    const c2 = ws.getCell(r, 2);
+    c2.value = ac.nome + '\n' + ac.cod;
+    applyStyle(c2, { fg: '#0f172a', bold: true, size: 9, wrap: true, border: true });
+
+    const c3 = ws.getCell(r, 3);
+    c3.value = ac.uo.nome;
+    applyStyle(c3, { fg: '#64748b', size: 9, wrap: true, border: true });
+
+    const c4 = ws.getCell(r, 4);
+    c4.value = cls.label;
+    applyStyle(c4, { bg: cls.color, fg: '#ffffff', bold: true, size: 8, align: 'center', border: true });
+
+    writeMoneyCell(ws.getCell(r, 5), ac.tot.qSal, { size: 9 });
+    writeMoneyCell(ws.getCell(r, 6), getTotalGpForAcao(ac), { size: 9 });
+
+    const c7 = ws.getCell(r, 7);
+    c7.value = pv;
+    c7.numFmt = '+R$ #,##0.00;-R$ #,##0.00;"R$ 0,00"';
+    applyStyle(c7, { fg: colorMap[pvCls], bold: true, align: 'right', size: 9, border: true });
+
+    const c8 = ws.getCell(r, 8);
+    c8.value = Math.abs(dv) < 0.005 ? '—' : dv;
+    if (typeof c8.value === 'number') c8.numFmt = '+R$ #,##0.00;-R$ #,##0.00;—';
+    applyStyle(c8, { fg: colorMap[dvCls], bold: true, align: 'right', size: 9, border: true });
+
+    ws.getRow(r).height = 32;
+    r++;
+  });
+
+  r += 2;
+
+  mergeStyled(ws, `A${r}:H${r}`, 'LEGENDA', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 8; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+
+  const legendEntries = Object.values(CLASSIF);
+  for (let i = 0; i < legendEntries.length; i += 2) {
+    const items = legendEntries.slice(i, i + 2);
+    items.forEach((v, j) => {
+      const col = j * 4 + 1;
+      ws.getCell(r, col).value = {
+        richText: [
+          { font: { size: 12, bold: true, color: { argb: toArgb(v.color) } }, text: '● ' },
+          { font: { size: 9, color: { argb: toArgb('#334155') } }, text: v.label }
+        ]
+      };
+      applyStyle(ws.getCell(r, col), { align: 'left' });
+      ws.mergeCells(r, col, r, col + 3);
+    });
+    r++;
+  }
+
+  r++;
+
+  mergeStyled(ws, `A${r}:H${r}`, 'Fontes: QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#64748b', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:H${r}`, `Projeção = Autorizada QDD + DNP − GP. (GP padrão desconta as dotações não utilizadas). Gerado em ${now} · v${APP_VERSION} · github.com/wendellmoura`, { fg: '#94a3b8', size: 8 });
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `qdd_relatorio_completo_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+  toast('Excel completo exportado.', 'ok');
 }
 
-window.addEventListener('afterprint', exitPrintMode);
+/* ── WIRING DOS BOTÕES DE EXPORTAÇÃO ── */
+const _btnXlsx = $('#btnXlsx');
+if (_btnXlsx) _btnXlsx.addEventListener('click', async () => {
+  try { await exportFullExcel(); }
+  catch (e) { console.error(e); toast('Falha ao exportar: ' + e.message, 'err', 5000); }
+});
 
-/* Handlers de impressão */
-const _btnPrint = $('#btnPrint'); if (_btnPrint) _btnPrint.addEventListener('click', () => openPrintPreview('full'));
-const _btnPdfAction = $('#dPdf'); if (_btnPdfAction) _btnPdfAction.addEventListener('click', () => openPrintPreview('action'));
-const _btnRlts = $('#dRlts'); if (_btnRlts) _btnRlts.addEventListener('click', () => openPrintPreview('rlts'));
+const _dXlsx = $('#dXlsx');
+if (_dXlsx) _dXlsx.addEventListener('click', async () => {
+  const ac = currentDrawerAcao();
+  if (!ac) { toast('Abra uma ação antes.', 'warn'); return; }
+  try { await exportActionExcel(ac, ac.uo); }
+  catch (e) { console.error(e); toast('Falha ao exportar: ' + e.message, 'err', 5000); }
+});
 
-/* Atalhos de teclado */
+const _dRlts = $('#dRlts');
+if (_dRlts) _dRlts.addEventListener('click', async () => {
+  const ac = currentDrawerAcao();
+  if (!ac) { toast('Abra uma ação antes.', 'warn'); return; }
+  try { await exportRltsExcel(ac, ac.uo); }
+  catch (e) { console.error(e); toast('Falha ao exportar: ' + e.message, 'err', 5000); }
+});
+
 document.addEventListener('keydown', e => {
   if (!$('#backupBack').hidden) { if (e.key === 'Escape') { e.preventDefault(); closeBackupModal(); } return; }
   if (!$('#helpBack').hidden) { if (e.key === 'Escape') { e.preventDefault(); $('#helpBack').hidden = true; } return; }
   if ($('#drawer').classList.contains('on')) { if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); } return; }
   if ($('#appView').hidden) return;
-  if (e.target.matches('input, select, textarea')) { if (e.key === 'Escape' && e.target.id === 'searchInput') e.target.blur(); return; }
+  if (e.target.matches('input, select, textarea')) return;
   const rows = $$('tr[data-acao]');
   if (!rows.length) return;
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -3167,14 +3730,10 @@ document.addEventListener('keydown', e => {
     rows[state.focusedRow].focus(); rows[state.focusedRow].scrollIntoView({ block: 'nearest' });
   } else if (e.key === 'Enter' && state.focusedRow >= 0 && rows[state.focusedRow]) {
     e.preventDefault(); rows[state.focusedRow].click();
-  } else if (e.key === 'Escape' && state.focusedRow >= 0) {
-    state.focusedRow = -1;
-    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   }
 });
 
-/* Bootstrap */
-loadDnpFromStorage();
+loadFromStorage();
 setupDropzones();
 </script>
 </body>
