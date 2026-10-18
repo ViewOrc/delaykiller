@@ -2195,9 +2195,7 @@ function renderTable() {
     $('#loadMoreBtn').onclick = () => { state.shown += 150; renderTable(); };
   } else {
     lm.hidden = false;
-    $('#loadMoreInfo').textContent = rows.length.toLocaleString('pt-BR') + ' ação' + (rows.length === 1 ? '' : ' (ões)') + ' · fim';
-    $('#loadMoreBtn').hidden = true;
-  }
+   }
 }
 
 function updateRowProjCell(cod, uoCod) {
