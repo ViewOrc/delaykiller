@@ -194,6 +194,17 @@ table tbody tr:last-child td{border-bottom:0}
 td.l{text-align:left}
 td.r{text-align:right;font-variant-numeric:tabular-nums}
 
+/* Cores e negrito aplicados diretamente na TD do Delay */
+td.delay-cell {
+  white-space: nowrap !important;
+  font-weight: 800;
+  font-size: 12.5px;
+  vertical-align: middle;
+}
+td.delay-cell.zero { color: var(--muted-2); font-weight: 600; }
+td.delay-cell.pos { color: var(--ok); }
+td.delay-cell.neg { color: var(--danger); }
+
 td.editable-cell{cursor:text;position:relative;transition:background .12s}
 td.editable-cell:hover{background:var(--accent-bg)!important}
 td.editable-cell::after{content:'✎';position:absolute;top:4px;right:4px;font-size:8px;color:var(--muted-2);opacity:0;transition:opacity .12s}
@@ -215,11 +226,6 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
 .metric .mrow:not(.q-line){border-top:1px dashed var(--border);padding-top:2px;margin-top:1px}
 .metric .mrow:not(.q-line) .mtag{color:var(--slate)}
 
-.delta{display:inline-block;vertical-align:middle;font-weight:800;font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.delta.zero{color:var(--muted-2);font-weight:600}
-.delta.pos{color:var(--ok)}
-.delta.neg{color:var(--danger)}
-
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:20px;font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;background:var(--b-bg,var(--slate-bg));color:var(--b-color,var(--slate));white-space:nowrap;flex-shrink:0}
 .badge .bdot{width:6px;height:6px;border-radius:50%;background:var(--b-color,var(--slate))}
 .num-pill{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;padding:0 7px;background:var(--slate-bg);color:var(--ink-2);border-radius:8px;font-size:11px;font-weight:800;font-family:var(--mono)}
@@ -233,7 +239,8 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
 .proj-cell.negativo{color:var(--danger)}
 .proj-cell.zero{color:var(--muted-2);font-weight:600}
 
-.load-more{padding:18px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;background:var(--surface-2);border-top:1px solid var(--border)}
+/* Fundo transparente para o load more */
+.load-more{padding:18px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;background:transparent;border-top:1px solid var(--border)}
 .load-more button{margin-top:8px;background:var(--accent);color:#fff;font-weight:700;padding:9px 20px;border-radius:10px;font-size:12.5px;box-shadow:0 4px 12px rgba(79,70,229,.24);transition:.15s}
 .load-more button:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.3)}
 .load-more[hidden]{display:none!important}
@@ -1284,7 +1291,7 @@ function fmtProjSigned(v) {
   if (Math.abs(v) < 0.005) return { value: 'R$ 0,00', label: 'Equilibrado', cls: 'zero' };
   return {
     value: (v > 0 ? '+' : '') + fmtBRL(v),
-    label: v > 0 ? 'prevista' : 'Déficit previsto',
+    label: v > 0 ? 'Sobra prevista' : 'Déficit previsto',
     cls: v > 0 ? 'positivo' : 'negativo'
   };
 }
@@ -2195,7 +2202,10 @@ function renderTable() {
     $('#loadMoreBtn').onclick = () => { state.shown += 150; renderTable(); };
   } else {
     lm.hidden = false;
-   }
+    const plural = rows.length === 1 ? 'ação' : 'ações';
+    $('#loadMoreInfo').textContent = rows.length.toLocaleString('pt-BR') + ' ' + plural + ' · fim';
+    $('#loadMoreBtn').hidden = true;
+  }
 }
 
 function updateRowProjCell(cod, uoCod) {
@@ -2295,7 +2305,7 @@ function renderAcaoRow(ac) {
     ? `<td class="r" data-proj-acao-row="${esc(rowKey)}"><span class="proj-cell ${projCls}">${esc(projText)}</span></td>`
     : '';
 
-  const delayCell = colVisible('delay') ? `<td class="r" style="white-space:nowrap;"><span class="delta ${delayCls}">${esc(deltaText(t.dSal))}</span></td>` : '';
+  const delayCell = colVisible('delay') ? `<td class="r delay-cell ${delayCls}">${esc(deltaText(t.dSal))}</td>` : '';
 
   return `<tr class="${divergent ? 'row-dup' : ''}" data-acao="${esc(rowKey)}">
     <td class="l sticky-col">
@@ -2579,7 +2589,7 @@ function renderDotCard(d) {
       <span class="dc-id">${esc(d.dotId)}</span>
       <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}"><span class="bdot"></span>${esc(c.short)}</span>
       <label style="margin-left:auto; font-size:10px; font-weight:700; color:var(--muted); display:flex; align-items:center; gap:4px; cursor:pointer;" title="Marcar como não utilizada. O saldo vai para a projeção.">
-        <input type="checkbox" class="unused-cb" data-unused-dot="${esc(d.dotId)}" ${isUnused ? 'checked' : ''} style="accent-color:var(--accent);">
+        <input type="checkbox" class="unused-cb" data-unused-dot="${esc(d.dotId)}" ${isUnused ? 'checked' : ''} onchange="toggleUnused('${esc(d.dotId)}', this.checked)" style="accent-color:var(--accent);">
         Não utilizada
       </label>
     </div>
@@ -2682,6 +2692,19 @@ function updateDrawerResults() {
   updateStatsDnpProj();
 }
 
+window.toggleUnused = function(dotId, checked) {
+  if (checked) state.unused[dotId] = true;
+  else delete state.unused[dotId];
+  saveToStorageDebounced();
+  const ac = currentDrawerAcao();
+  if (ac) {
+    const scrollPos = $('#dBody').scrollTop;
+    renderDrawer(ac, ac.uo);
+    $('#dBody').scrollTop = scrollPos;
+    renderStats(); renderTable();
+  }
+};
+
 document.addEventListener('input', e => {
   if (!e.target.closest('#dBody')) return;
   const t = e.target;
@@ -2716,18 +2739,6 @@ document.addEventListener('change', e => {
   if (!e.target.closest('#dBody')) return;
   if (e.target.matches('[data-dnp-dot], [data-dnp-acao], [data-gp-acao]')) {
     updateDrawerResults();
-  } else if (e.target.matches('.unused-cb')) {
-    const dotId = e.target.dataset.unusedDot;
-    if (e.target.checked) state.unused[dotId] = true;
-    else delete state.unused[dotId];
-    saveToStorageDebounced();
-    const ac = currentDrawerAcao();
-    if (ac) {
-      const scrollPos = $('#dBody').scrollTop;
-      renderDrawer(ac, ac.uo);
-      $('#dBody').scrollTop = scrollPos;
-      renderStats(); renderTable();
-    }
   }
 });
 
@@ -3004,7 +3015,7 @@ $('#btnExport').onclick = () => {
 };
 
 /* ════════════════════════════════════════════════════════════════
-   EXCEL EXPORTS — ExcelJS
+   EXCEL EXPORTS
    ════════════════════════════════════════════════════════════════ */
 
 function toArgb(hex) {
@@ -3076,7 +3087,6 @@ function writeHeaders4(ws, r) {
   });
 }
 
-/* ── EXPORT 1: Excel da AÇÃO (Layout 4 Colunas igual a este.xlsx) ── */
 async function exportActionExcel(ac, uo) {
   if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
 
@@ -3101,19 +3111,16 @@ async function exportActionExcel(ac, uo) {
   const macroGroups = groupFontesByMacro(ac);
   const now = new Date().toLocaleString('pt-BR');
 
-  /* === HEADER === */
   mergeStyled(ws, `A${r}:D${r}`, '💰 QDD × Lei + Créditos — Relatório de Ação', { bg: '#4f46e5', fg: '#ffffff', bold: true, size: 14 });
   ws.getRow(r).height = 30; r++;
   mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION}`, { bg: '#4f46e5', fg: '#ffffff', size: 9 });
   ws.getRow(r).height = 18; r++;
   r++;
 
-  /* === BADGES === */
   mergeStyled(ws, `A${r}:B${r}`, c.label.toUpperCase(), { bg: c.color, fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
   mergeStyled(ws, `C${r}:D${r}`, uo.nome, { bg: '#64748b', fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
   r++;
 
-  /* === ACTION INFO === */
   mergeStyled(ws, `A${r}:D${r}`, ac.nome, { fg: '#0f172a', bold: true, size: 13, wrap: true });
   ws.getRow(r).height = 36; r++;
   mergeStyled(ws, `A${r}:D${r}`, `Ação ${ac.cod} · UO ${uo.cod} · Programa ${ac.progCod}`, { fg: '#64748b', size: 9 });
@@ -3122,7 +3129,6 @@ async function exportActionExcel(ac, uo) {
   r++;
   r++;
 
-  /* === KPI CARDS (3 colunas horizontais) === */
   const colorMap = { pos: '#16a34a', neg: '#dc2626', zero: '#94a3b8', '': '#0f172a' };
   const dSalCls = deltaClass(t.dSal);
   const projClsK = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
@@ -3158,7 +3164,6 @@ async function exportActionExcel(ac, uo) {
   r++;
   r++;
 
-  /* === COMPARATIVO POR FONTE === */
   if (macroGroups.length > 0) {
     mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO POR FONTE', { fg: '#4f46e5', bold: true, size: 10 });
     for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
@@ -3188,7 +3193,6 @@ async function exportActionExcel(ac, uo) {
     r++;
   }
 
-  /* === COMPARATIVO AGREGADO (TOTAL) === */
   mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO AGREGADO (TOTAL)', { fg: '#4f46e5', bold: true, size: 10 });
   for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
   r++;
@@ -3209,7 +3213,6 @@ async function exportActionExcel(ac, uo) {
     r++;
   }
 
-  // DNP
   const dnpBg = dnpFmt.cls === 'positivo' ? '#f0fdf4' : dnpFmt.cls === 'negativo' ? '#fef2f2' : '#fffbeb';
   const dnpFg = dnpFmt.cls === 'positivo' ? '#16a34a' : dnpFmt.cls === 'negativo' ? '#dc2626' : '#d97706';
   ws.getCell(r, 1).value = 'DNP';
@@ -3223,7 +3226,6 @@ async function exportActionExcel(ac, uo) {
   applyStyle(ws.getCell(r, 4), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 8, border: true });
   r++;
 
-  // GP
   ws.getCell(r, 1).value = 'Gasto Pretendido';
   applyStyle(ws.getCell(r, 1), { bg: '#faf5ff', fg: '#9333ea', bold: true, size: 9, border: true });
   ws.getCell(r, 2).value = '—';
@@ -3235,7 +3237,6 @@ async function exportActionExcel(ac, uo) {
   applyStyle(ws.getCell(r, 4), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 8, border: true });
   r++;
 
-  // Projeção
   const projBg = projFmt.cls === 'positivo' ? '#f0fdf4' : projFmt.cls === 'negativo' ? '#fef2f2' : '#eef2ff';
   const projFg2 = projFmt.cls === 'positivo' ? '#16a34a' : projFmt.cls === 'negativo' ? '#dc2626' : '#4f46e5';
   ws.getCell(r, 1).value = 'Projeção';
@@ -3250,7 +3251,6 @@ async function exportActionExcel(ac, uo) {
   r++;
   r++;
 
-  /* === DOTAÇÕES === */
   mergeStyled(ws, `A${r}:D${r}`, `DOTAÇÕES DESTA AÇÃO (${ac.dots.length})`, { fg: '#4f46e5', bold: true, size: 10 });
   for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
   r++;
@@ -3262,7 +3262,6 @@ async function exportActionExcel(ac, uo) {
     const macro = d.grupoMacro ? GRUPO_FONTE_MACRO[d.grupoMacro] : null;
     const regiao = d.locRegiao || REGIOES[d.locCod] || '';
 
-    // dot header: dotId | CLASSIF | MACRO | (empty)
     ws.getCell(r, 1).value = d.dotId + (isUnused ? '  [NÃO UTIL.]' : '');
     applyStyle(ws.getCell(r, 1), { fg: '#0f172a', bold: true, size: 11, border: true });
     ws.getCell(r, 2).value = dc.label.toUpperCase();
@@ -3272,13 +3271,11 @@ async function exportActionExcel(ac, uo) {
     applyStyle(ws.getCell(r, 4), { border: true });
     r++;
 
-    // fonte (merged A:D)
     const fonteLine = `${d.fonte ? d.fonte.fonte : '—'} · ${nomeFonte}`;
     mergeStyled(ws, `A${r}:D${r}`, fonteLine, { bg: '#f8fafc', fg: '#334155', size: 9, border: true, wrap: true });
     ws.getRow(r).height = Math.max(18, Math.ceil(fonteLine.length / 60) * 15);
     r++;
 
-    // meta (merged A:D)
     const partes = [d.natNome];
     if (regiao) partes.push('Região: ' + regiao);
     if (d.locNome && d.locNome !== regiao && d.locNome !== '—') partes.push(d.locNome);
@@ -3287,10 +3284,8 @@ async function exportActionExcel(ac, uo) {
     ws.getRow(r).height = Math.max(18, Math.ceil(metaLine.length / 60) * 15);
     r++;
 
-    // métricas header
     writeHeaders4(ws, r); r++;
 
-    // métricas data
     const metr = [
       ['Lei + Créditos', d.qAut, d.lAut, d.dAut],
       ['Empenhado', d.qEmp, d.lEmp, d.dEmp],
@@ -3307,7 +3302,6 @@ async function exportActionExcel(ac, uo) {
     r++;
   }
 
-  /* === LEGENDA === */
   mergeStyled(ws, `A${r}:D${r}`, 'LEGENDA', { fg: '#4f46e5', bold: true, size: 10 });
   for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
   r++;
@@ -3329,7 +3323,6 @@ async function exportActionExcel(ac, uo) {
   }
   r++;
 
-  /* === FOOTER === */
   mergeStyled(ws, `A${r}:D${r}`, 'Fontes: QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#64748b', size: 8, italic: true });
   r++;
   mergeStyled(ws, `A${r}:D${r}`, 'Projeção = Autorizada QDD + DNP − Gasto Pretendido. (GP padrão desconta as dotações não utilizadas).', { fg: '#64748b', size: 8, italic: true });
@@ -3347,7 +3340,6 @@ async function exportActionExcel(ac, uo) {
   toast('Excel da ação exportado.', 'ok');
 }
 
-/* ── EXPORT 2: Excel RLTS ── */
 async function exportRltsExcel(ac, uo) {
   if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
 
@@ -3373,7 +3365,6 @@ async function exportRltsExcel(ac, uo) {
   const dSalPct = (t.lAut && t.lAut !== 0) ? Math.abs(t.dSal) / t.lAut * 100 : 0;
   const now = new Date().toLocaleString('pt-BR');
 
-  /* Header */
   mergeStyled(ws, `A${r}:D${r}`, 'QDD × Lei + Créditos', { fg: '#0f172a', bold: true, size: 18 });
   ws.getRow(r).height = 30; r++;
   mergeStyled(ws, `A${r}:D${r}`, 'RELATÓRIO SIMPLES · RLTS', { fg: '#4f46e5', bold: true, size: 10 });
@@ -3382,12 +3373,10 @@ async function exportRltsExcel(ac, uo) {
   for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
   r += 2;
 
-  /* Badges */
   mergeStyled(ws, `A${r}:B${r}`, c.label.toUpperCase(), { bg: c.color, fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
   mergeStyled(ws, `C${r}:D${r}`, uo.nome, { bg: '#64748b', fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
   r++;
 
-  /* Action */
   mergeStyled(ws, `A${r}:D${r}`, ac.nome, { fg: '#0f172a', bold: true, size: 15, wrap: true });
   ws.getRow(r).height = 34; r++;
   mergeStyled(ws, `A${r}:D${r}`, `Ação ${ac.cod} · UO ${uo.cod} · Programa ${ac.progCod}`, { fg: '#64748b', size: 9 });
@@ -3395,7 +3384,6 @@ async function exportRltsExcel(ac, uo) {
   mergeStyled(ws, `A${r}:D${r}`, ac.progNome, { fg: '#475569', size: 9, italic: true });
   r += 2;
 
-  /* Hero */
   const dSalCls = deltaClass(t.dSal);
   const heroFg = dSalCls === 'pos' ? '#16a34a' : dSalCls === 'neg' ? '#dc2626' : '#94a3b8';
 
@@ -3420,7 +3408,6 @@ async function exportRltsExcel(ac, uo) {
   applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
   r += 2;
 
-  /* Comparativo */
   if (macroGroups.length > 0) {
     mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO POR FONTE', { fg: '#4f46e5', bold: true, size: 10 });
     for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
@@ -3446,7 +3433,6 @@ async function exportRltsExcel(ac, uo) {
     }
   }
 
-  /* Total */
   mergeStyled(ws, `A${r}:D${r}`, 'TOTAL AGREGADO', { fg: '#4f46e5', bold: true, size: 10 });
   for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
   r++;
@@ -3466,7 +3452,6 @@ async function exportRltsExcel(ac, uo) {
     r++;
   }
 
-  // DNP
   const dnpBg = dnpFmt.cls === 'positivo' ? '#f0fdf4' : dnpFmt.cls === 'negativo' ? '#fef2f2' : '#fffbeb';
   const dnpFg = dnpFmt.cls === 'positivo' ? '#16a34a' : dnpFmt.cls === 'negativo' ? '#dc2626' : '#d97706';
   ws.getCell(r, 1).value = 'DNP';
@@ -3480,7 +3465,6 @@ async function exportRltsExcel(ac, uo) {
   applyStyle(ws.getCell(r, 4), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 8, border: true });
   r++;
 
-  // GP
   ws.getCell(r, 1).value = 'Gasto Pretendido';
   applyStyle(ws.getCell(r, 1), { bg: '#faf5ff', fg: '#9333ea', bold: true, size: 9, border: true });
   ws.getCell(r, 2).value = '—';
@@ -3492,7 +3476,6 @@ async function exportRltsExcel(ac, uo) {
   applyStyle(ws.getCell(r, 4), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 8, border: true });
   r++;
 
-  // Projeção
   const projBg = projFmt.cls === 'positivo' ? '#f0fdf4' : projFmt.cls === 'negativo' ? '#fef2f2' : '#eef2ff';
   const projFg2 = projFmt.cls === 'positivo' ? '#16a34a' : projFmt.cls === 'negativo' ? '#dc2626' : '#4f46e5';
   ws.getCell(r, 1).value = 'Projeção';
@@ -3506,7 +3489,6 @@ async function exportRltsExcel(ac, uo) {
   applyStyle(ws.getCell(r, 4), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 8, border: true });
   r += 2;
 
-  /* Footer */
   mergeStyled(ws, `A${r}:D${r}`, 'QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#94a3b8', size: 8, italic: true });
   for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { top: { style: 'medium', color: { argb: 'FFE2E8F0' } } };
   r++;
@@ -3525,7 +3507,6 @@ async function exportRltsExcel(ac, uo) {
   toast('Excel RLTS exportado.', 'ok');
 }
 
-/* ── EXPORT 3: Excel CONSOLIDADO ── */
 async function exportFullExcel() {
   if (!state.model) { toast('Nenhum dado carregado.', 'warn'); return; }
   if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
@@ -3690,7 +3671,6 @@ async function exportFullExcel() {
   toast('Excel completo exportado.', 'ok');
 }
 
-/* ── WIRING DOS BOTÕES DE EXPORTAÇÃO ── */
 const _btnXlsx = $('#btnXlsx');
 if (_btnXlsx) _btnXlsx.addEventListener('click', async () => {
   try { await exportFullExcel(); }
