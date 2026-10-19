@@ -1291,7 +1291,7 @@ function fmtProjSigned(v) {
   if (Math.abs(v) < 0.005) return { value: 'R$ 0,00', label: 'Equilibrado', cls: 'zero' };
   return {
     value: (v > 0 ? '+' : '') + fmtBRL(v),
-    label: v > 0 ? 'Sobra prevista' : 'Déficit previsto',
+    label: v > 0 ? 'prevista' : 'Déficit previsto',
     cls: v > 0 ? 'positivo' : 'negativo'
   };
 }
