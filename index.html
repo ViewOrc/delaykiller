@@ -194,7 +194,6 @@ table tbody tr:last-child td{border-bottom:0}
 td.l{text-align:left}
 td.r{text-align:right;font-variant-numeric:tabular-nums}
 
-/* Cores e negrito aplicados diretamente na TD do Delay */
 td.delay-cell {
   white-space: nowrap !important;
   font-weight: 800;
@@ -239,7 +238,6 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
 .proj-cell.negativo{color:var(--danger)}
 .proj-cell.zero{color:var(--muted-2);font-weight:600}
 
-/* Fundo transparente para o load more */
 .load-more{padding:18px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;background:transparent;border-top:1px solid var(--border)}
 .load-more button{margin-top:8px;background:var(--accent);color:#fff;font-weight:700;padding:9px 20px;border-radius:10px;font-size:12.5px;box-shadow:0 4px 12px rgba(79,70,229,.24);transition:.15s}
 .load-more button:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.3)}
@@ -440,6 +438,32 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
 .drawer-foot button{height:34px;padding:0 14px;border-radius:9px;font-size:12px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);transition:.14s}
 .drawer-foot button:hover{border-color:var(--accent);color:var(--accent)}
 
+/* ====== UO drawer additions ====== */
+.uo-link{cursor:pointer;border-radius:5px;padding:3px 5px;margin:-3px -5px;transition:.12s;position:relative}
+.uo-link:hover{background:var(--accent-bg)}
+.uo-link::after{content:'📊';font-size:9px;opacity:0;margin-left:4px;transition:opacity .12s;vertical-align:middle}
+.uo-link:hover::after{opacity:.75}
+.uo-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+@media (max-width:540px){.uo-summary-grid{grid-template-columns:repeat(2,1fr)}}
+.uo-summary-card{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.uo-summary-card .usl{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;line-height:1.3}
+.uo-summary-card .usv{font-size:14px;font-weight:800;letter-spacing:-.2px;font-variant-numeric:tabular-nums;line-height:1.2}
+.uo-summary-card .usv.pos{color:var(--ok)}
+.uo-summary-card .usv.neg{color:var(--danger)}
+.uo-summary-card .uss{font-size:10px;color:var(--muted);font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums;line-height:1.3}
+.uo-acao-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.uo-acao-item{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;transition:.12s}
+.uo-acao-item:hover{border-color:var(--accent);box-shadow:var(--shadow-sm);background:var(--accent-bg)}
+.uo-acao-top{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.uo-acao-cod{font-family:var(--mono);font-size:11px;font-weight:800;color:var(--ink-2);padding:1px 6px;background:var(--slate-bg);border-radius:4px}
+.uo-acao-name{font-size:12px;font-weight:600;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uo-acao-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;font-variant-numeric:tabular-nums}
+.uo-acao-metrics>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.uo-acao-metrics .lbl{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)}
+.uo-acao-metrics .pos{color:var(--ok);font-weight:800}
+.uo-acao-metrics .neg{color:var(--danger);font-weight:800}
+.uo-acao-metrics .zero{color:var(--muted-2);font-weight:600}
+
 .modal-back{position:fixed;inset:0;background:rgba(15,23,42,.42);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .14s}
 .modal-back[hidden]{display:none!important}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-lg);width:min(720px,100%);max-height:88vh;display:flex;flex-direction:column;animation:pop .22s cubic-bezier(.34,1.36,.64,1)}
@@ -531,7 +555,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
     </div>
 
     <footer class="upload-footer">
-      <span>v1.6.0</span>
+      <span>v1.7.0</span>
       <span class="uf-sep">·</span>
       <a href="https://github.com/wendellmoura?tab=repositories" target="_blank" rel="noopener noreferrer">
         Código-fonte no GitHub
@@ -581,7 +605,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
         <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
       </svg>
     </a>
-    <span class="tb-version" title="beta">v1.6.0</span>
+    <span class="tb-version" title="beta">v1.7.0</span>
   </header>
 
   <div class="stats" id="stats"></div>
@@ -719,6 +743,28 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
   </div>
 </aside>
 
+<aside class="drawer" id="uoDrawer" role="dialog" aria-modal="true" aria-labelledby="uoTitle">
+  <div class="drawer-head">
+    <div class="dh-row">
+      <div class="dh-main">
+        <div class="dh-badges" id="uoBadges"></div>
+        <h2 id="uoTitle">—</h2>
+        <div class="dh-sub" id="uoSub"></div>
+      </div>
+      <button class="drawer-close" id="uoClose" title="Fechar (Esc)" aria-label="Fechar">✕</button>
+    </div>
+    <div class="drawer-tools">
+      <button id="uoCsvBtn"><span>⬇</span> CSV da UO</button>
+      <button id="uoRltsBtn" title="Excel RLTS da UO"><span>📊</span> RLTS (Excel)</button>
+      <button id="uoXlsxBtn" title="Excel formatado da UO"><span>📊</span> Excel da UO</button>
+    </div>
+  </div>
+  <div class="drawer-body" id="uoBody"></div>
+  <div class="drawer-foot">
+    <button id="uoCloseFoot">Fechar</button>
+  </div>
+</aside>
+
 <div class="modal-back" id="helpBack" hidden>
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
@@ -740,6 +786,9 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
       <h3>Escopo automático</h3>
       <p>Se o QDD tiver <strong>uma única Unidade Orçamentária</strong>, o app filtra a Listagem para considerar apenas dotações daquela UO.</p>
 
+      <h3>Relatórios por Unidade Orçamentária (UO)</h3>
+      <p>Clique no <strong>nome da UO</strong> em qualquer linha da tabela para abrir o painel da UO com totais consolidados, comparativo por grupo macro de fonte, lista de ações e exportações (<strong>CSV</strong>, <strong>RLTS</strong> e <strong>Excel</strong>) específicas da unidade.</p>
+
       <h3>Delay</h3>
       <p>Diferença entre o saldo da Listagem e o saldo do QDD. Calculado como <code>(Lei + Créditos − Parcelas) − (Autorizada − Empenhado)</code>.</p>
 
@@ -756,8 +805,11 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
       <ul class="help-list">
         <li><strong>📊 Excel desta ação</strong> — relatório completo da ação aberta (KPIs, comparativos por fonte, todas as dotações, legenda).</li>
         <li><strong>📊 RLTS (Excel)</strong> — versão enxuta com foco no Delay Total.</li>
+        <li><strong>📊 Excel da UO</strong> — relatório completo da UO (totais, comparativo por grupo macro, lista de ações, legendas).</li>
+        <li><strong>📊 RLTS (Excel) da UO</strong> — versão enxuta da UO.</li>
         <li><strong>📊 Excel completo</strong> (topbar) — todas as ações filtradas em uma única planilha.</li>
         <li><strong>⬇ CSV desta ação</strong> — dados brutos (uma linha por dotação).</li>
+        <li><strong>⬇ CSV da UO</strong> — dados brutos da UO (uma linha por dotação).</li>
       </ul>
 
       <h3>Fonte / Subfonte / Região</h3>
@@ -820,7 +872,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
 
 <script>
 "use strict";
-const APP_VERSION = '1.6.0';
+const APP_VERSION = '1.7.0';
 const SIOF_URL = 'https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm_consulta_execucao.aspx';
 const REPO_URL = 'https://github.com/wendellmoura?tab=repositories';
 
@@ -1154,7 +1206,7 @@ const GRUPO_FONTE_MACRO = {
 const REGIOES = {
   '01': 'Cariri', '02': 'Centro Sul', '03': 'Grande Fortaleza',
   '04': 'Litoral Leste', '05': 'Litoral Norte', '06': 'Litoral Oeste / Vale do Curu',
-  '07': 'Maciço do Baturité', '08': 'Serra da Ibiapaba', '09': 'Sertão Central',
+  '07': 'Maciso do Baturité', '08': 'Serra da Ibiapaba', '09': 'Sertão Central',
   '10': 'Sertão de Canindé', '11': 'Sertão de Sobral', '12': 'Sertão dos Crateús',
   '13': 'Sertão dos Inhamuns', '14': 'Vale do Jaguaribe', '15': 'Estado do Ceará'
 };
@@ -1592,6 +1644,62 @@ function countGpEntries() {
   return Object.keys(state.gp.acoes).filter(k => state.gp.acoes[k] !== '' && state.gp.acoes[k] !== null && state.gp.acoes[k] !== undefined).length;
 }
 
+/* ===== UO-level helpers ===== */
+function findUo(cod) {
+  if (!state.model) return null;
+  return state.model.uos.find(u => u.cod === cod) || null;
+}
+function getTotalDnpForUo(uo) {
+  if (!uo) return 0;
+  let t = 0;
+  for (const ac of uo.acoes) t += getTotalDnpForAcao(ac);
+  return t;
+}
+function getTotalGpForUo(uo) {
+  if (!uo) return 0;
+  let t = 0;
+  for (const ac of uo.acoes) t += getTotalGpForAcao(ac);
+  return t;
+}
+function getTotalProjForUo(uo) {
+  if (!uo) return 0;
+  let t = 0;
+  for (const ac of uo.acoes) t += getTotalProjForAcao(ac);
+  return t;
+}
+function countDnpEntriesForUo(uo) {
+  if (!uo) return 0;
+  let n = 0;
+  for (const ac of uo.acoes) {
+    if (getAcaoDnp(ac.uo.cod, ac.cod) !== 0) n++;
+    for (const d of ac.dots) if (getDotDnp(d.dotId) !== 0) n++;
+  }
+  return n;
+}
+function groupFontesByMacroUo(uo) {
+  if (!uo) return [];
+  const byMacro = new Map();
+  for (const ac of uo.acoes) {
+    for (const f of (ac.fontesArr || [])) {
+      if (!f.fonte) continue;
+      const macro = f.grupoMacro || 'outros';
+      if (!byMacro.has(macro)) {
+        const meta = GRUPO_FONTE_MACRO[macro] || GRUPO_FONTE_MACRO.outros;
+        byMacro.set(macro, {
+          macro, label: meta.label, color: meta.color, bg: meta.bg,
+          fontes: [],
+          tot: { qAut:0, lAut:0, dAut:0, qEmp:0, lEmp:0, dEmp:0, qSal:0, lSal:0, dSal:0 }
+        });
+      }
+      const g = byMacro.get(macro);
+      g.tot.qAut += f.tot.qAut; g.tot.lAut += f.tot.lAut; g.tot.dAut += f.tot.dAut;
+      g.tot.qEmp += f.tot.qEmp; g.tot.lEmp += f.tot.lEmp; g.tot.dEmp += f.tot.dEmp;
+      g.tot.qSal += f.tot.qSal; g.tot.lSal += f.tot.lSal; g.tot.dSal += f.tot.dSal;
+    }
+  }
+  return [...byMacro.values()].sort((a, b) => b.tot.lAut - a.tot.lAut);
+}
+
 function classificarDelta(dAut, dEmp, dSal, base) {
   const total = Math.abs(dAut) + Math.abs(dEmp) + Math.abs(dSal);
   if (total < 0.01) return 'sincronizado';
@@ -1737,7 +1845,7 @@ const state = {
   model: null, filter: 'all', query: '',
   sortKey: 'dSal', sortDir: 'desc', shown: 150,
   columns: { uo:true, dots:true, aut:true, emp:true, sal:true, dnp:true, gp:true, proj:true, delay:true },
-  focusedRow: -1, drawerKey: null,
+  focusedRow: -1, drawerKey: null, uoDrawerKey: null,
   dnp: { dots: {}, acoes: {} },
   gp: { acoes: {} },
   unused: {},
@@ -1901,6 +2009,10 @@ function rebuild() {
   state.shown = 150; state.filter = 'all'; state.query = '';
   state.sortKey = 'dSal'; state.sortDir = 'desc'; state.focusedRow = -1;
 
+  if (state.drawerKey) { state.drawerKey = null; $('#drawer').classList.remove('on'); }
+  if (state.uoDrawerKey) { state.uoDrawerKey = null; $('#uoDrawer').classList.remove('on'); }
+  $('#drawerBack').classList.remove('on');
+
   const s = model.stats;
   const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   let metaTxt = s.totalDots.toLocaleString('pt-BR') + ' dotações · ' + s.matched.toLocaleString('pt-BR') + ' conciliadas';
@@ -2013,6 +2125,7 @@ function renderStats() {
       <div class="ss" ${isDnp ? 'id="statDnpSub"' : ''}${isProj ? 'id="statProjSub"' : ''}>${esc(c.sub)}</div>
     </div>`;
   }).join('');
+  refreshUoDrawerIfOpen();
 }
 
 function updateStatsDnpProj() {
@@ -2044,6 +2157,7 @@ function updateStatsDnpProj() {
     else if (pt < 0) projCard.classList.add('proj-neg');
     else projCard.classList.add('proj');
   }
+  refreshUoDrawerIfOpen();
 }
 
 function renderChips() {
@@ -2142,7 +2256,7 @@ function renderTable() {
   $$('tr[data-acao]').forEach((tr, i) => {
     tr.tabIndex = 0;
     tr.onclick = (e) => {
-      if (e.target.closest('.editable-cell') || e.target.closest('input')) return;
+      if (e.target.closest('.editable-cell') || e.target.closest('input') || e.target.closest('[data-uo-link]')) return;
       openDrawer(tr.getAttribute('data-acao'));
     };
     tr.onfocus = () => { state.focusedRow = i; };
@@ -2221,6 +2335,26 @@ function updateRowProjCell(cod, uoCod) {
   cell.innerHTML = '<span class="proj-cell ' + projCls + '">' + projText + '</span>';
 }
 
+/* ── CORREÇÃO DO BUG "Não utilizada" ────────────────────────────────
+   Atualiza APENAS a célula GP da linha da tabela principal, sem
+   re-render completo da tabela. Espelha updateRowProjCell.
+   Respeita o override: se houver, renderiza com a cor "forte" do
+   gp-cell-view; senão, usa a cor atenuada (default). */
+function updateRowGpCell(cod, uoCod) {
+  if (!state.model) return;
+  const uo = state.model.uos.find(u => u.cod === uoCod);
+  const ac = uo ? uo.acoes.find(a => a.cod === cod) : null;
+  if (!ac) return;
+  const rowKey = cod + '|' + uoCod;
+  const cell = document.querySelector('td[data-gp-acao-row="' + CSS.escape(rowKey) + '"]');
+  if (!cell) return;
+  const gpVal = getTotalGpForAcao(ac);
+  const isOv = hasAcaoGp(uoCod, cod);
+  cell.innerHTML = isOv
+    ? '<span class="gp-cell-view">' + esc(fmtBRLShort(gpVal)) + '</span>'
+    : '<span class="gp-cell-view" style="color:var(--muted-2);font-weight:600" title="Default = Autorizada QDD − Não Util.">' + esc(fmtBRLShort(gpVal)) + '</span>';
+}
+
 function startInlineEdit(td, displayValue, allowEmpty, onSave) {
   if (td.classList.contains('editing')) return;
   const originalHTML = td.innerHTML;
@@ -2279,8 +2413,10 @@ function renderAcaoRow(ac) {
   const rowKey = ac.cod + '|' + ac.uo.cod;
 
   const uoCell = colVisible('uo') ? `<td class="l">
-    <div style="font-weight:600;font-size:12px;line-height:1.25">${esc(ac.uo.nome)}</div>
-    <div style="font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px">${esc(ac.uo.cod)}</div>
+    <div class="uo-link" data-uo-link="${esc(ac.uo.cod)}" title="Clique para ver os relatórios desta UO">
+      <div style="font-weight:600;font-size:12px;line-height:1.25">${esc(ac.uo.nome)}</div>
+      <div style="font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px">${esc(ac.uo.cod)}</div>
+    </div>
   </td>` : '';
   const dotsCell = colVisible('dots') ? `<td class="r"><span class="num-pill">${t.dots}</span></td>` : '';
   const autCell  = colVisible('aut')  ? `<td class="r">${metricBlock(t,'aut')}</td>` : '';
@@ -2322,6 +2458,10 @@ function renderAcaoRow(ac) {
 }
 
 function openDrawer(key) {
+  if (state.uoDrawerKey) {
+    state.uoDrawerKey = null;
+    $('#uoDrawer').classList.remove('on');
+  }
   const [cod, uoCod] = key.split('|');
   const uo = state.model.uos.find(u => u.cod === uoCod);
   if (!uo) return;
@@ -2336,11 +2476,12 @@ function closeDrawer() {
   const wasOpen = state.drawerKey;
   state.drawerKey = null;
   $('#drawer').classList.remove('on');
-  $('#drawerBack').classList.remove('on');
+  if (!state.uoDrawerKey) $('#drawerBack').classList.remove('on');
   if (wasOpen && state.model) { renderStats(); renderTable(); }
 }
 
 function renderCmpBlock(tot, opts = {}) {
+  const idp = opts.idPrefix || '';
   const dnpInfo = opts.dnpFmt || null;
   const dnpCls = opts.dnpCls || '';
   const gpVal = opts.gpVal || 0;
@@ -2363,23 +2504,23 @@ function renderCmpBlock(tot, opts = {}) {
       <div class="cmp-row"><div class="k">Saldo</div>
         <div class="v">${esc(fmtBRL(tot.qSal))}</div><div class="v">${esc(fmtBRL(tot.lSal))}</div>
         <div class="d ${deltaClass(tot.dSal)}">${esc(deltaText(tot.dSal))}</div></div>
-      ${dnpInfo ? `<div class="cmp-row dnp-row ${dnpCls}" id="dnpCmpRow">
+      ${dnpInfo ? `<div class="cmp-row dnp-row ${dnpCls}" id="${idp}dnpCmpRow">
         <div class="k">Despesa Não Programada</div>
         <div class="v">—</div>
-        <div class="v dnp-val" id="dnpCmpValue">${esc(dnpInfo.value)}</div>
-        <div class="d" id="dnpCmpLabel">${esc(dnpInfo.label)}</div>
+        <div class="v dnp-val" id="${idp}dnpCmpValue">${esc(dnpInfo.value)}</div>
+        <div class="d" id="${idp}dnpCmpLabel">${esc(dnpInfo.label)}</div>
       </div>` : ''}
       <div class="cmp-row gp-row">
         <div class="k">Gasto Pretendido</div>
         <div class="v">—</div>
-        <div class="v gp-val" id="gpCmpValue">${esc(fmtBRL(gpVal))}</div>
+        <div class="v gp-val" id="${idp}gpCmpValue">${esc(fmtBRL(gpVal))}</div>
         <div class="d">até dez</div>
       </div>
-      ${projInfo ? `<div class="cmp-row proj-row ${projCls}" id="projCmpRow">
+      ${projInfo ? `<div class="cmp-row proj-row ${projCls}" id="${idp}projCmpRow">
         <div class="k">Projeção (fim do exercício)</div>
         <div class="v">—</div>
-        <div class="v proj-val" id="projCmpValue">${esc(projInfo.value)}</div>
-        <div class="d" id="projCmpLabel">${esc(projInfo.label)}</div>
+        <div class="v proj-val" id="${idp}projCmpValue">${esc(projInfo.value)}</div>
+        <div class="d" id="${idp}projCmpLabel">${esc(projInfo.label)}</div>
       </div>` : ''}
     </div>
   `;
@@ -2631,32 +2772,224 @@ function currentDrawerAcao() {
   return uo.acoes.find(a => a.cod === cod) || null;
 }
 
+/* ===== UO drawer ===== */
+function currentDrawerUo() {
+  if (!state.uoDrawerKey) return null;
+  return findUo(state.uoDrawerKey);
+}
+
+function renderUoAcaoItem(ac) {
+  const c = CLASSIF[ac.classif] || CLASSIF.sincronizado;
+  const t = ac.tot;
+  const dnp = getTotalDnpForAcao(ac);
+  const proj = getTotalProjForAcao(ac);
+  const projCls = Math.abs(proj) < 0.005 ? 'zero' : proj > 0 ? 'pos' : 'neg';
+  const projText = Math.abs(proj) < 0.005 ? 'R$ 0,00' : (proj > 0 ? '+' : '') + fmtBRLShort(proj);
+  const dSalCls = deltaClass(t.dSal);
+  const dnpCls = dnp > 0 ? 'pos' : dnp < 0 ? 'neg' : 'zero';
+  return `<div class="uo-acao-item" data-acao-key="${esc(ac.cod)}|${esc(ac.uo.cod)}">
+    <div class="uo-acao-top">
+      <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}"><span class="bdot"></span>${esc(c.short)}</span>
+      <span class="uo-acao-cod">${esc(ac.cod)}</span>
+      <span class="uo-acao-name" title="${esc(ac.nome)}">${esc(ac.nome)}</span>
+    </div>
+    <div class="uo-acao-metrics">
+      <div><span class="lbl">Delay</span><span class="${dSalCls}">${esc(deltaText(t.dSal))}</span></div>
+      <div><span class="lbl">DNP</span><span class="${dnpCls}">${dnp !== 0 ? esc(fmtBRLShort(dnp)) : '—'}</span></div>
+      <div><span class="lbl">Projeção</span><span class="${projCls}">${esc(projText)}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderUoDrawer(uo) {
+  const t = uo.tot;
+  const dnpTotal = getTotalDnpForUo(uo);
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const gpVal = getTotalGpForUo(uo);
+  const projTotal = getTotalProjForUo(uo);
+  const projFmt = fmtProjSigned(projTotal);
+  const dnpCount = countDnpEntriesForUo(uo);
+  const c = CLASSIF[uo.classif] || CLASSIF.sincronizado;
+  const macroGroups = groupFontesByMacroUo(uo);
+  const dnpClsCard = dnpTotal > 0 ? 'pos' : dnpTotal < 0 ? 'neg' : '';
+  const projClsCard = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : '';
+
+  $('#uoBadges').innerHTML = `
+    <span class="badge" style="--b-color:${c.color};--b-bg:${c.bg}"><span class="bdot"></span>${esc(c.label)}</span>
+    <span class="badge" style="--b-color:#64748b;--b-bg:#f1f5f9">${uo.acoes.length} ${uo.acoes.length === 1 ? 'ação' : 'ações'}</span>
+    <span class="badge" style="--b-color:#4f46e5;--b-bg:#eef2ff">${t.dots} dotações</span>`;
+  $('#uoTitle').textContent = uo.nome;
+  $('#uoSub').innerHTML = 'Unidade Orçamentária <span style="font-family:var(--mono);font-weight:800">' + esc(uo.cod) + '</span><br>' +
+    'Totais consolidados QDD × SPG';
+
+  $('#uoBody').innerHTML = `
+    <div class="legend-strip">
+      <span class="tag qdd"><span class="chip-dot">QDD</span> Quadro de Detalhamento (SIOF)</span>
+      <span class="tag lc"><span class="chip-dot">SPG</span> Lei + Créditos (Listagem)</span>
+    </div>
+
+    <div class="uo-summary-grid">
+      <div class="uo-summary-card">
+        <div class="usl">Lei + Créditos (QDD)</div>
+        <div class="usv">${esc(fmtBRLShort(t.qAut))}</div>
+        <div class="uss">${esc(fmtBRL(t.qAut))}</div>
+      </div>
+      <div class="uo-summary-card">
+        <div class="usl">Lei + Créditos (SPG)</div>
+        <div class="usv">${esc(fmtBRLShort(t.lAut))}</div>
+        <div class="uss">${esc(fmtBRL(t.lAut))}</div>
+      </div>
+      <div class="uo-summary-card">
+        <div class="usl">Delay (Saldo)</div>
+        <div class="usv ${deltaClass(t.dSal) === 'pos' ? 'pos' : deltaClass(t.dSal) === 'neg' ? 'neg' : ''}">${esc(deltaText(t.dSal))}</div>
+        <div class="uss">Saldo SPG − QDD</div>
+      </div>
+      <div class="uo-summary-card">
+        <div class="usl">DNP</div>
+        <div class="usv ${dnpClsCard}">${esc(dnpFmt.value)}</div>
+        <div class="uss">${dnpCount} registro(s)</div>
+      </div>
+      <div class="uo-summary-card">
+        <div class="usl">Gasto Pretendido</div>
+        <div class="usv">${esc(fmtBRLShort(gpVal))}</div>
+        <div class="uss">${esc(fmtBRL(gpVal))}</div>
+      </div>
+      <div class="uo-summary-card">
+        <div class="usl">Projeção</div>
+        <div class="usv ${projClsCard}">${esc(projFmt.value)}</div>
+        <div class="uss">${esc(projFmt.label)}</div>
+      </div>
+    </div>
+
+    <div class="section-title"><span>Comparativo agregado</span></div>
+    ${renderCmpBlock(t, { dnpFmt, dnpCls: dnpFmt.cls, gpVal, projFmt, projCls: projFmt.cls, idPrefix: 'uo' })}
+
+    ${macroGroups.length > 1 ? `
+      <div class="section-title" style="margin-top:26px"><span>Comparativo por grupo macro</span></div>
+      ${macroGroups.map(g => `
+        <div class="cmp-block src-block" style="--src-color:${g.color}">
+          <div class="cmp-row src-head">
+            <div class="src-label" style="color:${g.color}">
+              <span class="src-dot" style="background:${g.color}"></span>
+              ${esc(g.label)}
+            </div>
+            <div class="v">QDD</div><div class="v">SPG</div><div class="d">Δ</div>
+          </div>
+          <div class="cmp-row"><div class="k">Lei + Créditos</div>
+            <div class="v">${esc(fmtBRL(g.tot.qAut))}</div><div class="v">${esc(fmtBRL(g.tot.lAut))}</div>
+            <div class="d ${deltaClass(g.tot.dAut)}">${esc(deltaText(g.tot.dAut))}</div></div>
+          <div class="cmp-row"><div class="k">Empenhado</div>
+            <div class="v">${esc(fmtBRL(g.tot.qEmp))}</div><div class="v">${esc(fmtBRL(g.tot.lEmp))}</div>
+            <div class="d ${deltaClass(g.tot.dEmp)}">${esc(deltaText(g.tot.dEmp))}</div></div>
+          <div class="cmp-row"><div class="k">Saldo</div>
+            <div class="v">${esc(fmtBRL(g.tot.qSal))}</div><div class="v">${esc(fmtBRL(g.tot.lSal))}</div>
+            <div class="d ${deltaClass(g.tot.dSal)}">${esc(deltaText(g.tot.dSal))}</div></div>
+        </div>
+      `).join('')}
+    ` : ''}
+
+    <div class="section-title" style="margin-top:26px"><span>Ações desta UO (${uo.acoes.length})</span></div>
+    <div class="uo-acao-list">
+      ${uo.acoes.map(renderUoAcaoItem).join('')}
+    </div>
+
+    <div style="margin-top:18px;font-size:11.5px;color:var(--muted);line-height:1.6;background:var(--surface-2);padding:10px;border-radius:8px;border:1px solid var(--border)">
+      <em>Clique em uma ação para abrir o painel detalhado com DNP/GP editáveis.</em>
+    </div>
+  `;
+
+  $$('#uoBody .uo-acao-item').forEach(el => {
+    el.onclick = () => {
+      const key = el.getAttribute('data-acao-key');
+      closeUoDrawer();
+      openDrawer(key);
+    };
+  });
+}
+
+function openUoDrawer(uoCod) {
+  const uo = findUo(uoCod);
+  if (!uo) { toast('UO não encontrada.', 'warn'); return; }
+  if (state.drawerKey) {
+    state.drawerKey = null;
+    $('#drawer').classList.remove('on');
+  }
+  state.uoDrawerKey = uoCod;
+  renderUoDrawer(uo);
+  $('#uoDrawer').classList.add('on');
+  $('#drawerBack').classList.add('on');
+}
+
+function closeUoDrawer() {
+  const wasOpen = state.uoDrawerKey;
+  state.uoDrawerKey = null;
+  $('#uoDrawer').classList.remove('on');
+  if (!$('#drawer').classList.contains('on')) $('#drawerBack').classList.remove('on');
+  if (wasOpen && state.model) { renderStats(); renderTable(); }
+}
+
+function refreshUoDrawerIfOpen() {
+  if (!state.uoDrawerKey) return;
+  const uo = findUo(state.uoDrawerKey);
+  if (!uo) { state.uoDrawerKey = null; $('#uoDrawer').classList.remove('on'); return; }
+  renderUoDrawer(uo);
+}
+
+/* ── CORREÇÃO (BUG "Não utilizada") ────────────────────────────────
+   Antes: não sincronizava hint do GP nem o valor do input de GP quando
+   state.unused mudava. Agora:
+   - Atualiza o hint do GP ("Default = Autorizada X − Não Util. Y")
+   - Atualiza o placeholder e (se NÃO houver override) o value do input
+   - Mantém todas as atualizações anteriores (box de projeção, linhas
+     DNP/GP/Projeção do comparativo, botão "Limpar esta ação", stats) */
 function updateDrawerResults() {
   const ac = currentDrawerAcao();
   if (!ac) return;
 
-  const dnpTotal = getTotalDnpForAcao(ac);
-  const dnpFmt = fmtDnpSigned(dnpTotal);
-  const gpVal = getTotalGpForAcao(ac);
-  const projTotal = getTotalProjForAcao(ac);
-  const projFmt = fmtProjSigned(projTotal);
+  const dnpTotal    = getTotalDnpForAcao(ac);
+  const dnpFmt      = fmtDnpSigned(dnpTotal);
+  const gpOverride  = hasAcaoGp(ac.uo.cod, ac.cod);
+  const unusedSaldo = getUnusedSaldo(ac);
+  const gpVal       = getTotalGpForAcao(ac);
+  const projTotal   = getTotalProjForAcao(ac);
+  const projFmt     = fmtProjSigned(projTotal);
 
+  // Hint do DNP
   const dnpHint = document.getElementById('dnpHint');
   if (dnpHint) dnpHint.textContent = 'Total na ação: ' + dnpFmt.value + ' (' + dnpFmt.label + ')';
 
+  // Hint do GP (default = Autorizada − Não Util.)
+  const gpHint = document.querySelector('.dnp-input-group.gp .hint');
+  if (gpHint) {
+    gpHint.textContent = 'Default = Autorizada ' + fmtBRL(ac.tot.qAut) +
+                         ' − Não Util. ' + fmtBRL(unusedSaldo);
+  }
+
+  // Input de GP — só reescreve o value quando NÃO houver override.
+  // O placeholder é sempre atualizado para refletir o novo default.
+  const gpInput = document.getElementById('gpAcaoInput');
+  if (gpInput) {
+    gpInput.placeholder = 'padrão: ' + fmtBRL(gpVal);
+    if (!gpOverride) gpInput.value = gpVal;
+  }
+
+  // Box de Projeção
   const projBox = document.getElementById('projResultBox');
   if (projBox) {
     projBox.classList.remove('positivo', 'negativo');
     if (projFmt.cls === 'positivo') projBox.classList.add('positivo');
     else if (projFmt.cls === 'negativo') projBox.classList.add('negativo');
-    const prVal = projBox.querySelector('.pr-value');
-    const prBadge = projBox.querySelector('.pr-badge');
+    const prVal     = projBox.querySelector('.pr-value');
+    const prBadge   = projBox.querySelector('.pr-badge');
     const prFormula = projBox.querySelector('.pr-formula');
-    if (prVal) prVal.textContent = projFmt.value;
-    if (prBadge) prBadge.textContent = projFmt.label;
-    if (prFormula) prFormula.textContent = '= ' + fmtBRLShort(ac.tot.qAut) + ' + ' + fmtBRLShort(dnpTotal) + ' − ' + fmtBRLShort(gpVal);
+    if (prVal)     prVal.textContent     = projFmt.value;
+    if (prBadge)   prBadge.textContent   = projFmt.label;
+    if (prFormula) prFormula.textContent = '= ' + fmtBRLShort(ac.tot.qAut) +
+                                           ' + ' + fmtBRLShort(dnpTotal) +
+                                           ' − ' + fmtBRLShort(gpVal);
   }
 
+  // Linha DNP do comparativo
   const dnpCmpRow = document.getElementById('dnpCmpRow');
   if (dnpCmpRow) {
     dnpCmpRow.classList.remove('positivo', 'negativo');
@@ -2670,6 +3003,7 @@ function updateDrawerResults() {
   const gpCmpVal = document.getElementById('gpCmpValue');
   if (gpCmpVal) gpCmpVal.textContent = fmtBRL(gpVal);
 
+  // Linha Projeção do comparativo
   const projCmpRow = document.getElementById('projCmpRow');
   if (projCmpRow) {
     projCmpRow.classList.remove('positivo', 'negativo');
@@ -2681,28 +3015,61 @@ function updateDrawerResults() {
   const projCmpLbl = document.getElementById('projCmpLabel');
   if (projCmpLbl) projCmpLbl.textContent = projFmt.label;
 
+  // Estado do botão "Limpar esta ação"
   const clearBtn = document.getElementById('clearActionBtn');
   if (clearBtn) {
-    const hasAny = dnpTotal !== 0 || hasAcaoGp(ac.uo.cod, ac.cod) || ac.dots.some(d => getDotDnp(d.dotId) !== 0) || ac.dots.some(d => state.unused[d.dotId]);
+    const hasAny = dnpTotal !== 0
+      || gpOverride
+      || ac.dots.some(d => getDotDnp(d.dotId) !== 0)
+      || ac.dots.some(d => state.unused[d.dotId]);
     clearBtn.disabled = !hasAny;
     clearBtn.style.opacity = hasAny ? '1' : '.4';
-    clearBtn.style.cursor = hasAny ? 'pointer' : 'not-allowed';
+    clearBtn.style.cursor  = hasAny ? 'pointer' : 'not-allowed';
   }
 
   updateStatsDnpProj();
 }
 
+/* ── CORREÇÃO (BUG "Não utilizada") ────────────────────────────────
+   Antes: fazia renderDrawer(ac, ac.uo) DENTRO do handler onchange do
+   checkbox, causando re-render síncrono do drawer no meio do dispatch
+   do evento e dessincronização/race.
+
+   Agora: state.unused é a única fonte de verdade. Atualizações
+   incrementais e atômicas:
+   - card da dotação (.unused + checked)
+   - hint do GP, value/placeholder do input de GP, box de Projeção, linhas
+     DNP/GP/Projeção do comparativo, botão "Limpar esta ação", stats
+   - célula GP + célula Projeção da linha da tabela principal
+   - drawer da UO (se aberto)
+   Sem re-render do drawer. */
 window.toggleUnused = function(dotId, checked) {
+  // 1) state.unused é a ÚNICA fonte de verdade
   if (checked) state.unused[dotId] = true;
   else delete state.unused[dotId];
   saveToStorageDebounced();
-  const ac = currentDrawerAcao();
-  if (ac) {
-    const scrollPos = $('#dBody').scrollTop;
-    renderDrawer(ac, ac.uo);
-    $('#dBody').scrollTop = scrollPos;
-    renderStats(); renderTable();
+
+  // 2) Atualiza o card da dotação (checkbox + .unused), sem re-render
+  const cb = document.querySelector('input[data-unused-dot="' + CSS.escape(dotId) + '"]');
+  if (cb) {
+    cb.checked = checked; // garante consistência visual
+    const card = cb.closest('.dot-card');
+    if (card) card.classList.toggle('unused', checked);
   }
+
+  // 3) Atualizações incrementais no drawer da ação (SEM full re-render)
+  const ac = currentDrawerAcao();
+  if (ac && ac.dots.some(d => d.dotId === dotId)) {
+    updateDrawerResults();                 // hint/input/box/cmp/btn/stats
+    updateRowGpCell(ac.cod, ac.uo.cod);    // célula GP da tabela
+    updateRowProjCell(ac.cod, ac.uo.cod);  // célula Projeção da tabela
+  } else {
+    // Drawer fechado (ou dotação de outra ação): só stats
+    updateStatsDnpProj();
+  }
+
+  // 4) Drawer da UO, se aberto
+  refreshUoDrawerIfOpen();
 };
 
 document.addEventListener('input', e => {
@@ -2809,7 +3176,42 @@ document.addEventListener('keydown', e => {
 
 $('#dClose').onclick = closeDrawer;
 $('#dCloseFoot').onclick = closeDrawer;
-$('#drawerBack').onclick = closeDrawer;
+$('#drawerBack').onclick = () => {
+  if (state.drawerKey) closeDrawer();
+  if (state.uoDrawerKey) closeUoDrawer();
+};
+
+// UO drawer bindings
+$('#uoClose').onclick = closeUoDrawer;
+$('#uoCloseFoot').onclick = closeUoDrawer;
+
+$('#uoCsvBtn').onclick = () => {
+  const uo = currentDrawerUo();
+  if (!uo) return;
+  exportUoCsv(uo);
+};
+
+$('#uoRltsBtn').onclick = async () => {
+  const uo = currentDrawerUo();
+  if (!uo) return;
+  try { await exportRltsUoExcel(uo); }
+  catch (e) { console.error(e); toast('Falha ao exportar: ' + e.message, 'err', 5000); }
+};
+
+$('#uoXlsxBtn').onclick = async () => {
+  const uo = currentDrawerUo();
+  if (!uo) return;
+  try { await exportUoExcel(uo); }
+  catch (e) { console.error(e); toast('Falha ao exportar: ' + e.message, 'err', 5000); }
+};
+
+// Delegated handler: clicking the UO name opens the UO drawer
+document.addEventListener('click', e => {
+  const link = e.target.closest('[data-uo-link]');
+  if (!link) return;
+  e.stopPropagation();
+  openUoDrawer(link.getAttribute('data-uo-link'));
+});
 
 $('#dCsv').onclick = () => {
   const ac = currentDrawerAcao(); if (!ac) return;
@@ -2864,6 +3266,7 @@ $('#btnClearData').onclick = () => {
     const ac = currentDrawerAcao();
     if (ac) renderDrawer(ac, ac.uo);
   }
+  refreshUoDrawerIfOpen();
   toast('Todos os valores de DNP, GP e Dotações não utilizadas foram limpos.', 'ok');
 };
 
@@ -2939,6 +3342,7 @@ $('#backupApply').onclick = () => {
     if ($('#drawer').classList.contains('on')) {
       const ac = currentDrawerAcao(); if (ac) renderDrawer(ac, ac.uo);
     }
+    refreshUoDrawerIfOpen();
     toast('Dados aplicados.', 'ok');
   } catch (err) {
     toast('Falha: ' + err.message, 'err', 5000);
@@ -2972,6 +3376,7 @@ $('#backupClear').onclick = () => {
   if ($('#drawer').classList.contains('on')) {
     const ac = currentDrawerAcao(); if (ac) renderDrawer(ac, ac.uo);
   }
+  refreshUoDrawerIfOpen();
   toast('Valores removidos.', 'warn');
 };
 
@@ -3507,6 +3912,425 @@ async function exportRltsExcel(ac, uo) {
   toast('Excel RLTS exportado.', 'ok');
 }
 
+/* ── UO-level exports ── */
+function exportUoCsv(uo) {
+  if (!uo) return;
+  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Delay','DNP_dotacao','Utilizada','Classificacao'].join(';')];
+  for (const ac of uo.acoes) {
+    for (const d of ac.dots) {
+      lines.push([uo.cod, uo.nome, ac.cod, ac.nome, ac.progCod, ac.progNome,
+        d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
+        d.fonte ? d.fonte.fonte : '', (d.fonte && d.fonte.subDesc) ? d.fonte.subDesc : '',
+        d.qAut.toFixed(2), d.lAut.toFixed(2),
+        d.qEmp.toFixed(2), d.lEmp.toFixed(2),
+        d.qSal.toFixed(2), d.lSal.toFixed(2), d.dSal.toFixed(2),
+        getDotDnp(d.dotId).toFixed(2),
+        state.unused[d.dotId] ? 'NAO' : 'SIM',
+        CLASSIF[d.classif].label].map(v => String(v ?? '').replace(/;/g, ',')).join(';'));
+    }
+  }
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'uo_' + uo.cod + '.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+  toast('CSV da UO exportado (' + (lines.length - 1) + ' linhas).', 'ok');
+}
+
+async function exportUoExcel(uo) {
+  if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
+  if (!uo) return;
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'QDD × Lei + Créditos';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet('UO ' + uo.cod);
+  ws.columns = [
+    { width: 36 }, { width: 22 }, { width: 22 }, { width: 20 }
+  ];
+  ws.pageSetup = { orientation: 'portrait', fitToPage: true, fitToWidth: 1 };
+
+  let r = 1;
+  const c = CLASSIF[uo.classif] || CLASSIF.sincronizado;
+  const t = uo.tot;
+  const dnpTotal = getTotalDnpForUo(uo);
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const gpVal = getTotalGpForUo(uo);
+  const projTotal = getTotalProjForUo(uo);
+  const projFmt = fmtProjSigned(projTotal);
+  const macroGroups = groupFontesByMacroUo(uo);
+  const now = new Date().toLocaleString('pt-BR');
+
+  mergeStyled(ws, `A${r}:D${r}`, '💰 QDD × Lei + Créditos — Relatório de UO', { bg: '#4f46e5', fg: '#ffffff', bold: true, size: 14 });
+  ws.getRow(r).height = 30; r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION}`, { bg: '#4f46e5', fg: '#ffffff', size: 9 });
+  ws.getRow(r).height = 18; r++;
+  r++;
+
+  mergeStyled(ws, `A${r}:B${r}`, c.label.toUpperCase(), { bg: c.color, fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  mergeStyled(ws, `C${r}:D${r}`, uo.cod + ' · ' + uo.acoes.length + ' ações · ' + t.dots + ' dotações', { bg: '#64748b', fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  r++;
+
+  mergeStyled(ws, `A${r}:D${r}`, uo.nome, { fg: '#0f172a', bold: true, size: 13, wrap: true });
+  ws.getRow(r).height = 36; r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Unidade Orçamentária ${uo.cod}`, { fg: '#64748b', size: 9 });
+  r++;
+  r++;
+
+  const colorMap = { pos: '#16a34a', neg: '#dc2626', zero: '#94a3b8', '': '#0f172a' };
+  const dSalCls = deltaClass(t.dSal);
+  const projClsK = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
+
+  const kpis = [
+    { l: 'DELAY (SALDO)', v: deltaText(t.dSal), vCls: dSalCls, s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
+    { l: 'GASTO PRETENDIDO', v: fmtBRLShort(gpVal), vCls: '', s: `Autorizada ${fmtBRLShort(t.qAut)}` },
+    { l: 'PROJEÇÃO', v: projFmt.value, vCls: projClsK, s: projFmt.label }
+  ];
+
+  kpis.forEach((k, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = k.l;
+    applyStyle(cell, { bg: '#f8fafc', fg: '#64748b', bold: true, size: 8, align: 'left', border: true });
+  });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  ws.getRow(r).height = 16; r++;
+
+  kpis.forEach((k, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = k.v;
+    applyStyle(cell, { bg: '#f8fafc', fg: colorMap[k.vCls] || '#0f172a', bold: true, size: 12, align: 'left', border: true });
+  });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  ws.getRow(r).height = 22; r++;
+
+  kpis.forEach((k, i) => {
+    const cell = ws.getCell(r, i + 1);
+    cell.value = k.s;
+    applyStyle(cell, { bg: '#f8fafc', fg: '#64748b', size: 8, align: 'left', border: true });
+  });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  r++;
+  r++;
+
+  if (macroGroups.length > 0) {
+    mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO POR GRUPO MACRO', { fg: '#4f46e5', bold: true, size: 10 });
+    for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+    r++;
+    macroGroups.forEach((g, idx) => {
+      mergeStyled(ws, `A${r}:D${r}`, '● ' + g.label, { bg: g.color, fg: '#ffffff', bold: true, size: 10, border: true });
+      ws.getRow(r).height = 20; r++;
+      writeHeaders4(ws, r); r++;
+      const rows = [
+        ['Lei + Créditos', g.tot.qAut, g.tot.lAut, g.tot.dAut],
+        ['Empenhado', g.tot.qEmp, g.tot.lEmp, g.tot.dEmp],
+        ['Saldo', g.tot.qSal, g.tot.lSal, g.tot.dSal]
+      ];
+      for (const [label, qv, lv, dv] of rows) {
+        ws.getCell(r, 1).value = label;
+        applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+        writeMoneyCell(ws.getCell(r, 2), qv);
+        writeMoneyCell(ws.getCell(r, 3), lv);
+        writeDiffCell(ws.getCell(r, 4), dv);
+        r++;
+      }
+      if (idx < macroGroups.length - 1) r++;
+    });
+    r++;
+  }
+
+  mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO AGREGADO (TOTAL UO)', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+  writeHeaders4(ws, r); r++;
+
+  const aggRows = [
+    ['Lei + Créditos', t.qAut, t.lAut, t.dAut],
+    ['Empenhado', t.qEmp, t.lEmp, t.dEmp],
+    ['Saldo', t.qSal, t.lSal, t.dSal]
+  ];
+  for (const [label, qv, lv, dv] of aggRows) {
+    ws.getCell(r, 1).value = label;
+    applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+    writeMoneyCell(ws.getCell(r, 2), qv);
+    writeMoneyCell(ws.getCell(r, 3), lv);
+    writeDiffCell(ws.getCell(r, 4), dv);
+    r++;
+  }
+
+  const dnpBg = dnpFmt.cls === 'positivo' ? '#f0fdf4' : dnpFmt.cls === 'negativo' ? '#fef2f2' : '#fffbeb';
+  const dnpFg = dnpFmt.cls === 'positivo' ? '#16a34a' : dnpFmt.cls === 'negativo' ? '#dc2626' : '#d97706';
+  ws.getCell(r, 1).value = 'DNP';
+  applyStyle(ws.getCell(r, 1), { bg: dnpBg, fg: dnpFg, bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: dnpBg, fg: dnpFg, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = dnpTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;—';
+  applyStyle(ws.getCell(r, 3), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = dnpFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  ws.getCell(r, 1).value = 'Gasto Pretendido';
+  applyStyle(ws.getCell(r, 1), { bg: '#faf5ff', fg: '#9333ea', bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: '#faf5ff', fg: '#9333ea', align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = gpVal;
+  ws.getCell(r, 3).numFmt = 'R$ #,##0.00';
+  applyStyle(ws.getCell(r, 3), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = 'ATÉ DEZ';
+  applyStyle(ws.getCell(r, 4), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  const projBg = projFmt.cls === 'positivo' ? '#f0fdf4' : projFmt.cls === 'negativo' ? '#fef2f2' : '#eef2ff';
+  const projFg2 = projFmt.cls === 'positivo' ? '#16a34a' : projFmt.cls === 'negativo' ? '#dc2626' : '#4f46e5';
+  ws.getCell(r, 1).value = 'Projeção';
+  applyStyle(ws.getCell(r, 1), { bg: projBg, fg: projFg2, bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: projBg, fg: projFg2, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = projTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;"R$ 0,00"';
+  applyStyle(ws.getCell(r, 3), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 12, border: true });
+  ws.getCell(r, 4).value = projFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 8, border: true });
+  r++;
+  r++;
+
+  mergeStyled(ws, `A${r}:D${r}`, `AÇÕES DESTA UO (${uo.acoes.length})`, { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+
+  for (const ac of uo.acoes) {
+    const dc = CLASSIF[ac.classif] || CLASSIF.sincronizado;
+    const acaoDnp = getTotalDnpForAcao(ac);
+    const acaoGp = getTotalGpForAcao(ac);
+    const acaoProj = getTotalProjForAcao(ac);
+
+    ws.getCell(r, 1).value = ac.cod + ' — ' + ac.nome;
+    applyStyle(ws.getCell(r, 1), { fg: '#0f172a', bold: true, size: 10, wrap: true, border: true });
+    ws.getCell(r, 2).value = dc.label.toUpperCase();
+    applyStyle(ws.getCell(r, 2), { bg: dc.color, fg: '#ffffff', bold: true, size: 8, align: 'center', border: true });
+    ws.getCell(r, 3).value = acaoGp;
+    ws.getCell(r, 3).numFmt = 'R$ #,##0.00';
+    applyStyle(ws.getCell(r, 3), { fg: '#9333ea', bold: true, align: 'right', size: 9, border: true });
+    ws.getCell(r, 4).value = acaoProj;
+    ws.getCell(r, 4).numFmt = '+R$ #,##0.00;-R$ #,##0.00;"R$ 0,00"';
+    const acaoProjFg = acaoProj > 0 ? '#16a34a' : acaoProj < 0 ? '#dc2626' : '#94a3b8';
+    applyStyle(ws.getCell(r, 4), { fg: acaoProjFg, bold: true, align: 'right', size: 9, border: true });
+    ws.getRow(r).height = 28;
+    r++;
+
+    ws.getCell(r, 1).value = '  Delay: ' + deltaText(ac.tot.dSal) + '  ·  DNP: ' + (acaoDnp !== 0 ? fmtBRL(acaoDnp) : '—');
+    applyStyle(ws.getCell(r, 1), { fg: '#64748b', size: 8, italic: true, border: true });
+    ws.mergeCells(r, 1, r, 4);
+    r++;
+  }
+  r++;
+
+  mergeStyled(ws, `A${r}:D${r}`, 'LEGENDA', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+  const legendEntries = Object.values(CLASSIF);
+  for (let i = 0; i < legendEntries.length; i += 2) {
+    const items = legendEntries.slice(i, i + 2);
+    items.forEach((v, j) => {
+      const cell = ws.getCell(r, j + 1);
+      cell.value = {
+        richText: [
+          { font: { size: 12, bold: true, color: { argb: toArgb(v.color) } }, text: '● ' },
+          { font: { size: 9, color: { argb: toArgb('#334155') } }, text: v.label }
+        ]
+      };
+      applyStyle(cell, { align: 'left' });
+    });
+    r++;
+  }
+  r++;
+
+  mergeStyled(ws, `A${r}:D${r}`, 'Fontes: QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#64748b', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, 'Projeção = Autorizada QDD + DNP − Gasto Pretendido. (GP padrão desconta as dotações não utilizadas).', { fg: '#64748b', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION} · github.com/wendellmoura`, { fg: '#94a3b8', size: 8 });
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `uo_${uo.cod}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+  toast('Excel da UO exportado.', 'ok');
+}
+
+async function exportRltsUoExcel(uo) {
+  if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
+  if (!uo) return;
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'QDD × Lei + Créditos';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet('RLTS UO ' + uo.cod);
+  ws.columns = [
+    { width: 34 }, { width: 20 }, { width: 20 }, { width: 20 }
+  ];
+  ws.pageSetup = { orientation: 'portrait', fitToPage: true, fitToWidth: 1 };
+
+  let r = 1;
+  const c = CLASSIF[uo.classif] || CLASSIF.sincronizado;
+  const t = uo.tot;
+  const dnpTotal = getTotalDnpForUo(uo);
+  const dnpFmt = fmtDnpSigned(dnpTotal);
+  const gpVal = getTotalGpForUo(uo);
+  const projTotal = getTotalProjForUo(uo);
+  const projFmt = fmtProjSigned(projTotal);
+  const macroGroups = groupFontesByMacroUo(uo);
+  const dSalPct = (t.lAut && t.lAut !== 0) ? Math.abs(t.dSal) / t.lAut * 100 : 0;
+  const now = new Date().toLocaleString('pt-BR');
+
+  mergeStyled(ws, `A${r}:D${r}`, 'QDD × Lei + Créditos', { fg: '#0f172a', bold: true, size: 18 });
+  ws.getRow(r).height = 30; r++;
+  mergeStyled(ws, `A${r}:D${r}`, 'RELATÓRIO SIMPLES DA UO · RLTS', { fg: '#4f46e5', bold: true, size: 10 });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION}`, { fg: '#94a3b8', size: 9 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r += 2;
+
+  mergeStyled(ws, `A${r}:B${r}`, c.label.toUpperCase(), { bg: c.color, fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  mergeStyled(ws, `C${r}:D${r}`, uo.cod + ' · ' + uo.acoes.length + ' ações', { bg: '#64748b', fg: '#ffffff', bold: true, size: 10, align: 'center', border: true });
+  r++;
+
+  mergeStyled(ws, `A${r}:D${r}`, uo.nome, { fg: '#0f172a', bold: true, size: 15, wrap: true });
+  ws.getRow(r).height = 34; r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Unidade Orçamentária ${uo.cod} · ${t.dots} dotações`, { fg: '#64748b', size: 9 });
+  r += 2;
+
+  const dSalCls = deltaClass(t.dSal);
+  const heroFg = dSalCls === 'pos' ? '#16a34a' : dSalCls === 'neg' ? '#dc2626' : '#94a3b8';
+
+  ws.getCell(r, 1).value = 'DELAY TOTAL';
+  applyStyle(ws.getCell(r, 1), { bg: '#f8fafc', fg: '#4f46e5', bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = deltaText(t.dSal);
+  applyStyle(ws.getCell(r, 2), { bg: '#f8fafc', fg: heroFg, bold: true, size: 14, align: 'center', border: true });
+  ws.getCell(r, 3).value = dSalPct > 0 ? dSalPct.toFixed(2).replace('.', ',') + '% não sincronizado' : 'saldos coincidem';
+  applyStyle(ws.getCell(r, 3), { bg: '#f8fafc', fg: '#64748b', size: 9, align: 'center', border: true });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  r++;
+
+  const projCls = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
+  const projFg = projCls === 'pos' ? '#16a34a' : projCls === 'neg' ? '#dc2626' : '#94a3b8';
+
+  ws.getCell(r, 1).value = 'PROJEÇÃO';
+  applyStyle(ws.getCell(r, 1), { bg: '#f8fafc', fg: '#4f46e5', bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = projFmt.value;
+  applyStyle(ws.getCell(r, 2), { bg: '#f8fafc', fg: projFg, bold: true, size: 14, align: 'center', border: true });
+  ws.getCell(r, 3).value = projFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 3), { bg: '#f8fafc', fg: '#64748b', size: 9, align: 'center', border: true });
+  applyStyle(ws.getCell(r, 4), { bg: '#f8fafc', border: true });
+  r += 2;
+
+  if (macroGroups.length > 0) {
+    mergeStyled(ws, `A${r}:D${r}`, 'COMPARATIVO POR GRUPO MACRO', { fg: '#4f46e5', bold: true, size: 10 });
+    for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+    r++;
+    writeHeaders4(ws, r); r++;
+    for (const g of macroGroups) {
+      mergeStyled(ws, `A${r}:D${r}`, '● ' + g.label, { bg: g.color, fg: '#ffffff', bold: true, size: 10, border: true });
+      ws.getRow(r).height = 20; r++;
+      const rows = [
+        ['Lei + Créditos', g.tot.qAut, g.tot.lAut, g.tot.dAut],
+        ['Empenhado', g.tot.qEmp, g.tot.lEmp, g.tot.dEmp],
+        ['Saldo', g.tot.qSal, g.tot.lSal, g.tot.dSal]
+      ];
+      for (const [label, qv, lv, dv] of rows) {
+        ws.getCell(r, 1).value = label;
+        applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+        writeMoneyCell(ws.getCell(r, 2), qv);
+        writeMoneyCell(ws.getCell(r, 3), lv);
+        writeDiffCell(ws.getCell(r, 4), dv);
+        r++;
+      }
+    }
+  }
+
+  mergeStyled(ws, `A${r}:D${r}`, 'TOTAL AGREGADO', { fg: '#4f46e5', bold: true, size: 10 });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
+  r++;
+  writeHeaders4(ws, r); r++;
+
+  const mainRows = [
+    ['Lei + Créditos', t.qAut, t.lAut, t.dAut],
+    ['Empenhado', t.qEmp, t.lEmp, t.dEmp],
+    ['Saldo', t.qSal, t.lSal, t.dSal]
+  ];
+  for (const [label, qv, lv, dv] of mainRows) {
+    ws.getCell(r, 1).value = label;
+    applyStyle(ws.getCell(r, 1), { fg: '#334155', bold: true, size: 9, border: true });
+    writeMoneyCell(ws.getCell(r, 2), qv);
+    writeMoneyCell(ws.getCell(r, 3), lv);
+    writeDiffCell(ws.getCell(r, 4), dv);
+    r++;
+  }
+
+  const dnpBg = dnpFmt.cls === 'positivo' ? '#f0fdf4' : dnpFmt.cls === 'negativo' ? '#fef2f2' : '#fffbeb';
+  const dnpFg = dnpFmt.cls === 'positivo' ? '#16a34a' : dnpFmt.cls === 'negativo' ? '#dc2626' : '#d97706';
+  ws.getCell(r, 1).value = 'DNP';
+  applyStyle(ws.getCell(r, 1), { bg: dnpBg, fg: dnpFg, bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: dnpBg, fg: dnpFg, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = dnpTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;—';
+  applyStyle(ws.getCell(r, 3), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = dnpFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: dnpBg, fg: dnpFg, bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  ws.getCell(r, 1).value = 'Gasto Pretendido';
+  applyStyle(ws.getCell(r, 1), { bg: '#faf5ff', fg: '#9333ea', bold: true, size: 9, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: '#faf5ff', fg: '#9333ea', align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = gpVal;
+  ws.getCell(r, 3).numFmt = 'R$ #,##0.00';
+  applyStyle(ws.getCell(r, 3), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 9, border: true });
+  ws.getCell(r, 4).value = 'ATÉ DEZ';
+  applyStyle(ws.getCell(r, 4), { bg: '#faf5ff', fg: '#9333ea', bold: true, align: 'right', size: 8, border: true });
+  r++;
+
+  const projBg = projFmt.cls === 'positivo' ? '#f0fdf4' : projFmt.cls === 'negativo' ? '#fef2f2' : '#eef2ff';
+  const projFg2 = projFmt.cls === 'positivo' ? '#16a34a' : projFmt.cls === 'negativo' ? '#dc2626' : '#4f46e5';
+  ws.getCell(r, 1).value = 'Projeção';
+  applyStyle(ws.getCell(r, 1), { bg: projBg, fg: projFg2, bold: true, size: 10, border: true });
+  ws.getCell(r, 2).value = '—';
+  applyStyle(ws.getCell(r, 2), { bg: projBg, fg: projFg2, align: 'right', size: 9, border: true });
+  ws.getCell(r, 3).value = projTotal;
+  ws.getCell(r, 3).numFmt = '+R$ #,##0.00;-R$ #,##0.00;"R$ 0,00"';
+  applyStyle(ws.getCell(r, 3), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 12, border: true });
+  ws.getCell(r, 4).value = projFmt.label.toUpperCase();
+  applyStyle(ws.getCell(r, 4), { bg: projBg, fg: projFg2, bold: true, align: 'right', size: 8, border: true });
+  r += 2;
+
+  mergeStyled(ws, `A${r}:D${r}`, 'QDD (SIOF) · Lei + Créditos (SPG)', { fg: '#94a3b8', size: 8, italic: true });
+  for (let ci = 1; ci <= 4; ci++) ws.getCell(r, ci).border = { top: { style: 'medium', color: { argb: 'FFE2E8F0' } } };
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, 'Projeção = Autorizada QDD + DNP − Gasto Pretendido. Meta: R$ 0,00.', { fg: '#94a3b8', size: 8, italic: true });
+  r++;
+  mergeStyled(ws, `A${r}:D${r}`, `Gerado em ${now} · v${APP_VERSION} · github.com/wendellmoura`, { fg: '#94a3b8', size: 8 });
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rlts_uo_${uo.cod}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+  toast('Excel RLTS da UO exportado.', 'ok');
+}
+
 async function exportFullExcel() {
   if (!state.model) { toast('Nenhum dado carregado.', 'warn'); return; }
   if (typeof ExcelJS === 'undefined') { toast('Biblioteca ExcelJS não carregou. Recarregue a página.', 'err', 6000); return; }
@@ -3696,6 +4520,7 @@ if (_dRlts) _dRlts.addEventListener('click', async () => {
 document.addEventListener('keydown', e => {
   if (!$('#backupBack').hidden) { if (e.key === 'Escape') { e.preventDefault(); closeBackupModal(); } return; }
   if (!$('#helpBack').hidden) { if (e.key === 'Escape') { e.preventDefault(); $('#helpBack').hidden = true; } return; }
+  if ($('#uoDrawer').classList.contains('on')) { if (e.key === 'Escape') { e.preventDefault(); closeUoDrawer(); } return; }
   if ($('#drawer').classList.contains('on')) { if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); } return; }
   if ($('#appView').hidden) return;
   if (e.target.matches('input, select, textarea')) return;
