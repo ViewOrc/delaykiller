@@ -515,7 +515,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
   <div class="upload-inner">
     <div class="upload-brand">
       <h1>QDD × Lei + Créditos</h1>
-      <p>Envie o <strong>QDD</strong> (Excel) e a <strong>Listagem</strong> (Lei + Créditos em CSV) para calcular o <strong>delay</strong>
+      <p>Envie o <strong>QDD</strong> (Excel) e a <strong>Listagem</strong> (Lei + Créditos em CSV) para calcular o <strong>não sincronizado</strong>
         e a <strong>projeção</strong> entre as duas fontes.</p>
       <span class="hint">Comparativo QDD ↔ Dotação · Escopo automático · Fonte/Subfonte/Região · Projeção</span>
     </div>
@@ -616,7 +616,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
       <div class="sort-box">
         <label for="sortSel">Ordenar por</label>
         <select id="sortSel">
-          <option value="dSal">maior delay</option>
+          <option value="dSal">maior não sincronizado</option>
           <option value="delay">maior divergência</option>
           <option value="proj">maior |projeção|</option>
           <option value="dnp">maior DNP</option>
@@ -639,7 +639,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
           <label><input type="checkbox" data-col="dnp" checked> DNP</label>
           <label><input type="checkbox" data-col="gp" checked> Gasto Pretendido</label>
           <label><input type="checkbox" data-col="proj" checked> Projeção</label>
-          <label><input type="checkbox" data-col="delay" checked> Delay</label>
+          <label><input type="checkbox" data-col="delay" checked> Não sincronizado</label>
         </div>
       </div>
     </div>
@@ -702,10 +702,10 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
               <span class="arrow">↕</span>
             </div>
           </th>
-          <th class="r sortable active" data-col-th="delay" data-sort="dSal" style="width:150px">
+          <th class="r sortable active" data-col-th="delay" data-sort="dSal" style="width:175px">
             <div class="th-inner">
-              Delay
-              <span class="help" data-tooltip="Delay = (Lei + Créditos − Parcelas) − (Autorizada − Empenhado).">?</span>
+              Não sincronizado
+              <span class="help" data-tooltip="Não sincronizado = (Lei + Créditos − Parcelas) − (Autorizada − Empenhado).">?</span>
               <span class="arrow">↕</span>
             </div>
           </th>
@@ -789,7 +789,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
       <h3>Relatórios por Unidade Orçamentária (UO)</h3>
       <p>Clique no <strong>nome da UO</strong> em qualquer linha da tabela para abrir o painel da UO com totais consolidados, comparativo por grupo macro de fonte, lista de ações e exportações (<strong>CSV</strong>, <strong>RLTS</strong> e <strong>Excel</strong>) específicas da unidade.</p>
 
-      <h3>Delay</h3>
+      <h3>Não sincronizado</h3>
       <p>Diferença entre o saldo da Listagem e o saldo do QDD. Calculado como <code>(Lei + Créditos − Parcelas) − (Autorizada − Empenhado)</code>.</p>
 
       <h3>DNP — Despesa Não Programada</h3>
@@ -804,7 +804,7 @@ td.editable-cell.gp-cell input{border-color:var(--violet);box-shadow:0 0 0 3px r
       <h3>Exportação Excel</h3>
       <ul class="help-list">
         <li><strong>📊 Excel desta ação</strong> — relatório completo da ação aberta (KPIs, comparativos por fonte, todas as dotações, legenda).</li>
-        <li><strong>📊 RLTS (Excel)</strong> — versão enxuta com foco no Delay Total.</li>
+        <li><strong>📊 RLTS (Excel)</strong> — versão enxuta com foco no total não sincronizado.</li>
         <li><strong>📊 Excel da UO</strong> — relatório completo da UO (totais, comparativo por grupo macro, lista de ações, legendas).</li>
         <li><strong>📊 RLTS (Excel) da UO</strong> — versão enxuta da UO.</li>
         <li><strong>📊 Excel completo</strong> (topbar) — todas as ações filtradas em uma única planilha.</li>
@@ -877,12 +877,12 @@ const SIOF_URL = 'https://planejamento.seplag.ce.gov.br/siofconsulta/Paginas/frm
 const REPO_URL = 'https://github.com/wendellmoura?tab=repositories';
 
 const CLASSIF = {
-  sincronizado: { label:'Sincronizado',         short:'OK',   color:'#16a34a', bg:'#f0fdf4', desc:'QDD e Lei + Créditos coincidem.' },
-  leve:         { label:'Atraso leve',          short:'Leve', color:'#65a30d', bg:'#f7fee7', desc:'Divergência < 1%.' },
-  moderado:     { label:'Atraso moderado',      short:'Mod.', color:'#d97706', bg:'#fffbeb', desc:'Divergência entre 1% e 5%.' },
-  critico:      { label:'Atraso crítico',       short:'Crít.',color:'#dc2626', bg:'#fef2f2', desc:'Divergência ≥ 5%.' },
-  sem_par_qdd:  { label:'Apenas na Listagem',   short:'Só L', color:'#9333ea', bg:'#faf5ff', desc:'Só na Lei + Créditos.' },
-  sem_par_list: { label:'Apenas no QDD',        short:'Só Q', color:'#64748b', bg:'#f1f5f9', desc:'Só no QDD.' }
+  sincronizado: { label:'Sincronizado',             short:'OK',   color:'#16a34a', bg:'#f0fdf4', desc:'QDD e Lei + Créditos coincidem.' },
+  leve:         { label:'Não sinc. leve',           short:'Leve', color:'#65a30d', bg:'#f7fee7', desc:'Divergência < 1%.' },
+  moderado:     { label:'Não sinc. moderado',       short:'Mod.', color:'#d97706', bg:'#fffbeb', desc:'Divergência entre 1% e 5%.' },
+  critico:      { label:'Não sinc. crítico',        short:'Crít.',color:'#dc2626', bg:'#fef2f2', desc:'Divergência ≥ 5%.' },
+  sem_par_qdd:  { label:'Apenas na Listagem',       short:'Só L', color:'#9333ea', bg:'#faf5ff', desc:'Só na Lei + Créditos.' },
+  sem_par_list: { label:'Apenas no QDD',            short:'Só Q', color:'#64748b', bg:'#f1f5f9', desc:'Só no QDD.' }
 };
 
 const FONTE_GRUPOS = {
@@ -2106,8 +2106,8 @@ function renderStats() {
   const cards = [
     { lbl: 'QDD', v: fmtBRLShort(s.totQAut), sub: fmtBRL(s.totQAut), tip: 'Dotação autorizada no QDD.' },
     { lbl: 'Lei + Créditos', v: fmtBRLShort(s.totLAut), sub: fmtBRL(s.totLAut), tip: 'Autorização atualizada (SPG).' },
-    { lbl: 'Delay (Saldo)', v: (dSal>=0?'+':'') + fmtBRLShort(dSal), sub: fmtBRL(dSal),
-      cls: Math.abs(dSal) < 0.01 ? '' : (dSal > 0 ? 'ok' : 'danger'), tip: 'Delay = SPG saldo − QDD saldo.' },
+    { lbl: 'Não sincronizado', v: (dSal>=0?'+':'') + fmtBRLShort(dSal), sub: fmtBRL(dSal),
+      cls: Math.abs(dSal) < 0.01 ? '' : (dSal > 0 ? 'ok' : 'danger'), tip: 'Não sincronizado = SPG saldo − QDD saldo.' },
     { lbl: 'DNP', v: dnpFmt.value, sub: countDnpEntries() + ' registro(s)', cls: dnpCls,
       tip: 'Despesa Não Programada. Positivo = suplemento; negativo = déficit.' },
     { lbl: 'Projeção', v: projFmt.value, sub: projFmt.label + ' · meta: R$ 0,00', cls: projCls,
@@ -2557,7 +2557,7 @@ function renderDrawer(ac, uo) {
 
     <div class="delta-cards">
       <div class="delta-card">
-        <div class="dcl">Delay (Saldo)</div>
+        <div class="dcl">Não sincronizado (Saldo)</div>
         ${Math.abs(t.dSal) >= 0.005 ? `<div class="dcv ${deltaClass(t.dSal)}">${esc(deltaText(t.dSal))}</div>` : ''}
         <div class="dcs">
           <div><span class="t qdd">QDD</span> <span>${esc(fmtBRLShort(t.qSal))}</span></div>
@@ -2683,7 +2683,7 @@ function renderDrawer(ac, uo) {
 
     <div class="section-title" style="margin-top:26px">
       <span>Dotações desta ação (${ac.dots.length})</span>
-      <span style="font-weight:700;color:var(--muted);font-size:11px;text-transform:none;letter-spacing:0">|Delay| ${esc(fmtBRL(totalDeltaAbs))}</span>
+      <span style="font-weight:700;color:var(--muted);font-size:11px;text-transform:none;letter-spacing:0">|Não sinc.| ${esc(fmtBRL(totalDeltaAbs))}</span>
     </div>
 
     ${ac.dots.length > 6 ? `<input class="dot-search" id="dotSearch" type="search" placeholder="Filtrar dotação, natureza, região, fonte…">` : ''}
@@ -2794,7 +2794,7 @@ function renderUoAcaoItem(ac) {
       <span class="uo-acao-name" title="${esc(ac.nome)}">${esc(ac.nome)}</span>
     </div>
     <div class="uo-acao-metrics">
-      <div><span class="lbl">Delay</span><span class="${dSalCls}">${esc(deltaText(t.dSal))}</span></div>
+      <div><span class="lbl">Não sinc.</span><span class="${dSalCls}">${esc(deltaText(t.dSal))}</span></div>
       <div><span class="lbl">DNP</span><span class="${dnpCls}">${dnp !== 0 ? esc(fmtBRLShort(dnp)) : '—'}</span></div>
       <div><span class="lbl">Projeção</span><span class="${projCls}">${esc(projText)}</span></div>
     </div>
@@ -2840,7 +2840,7 @@ function renderUoDrawer(uo) {
         <div class="uss">${esc(fmtBRL(t.lAut))}</div>
       </div>
       <div class="uo-summary-card">
-        <div class="usl">Delay (Saldo)</div>
+        <div class="usl">Não sincronizado (Saldo)</div>
         <div class="usv ${deltaClass(t.dSal) === 'pos' ? 'pos' : deltaClass(t.dSal) === 'neg' ? 'neg' : ''}">${esc(deltaText(t.dSal))}</div>
         <div class="uss">Saldo SPG − QDD</div>
       </div>
@@ -3215,7 +3215,7 @@ document.addEventListener('click', e => {
 
 $('#dCsv').onclick = () => {
   const ac = currentDrawerAcao(); if (!ac) return;
-  const lines = [['Dotacao','Localidade','Regiao','Natureza','Fonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Delay','DNP','Utilizada','Classificacao'].join(';')];
+  const lines = [['Dotacao','Localidade','Regiao','Natureza','Fonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Nao_sincronizado','DNP','Utilizada','Classificacao'].join(';')];
   for (const d of ac.dots) {
     lines.push([d.dotId, d.locNome, d.locRegiao || REGIOES[d.locCod] || '', d.natNome,
       d.fonte ? d.fonte.fonte : '', d.qAut.toFixed(2), d.lAut.toFixed(2),
@@ -3394,7 +3394,7 @@ $('#backupExport').onclick = () => {
 $('#btnExport').onclick = () => {
   const rows = getFilteredSorted();
   if (!rows.length) { toast('Nenhum registro.', 'warn'); return; }
-  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Delay','DNP_dotacao','GP_acao','Projecao_acao','Utilizada','Classificacao'].join(';')];
+  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Nao_sincronizado','DNP_dotacao','GP_acao','Projecao_acao','Utilizada','Classificacao'].join(';')];
   for (const ac of rows) {
     const acaoDnp = getAcaoDnp(ac.uo.cod, ac.cod);
     const acaoGp = getTotalGpForAcao(ac);
@@ -3539,7 +3539,7 @@ async function exportActionExcel(ac, uo) {
   const projClsK = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
 
   const kpis = [
-    { l: 'DELAY (SALDO)', v: deltaText(t.dSal), vCls: dSalCls, s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
+    { l: 'NÃO SINCRONIZADO (SALDO)', v: deltaText(t.dSal), vCls: dSalCls, s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
     { l: 'GASTO PRETENDIDO', v: fmtBRLShort(gpVal), vCls: '', s: `Autorizada ${fmtBRLShort(t.qAut)}` },
     { l: 'PROJEÇÃO', v: projFmt.value, vCls: projClsK, s: projFmt.label }
   ];
@@ -3792,7 +3792,7 @@ async function exportRltsExcel(ac, uo) {
   const dSalCls = deltaClass(t.dSal);
   const heroFg = dSalCls === 'pos' ? '#16a34a' : dSalCls === 'neg' ? '#dc2626' : '#94a3b8';
 
-  ws.getCell(r, 1).value = 'DELAY TOTAL';
+  ws.getCell(r, 1).value = 'NÃO SINCRONIZADO (TOTAL)';
   applyStyle(ws.getCell(r, 1), { bg: '#f8fafc', fg: '#4f46e5', bold: true, size: 10, border: true });
   ws.getCell(r, 2).value = deltaText(t.dSal);
   applyStyle(ws.getCell(r, 2), { bg: '#f8fafc', fg: heroFg, bold: true, size: 14, align: 'center', border: true });
@@ -3915,7 +3915,7 @@ async function exportRltsExcel(ac, uo) {
 /* ── UO-level exports ── */
 function exportUoCsv(uo) {
   if (!uo) return;
-  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Delay','DNP_dotacao','Utilizada','Classificacao'].join(';')];
+  const lines = [['UO_Codigo','UO_Nome','Acao_Codigo','Acao_Nome','Programa_Codigo','Programa_Nome','Dotacao','Localidade','Regiao','Natureza','Fonte','Subfonte','QDD_LC','SPG_LC','QDD_Emp','SPG_Emp','QDD_Sal','SPG_Sal','Nao_sincronizado','DNP_dotacao','Utilizada','Classificacao'].join(';')];
   for (const ac of uo.acoes) {
     for (const d of ac.dots) {
       lines.push([uo.cod, uo.nome, ac.cod, ac.nome, ac.progCod, ac.progNome,
@@ -3985,7 +3985,7 @@ async function exportUoExcel(uo) {
   const projClsK = projTotal > 0 ? 'pos' : projTotal < 0 ? 'neg' : 'zero';
 
   const kpis = [
-    { l: 'DELAY (SALDO)', v: deltaText(t.dSal), vCls: dSalCls, s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
+    { l: 'NÃO SINCRONIZADO (SALDO)', v: deltaText(t.dSal), vCls: dSalCls, s: `QDD ${fmtBRLShort(t.qSal)} · SPG ${fmtBRLShort(t.lSal)}` },
     { l: 'GASTO PRETENDIDO', v: fmtBRLShort(gpVal), vCls: '', s: `Autorizada ${fmtBRLShort(t.qAut)}` },
     { l: 'PROJEÇÃO', v: projFmt.value, vCls: projClsK, s: projFmt.label }
   ];
@@ -4122,7 +4122,7 @@ async function exportUoExcel(uo) {
     ws.getRow(r).height = 28;
     r++;
 
-    ws.getCell(r, 1).value = '  Delay: ' + deltaText(ac.tot.dSal) + '  ·  DNP: ' + (acaoDnp !== 0 ? fmtBRL(acaoDnp) : '—');
+    ws.getCell(r, 1).value = '  Não sinc.: ' + deltaText(ac.tot.dSal) + '  ·  DNP: ' + (acaoDnp !== 0 ? fmtBRL(acaoDnp) : '—');
     applyStyle(ws.getCell(r, 1), { fg: '#64748b', size: 8, italic: true, border: true });
     ws.mergeCells(r, 1, r, 4);
     r++;
@@ -4212,7 +4212,7 @@ async function exportRltsUoExcel(uo) {
   const dSalCls = deltaClass(t.dSal);
   const heroFg = dSalCls === 'pos' ? '#16a34a' : dSalCls === 'neg' ? '#dc2626' : '#94a3b8';
 
-  ws.getCell(r, 1).value = 'DELAY TOTAL';
+  ws.getCell(r, 1).value = 'NÃO SINCRONIZADO (TOTAL)';
   applyStyle(ws.getCell(r, 1), { bg: '#f8fafc', fg: '#4f46e5', bold: true, size: 10, border: true });
   ws.getCell(r, 2).value = deltaText(t.dSal);
   applyStyle(ws.getCell(r, 2), { bg: '#f8fafc', fg: heroFg, bold: true, size: 14, align: 'center', border: true });
@@ -4375,7 +4375,7 @@ async function exportFullExcel() {
   const cards = [
     { l: 'QDD', v: fmtBRLShort(s.totQAut), s: fmtBRL(s.totQAut), cls: '' },
     { l: 'LEI + CRÉDITOS', v: fmtBRLShort(s.totLAut), s: fmtBRL(s.totLAut), cls: '' },
-    { l: 'DELAY', v: (dSal>=0?'+':'') + fmtBRLShort(dSal), s: fmtBRL(dSal), cls: Math.abs(dSal) < 0.01 ? 'zero' : (dSal > 0 ? 'pos' : 'neg') },
+    { l: 'NÃO SINCRONIZADO', v: (dSal>=0?'+':'') + fmtBRLShort(dSal), s: fmtBRL(dSal), cls: Math.abs(dSal) < 0.01 ? 'zero' : (dSal > 0 ? 'pos' : 'neg') },
     { l: 'DNP', v: dnpFmt.value, s: dnpFmt.label, cls: dnpFmt.cls === 'positivo' ? 'pos' : dnpFmt.cls === 'negativo' ? 'neg' : 'zero' },
     { l: 'PROJEÇÃO', v: projFmt.value, s: projFmt.label, cls: projFmt.cls === 'positivo' ? 'pos' : projFmt.cls === 'negativo' ? 'neg' : 'zero' },
     { l: 'DIVERGENTES', v: divergentes + ' / ' + s.totActions, s: s.byClassifActions.critico + ' críticas', cls: divergentes > 0 ? 'neg' : 'pos' }
@@ -4406,7 +4406,7 @@ async function exportFullExcel() {
   for (let ci = 1; ci <= 8; ci++) ws.getCell(r, ci).border = { bottom: { style: 'medium', color: { argb: 'FF4F46E5' } } };
   r++;
 
-  const headers = ['#', 'AÇÃO', 'UO', 'CLASSIFICAÇÃO', 'SALDO QDD', 'GP', 'PROJEÇÃO', 'DELAY'];
+  const headers = ['#', 'AÇÃO', 'UO', 'CLASSIFICAÇÃO', 'SALDO QDD', 'GP', 'PROJEÇÃO', 'N. SINCRONIZADO'];
   const aligns = ['center', 'left', 'left', 'center', 'right', 'right', 'right', 'right'];
   headers.forEach((h, i) => {
     const cell = ws.getCell(r, i + 1);
